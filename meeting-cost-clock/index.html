@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>회의 몸값 시계 – 지금 이 회의에 얼마가 타고 있을까?</title>
+<meta name="description" content="참석자 수와 연봉·시급을 입력하면 회의 비용이 실시간으로 올라갑니다. 치킨 몇 마리인지 환산하고, 팀 단톡방에 공유할 결과 카드까지 만들어보세요. 입력값은 저장되지 않습니다.">
+<meta property="og:title" content="회의 몸값 시계 🔥">
+<meta property="og:description" content="이 회의, 지금 이 순간에도 월급이 타고 있습니다. 회의비 실시간 카운터와 공유용 결과 카드.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0E0F13">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔥%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E0F13; --panel:#171922; --panel2:#1F222D; --line:#2C3040;
+  --text:#F3F4F6; --muted:#A8ADB8; --accent:#FF5A36; --neon:#C6FF3D; --danger:#FF2E4D;
+  --glow:rgba(255,90,54,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Noto Sans KR',system-ui,sans-serif; line-height:1.55;
+  background-image:radial-gradient(900px 500px at 50% -10%,var(--glow),transparent 70%);
+  transition:background-color .6s;
+}
+body[data-state="warn"]{--accent:#FFB020; --glow:rgba(255,176,32,.3)}
+body[data-state="over"]{--accent:var(--danger); --glow:rgba(255,46,77,.45); background-color:#1a0a10}
+.sr-only{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+.wrap{max-width:880px; margin:0 auto; padding:20px 16px 40px}
+header{text-align:center; padding:20px 0 8px}
+.badge{display:inline-block; font-size:.78rem; font-weight:700; letter-spacing:.08em; color:var(--neon); border:1px solid var(--neon); border-radius:99px; padding:2px 12px}
+h1{font-size:clamp(1.9rem,6vw,2.8rem); margin:10px 0 6px; font-weight:900; letter-spacing:-.02em}
+h1 span{color:var(--accent)}
+.tagline{color:var(--muted); margin:0 auto; max-width:560px; font-size:1rem}
+.tagline b{color:var(--text)}
+section,.card{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px; margin-top:16px}
+h2{font-size:1.05rem; margin:0 0 12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+h2 small{color:var(--muted); font-weight:400}
+
+/* 계기판 */
+.dash{text-align:center; border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset,0 0 40px -10px var(--accent); transition:.4s}
+.dash-label{color:var(--muted); font-size:.9rem}
+.cost{
+  font-family:'Share Tech Mono',monospace; font-size:clamp(2.6rem,14vw,6rem); line-height:1.1;
+  color:var(--accent); text-shadow:0 0 24px var(--glow); margin:6px 0; word-break:keep-all; overflow-wrap:anywhere; font-variant-numeric:tabular-nums;
+}
+body[data-state="over"] .cost{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px}
+.stat{background:var(--panel2); border-radius:12px; padding:10px 6px; min-width:0}
+.stat .k{font-size:.75rem; color:var(--muted)}
+.stat .v{font-family:'Share Tech Mono',monospace; font-size:clamp(1rem,4.5vw,1.6rem); color:var(--text); overflow-wrap:anywhere}
+.bar{height:12px; background:var(--panel2); border-radius:99px; overflow:hidden; margin-top:14px}
+.bar i{display:block; height:100%; width:0; background:var(--neon); transition:width .3s, background .3s}
+body[data-state="warn"] .bar i{background:#FFB020}
+body[data-state="over"] .bar i{background:var(--danger)}
+.alert{min-height:1.6em; margin-top:8px; font-weight:700; color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:12px}
+button{font:inherit; cursor:pointer; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--text); padding:12px 20px; font-weight:700; min-height:48px}
+button.primary{background:var(--accent); color:#14100E; border-color:var(--accent)}
+button:disabled{opacity:.4; cursor:not-allowed}
+button:hover:not(:disabled){filter:brightness(1.12)}
+:focus-visible{outline:3px solid var(--neon); outline-offset:2px}
+
+/* 입력 */
+.grid2{display:grid; gap:14px; grid-template-columns:1fr 1fr}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+label.f{display:block; font-size:.88rem; color:var(--muted); margin-bottom:4px}
+input[type=number]{width:100%; font:inherit; font-size:1.1rem; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); min-height:48px}
+.seg{display:flex; flex-wrap:wrap; gap:8px; border:0; padding:0; margin:0 0 12px; min-width:0}
+.seg legend{font-size:.88rem; color:var(--muted); margin-bottom:6px; padding:0}
+.seg label{position:relative}
+.seg input{position:absolute; opacity:0; inset:0; width:100%; height:100%; margin:0; cursor:pointer}
+.seg span{display:block; padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--bg); font-size:.92rem; font-weight:500}
+.seg input:checked+span{background:var(--accent); color:#14100E; border-color:var(--accent); font-weight:700}
+.seg input:focus-visible+span{outline:3px solid var(--neon); outline-offset:2px}
+.hint{font-size:.85rem; color:var(--muted); margin:8px 0 0}
+.hint b{color:var(--neon); font-family:'Share Tech Mono',monospace; font-size:1rem}
+[hidden]{display:none!important}
+
+/* 환산 */
+.conv{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px}
+.conv div{background:var(--panel2); border-radius:14px; padding:12px; text-align:center}
+.conv .e{font-size:1.8rem}
+.conv .n{font-family:'Share Tech Mono',monospace; font-size:1.5rem; color:var(--neon); overflow-wrap:anywhere}
+.conv .u{font-size:.8rem; color:var(--muted)}
+
+/* 체크 */
+.q{display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--line); cursor:pointer}
+.q:last-of-type{border-bottom:0}
+.q input{width:22px; height:22px; margin-top:3px; accent-color:var(--accent); flex:none}
+.verdict{margin-top:10px; padding:12px; border-radius:12px; background:var(--panel2); font-weight:700}
+canvas{width:100%; max-width:480px; height:auto; display:block; margin:0 auto 14px; border-radius:14px; border:1px solid var(--line)}
+.toast{min-height:1.5em; text-align:center; color:var(--neon); margin-top:8px; font-size:.9rem}
+footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:30px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important; scroll-behavior:auto!important}}
+</style>
+</head>
+<body data-state="idle">
+<div class="wrap">
+  <header>
+    <span class="badge">LIVE MEETING METER</span>
+    <h1>회의 <span>몸값</span> 시계</h1>
+    <p class="tagline" id="tagline">이 회의, 지금 이 순간에도 월급 <b>₩0</b>이 타고 있습니다 🔥</p>
+  </header>
+
+  <main>
+    <section class="dash" aria-label="회의 비용 계기판">
+      <div class="dash-label">지금까지 회의에 쓰인 비용</div>
+      <div class="cost" id="cost" aria-hidden="true">₩0</div>
+      <span class="sr-only" id="costSr" role="status" aria-live="polite"></span>
+      <span class="sr-only" id="stateSr" role="status" aria-live="polite"></span>
+      <div class="stats">
+        <div class="stat"><div class="k">경과 시간</div><div class="v" id="time">00:00</div></div>
+        <div class="stat"><div class="k">1분당</div><div class="v" id="perMin">₩0</div></div>
+        <div class="stat"><div class="k">1초당</div><div class="v" id="perSec">₩0</div></div>
+      </div>
+      <div class="bar" role="progressbar" aria-label="목표 시간 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="alert" id="alert"></div>
+      <div class="controls">
+        <button class="primary" id="toggleBtn" type="button">▶ 회의 시작</button>
+        <button id="endBtn" type="button" disabled>■ 회의 종료</button>
+        <button id="resetBtn" type="button">↺ 초기화</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-set">
+      <h2 id="h-set">⚙️ 회의 설정 <small>(회의 중에도 바꿀 수 있어요)</small></h2>
+      <div class="grid2">
+        <div>
+          <label class="f" for="people">참석자 수 (명)</label>
+          <input type="number" id="people" min="1" max="500" value="5" inputmode="numeric">
+        </div>
+        <div>
+          <label class="f" for="target">목표 시간 (분)</label>
+          <input type="number" id="target" min="1" max="600" value="30" inputmode="numeric">
+        </div>
+      </div>
+      <fieldset class="seg" style="margin-top:14px">
+        <legend>급여 입력 방식</legend>
+        <label><input type="radio" name="mode" value="preset" checked><span>직급 프리셋</span></label>
+        <label><input type="radio" name="mode" value="annual"><span>평균 연봉 직접</span></label>
+        <label><input type="radio" name="mode" value="hourly"><span>평균 시급 직접</span></label>
+      </fieldset>
+
+      <fieldset class="seg" id="presetBox">
+        <legend>평균 직급 (연봉 기준)</legend>
+        <label><input type="radio" name="preset" value="3600" checked><span>사원 3,600만</span></label>
+        <label><input type="radio" name="preset" value="4500"><span>대리 4,500만</span></label>
+        <label><input type="radio" name="preset" value="5800"><span>과장 5,800만</span></label>
+        <label><input type="radio" name="preset" value="7500"><span>팀장 7,500만</span></label>
+        <label><input type="radio" name="preset" value="12000"><span>임원 1억 2,000만</span></label>
+      </fieldset>
+      <div id="annualBox" hidden>
+        <label class="f" for="annual">평균 연봉 (만원)</label>
+        <input type="number" id="annual" min="100" value="4500" inputmode="numeric">
+      </div>
+      <div id="hourlyBox" hidden>
+        <label class="f" for="hourly">평균 시급 (원)</label>
+        <input type="number" id="hourly" min="1000" value="20000" inputmode="numeric">
+      </div>
+      <p class="hint">적용 시급 <b id="hourShow">₩0</b> · 연봉 ÷ 연 2,080시간(주 40시간)으로 계산합니다. 복리후생·4대 보험은 포함하지 않아 실제 비용은 더 클 수 있어요.</p>
+    </section>
+
+    <section aria-labelledby="h-conv">
+      <h2 id="h-conv">🤔 이 돈이면?</h2>
+      <div class="conv" id="conv"></div>
+    </section>
+
+    <section id="resultSec" hidden aria-labelledby="h-res">
+      <h2 id="h-res">🧾 회의 몸값 인증 카드</h2>
+      <canvas id="card" width="1080" height="1080" role="img" aria-label="회의 결과 카드 이미지"></canvas>
+      <div class="controls">
+        <button class="primary" id="saveBtn" type="button">⬇ 이미지 저장</button>
+        <button id="shareBtn" type="button">📤 공유하기</button>
+        <button id="copyBtn" type="button">📋 문구 복사</button>
+      </div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="h-chk">
+      <h2 id="h-chk">📧 이 회의, 메일로 가능했을까? <small>(자가 체크)</small></h2>
+      <label class="q"><input type="checkbox" class="chk"><span>대부분 일방적인 공유·보고였다 (질문이나 토론이 거의 없었다)</span></label>
+      <label class="q"><input type="checkbox" class="chk"><span>결정할 안건이나 명확한 결론 없이 끝났다</span></label>
+      <label class="q"><input type="checkbox" class="chk"><span>참석자의 절반 이상이 한마디도 하지 않았다</span></label>
+      <div class="verdict" id="verdict" role="status" aria-live="polite">해당되는 항목을 체크해 보세요.</div>
+    </section>
+  </main>
+
+  <footer>© <span id="yr">2026</span> 회의 몸값 시계 · 모든 계산은 브라우저에서만 이루어지며 입력값은 저장되지 않습니다.</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const won = n => '₩' + Math.floor(n).toLocaleString('ko-KR');
+  const HOURS_PER_YEAR = 2080;
+  const ITEMS = [
+    {e:'🍗', n:'치킨', u:'마리', p:23000},
+    {e:'☕', n:'아메리카노', u:'잔', p:4500},
+    {e:'🍱', n:'점심 한 끼', u:'끼', p:10000},
+    {e:'🚕', n:'택시 기본요금', u:'번', p:4800},
+    {e:'📺', n:'OTT 한 달 구독', u:'개월', p:14000},
+    {e:'🍙', n:'삼각김밥', u:'개', p:1500}
+  ];
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const s = {running:false, cost:0, elapsed:0, last:0, timer:null, warned:false, overed:false, ended:false, snap:null, ann:''};
+
+  const num = (el, min, max, def) => {
+    let v = parseFloat(el.value);
+    if (!isFinite(v)) v = def;
+    return Math.min(max, Math.max(min, v));
+  };
+  const mode = () => document.querySelector('input[name="mode"]:checked').value;
+  function hourly(){
+    const m = mode();
+    if (m === 'preset') return parseFloat(document.querySelector('input[name="preset"]:checked').value) * 10000 / HOURS_PER_YEAR;
+    if (m === 'annual') return num($('annual'), 100, 100000, 4500) * 10000 / HOURS_PER_YEAR;
+    return num($('hourly'), 1000, 10000000, 20000);
+  }
+  const people = () => Math.round(num($('people'), 1, 500, 5));
+  const target = () => Math.round(num($('target'), 1, 600, 30));
+  const rate = () => people() * hourly() / 3600; // 원/초
+  // 종료 시점 값 고정(카드·공유 문구용)
+  const cardPeople = () => s.snap ? s.snap.people : people();
+  const cardTarget = () => s.snap ? s.snap.target : target();
+
+  const fmtTime = t => {
+    t = Math.floor(t);
+    const h = Math.floor(t/3600), m = Math.floor(t%3600/60), sec = t%60;
+    const p = x => String(x).padStart(2,'0');
+    return (h ? h + ':' : '') + p(m) + ':' + p(sec);
+  };
+  const fmtN = v => v < 10 ? (Math.floor(v*10)/10).toFixed(1) : Math.floor(v).toLocaleString('ko-KR');
+  const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 환산 카드 초기화
+  $('conv').innerHTML = ITEMS.map((it,i) =>
+    `<div><div class="e" aria-hidden="true">${it.e}</div><div class="n" id="cv${i}">0.0</div><div class="u">${it.n} ${it.u}</div></div>`).join('');
+
+  function render(){
+    const r = rate(), tgm = cardTarget(), tg = tgm * 60;
+    $('cost').textContent = won(s.cost);
+    $('time').textContent = fmtTime(s.elapsed);
+    $('perMin').textContent = won(r*60);
+    $('perSec').textContent = won(r);
+    $('hourShow').textContent = won(hourly());
+    $('tagline').innerHTML = `이 회의, 지금 이 순간에도 월급 <b>${won(r*60)}</b>이 1분마다 타고 있습니다 🔥`;
+    ITEMS.forEach((it,i) => $('cv'+i).textContent = fmtN(s.cost / it.p));
+    const pct = Math.min(100, s.elapsed / tg * 100);
+    $('barFill').style.width = pct + '%';
+    $('bar').setAttribute('aria-valuenow', Math.round(pct));
+    const over = s.elapsed > tg, warn = !over && s.elapsed >= tg * 0.8;
+    const active = s.running || s.elapsed > 0;
+    document.body.dataset.state = active ? (over ? 'over' : warn ? 'warn' : 'idle') : 'idle';
+    if (active){
+      if (over){
+        if (!s.overed){ s.overed = true; if (navigator.vibrate) { try { navigator.vibrate([200,100,200]); } catch(e){} } }
+        $('alert').textContent = `🚨 목표 시간 ${tgm}분 초과! ${fmtTime(s.elapsed - tg)} 지나는 중`;
+      } else if (warn){
+        s.warned = true;
+        $('alert').textContent = `⚠️ 목표 시간까지 ${fmtTime(tg - s.elapsed)} 남았어요. 슬슬 마무리!`;
+      } else $('alert').textContent = '';
+    }
+    // 스크린리더에는 상태가 바뀔 때만 한 번 안내
+    const key = active ? (over ? 'over' : warn ? 'warn' : '') : '';
+    if (key !== s.ann){
+      s.ann = key;
+      $('stateSr').textContent = key === 'over' ? `목표 시간 ${tgm}분을 초과했습니다.` : key === 'warn' ? '목표 시간이 얼마 남지 않았습니다.' : '';
+    }
+  }
+
+  function tick(){
+    const now = performance.now();
+    const dt = (now - s.last) / 1000; s.last = now;
+    s.elapsed += dt; s.cost += rate() * dt;
+    render();
+  }
+  let lastSr = 0;
+  setInterval(() => { // 스크린리더용 느린 갱신
+    if (s.running && Date.now() - lastSr > 9000){ lastSr = Date.now(); $('costSr').textContent = `경과 ${fmtTime(s.elapsed)}, 비용 ${won(s.cost)}`; }
+  }, 1000);
+
+  function start(){
+    if (s.ended) reset();
+    clearInterval(s.timer);
+    s.running = true; s.last = performance.now();
+    s.timer = setInterval(tick, 100);
+    $('toggleBtn').textContent = '⏸ 일시정지';
+    $('endBtn').disabled = false;
+  }
+  function pause(){
+    tick(); clearInterval(s.timer); s.running = false;
+    $('toggleBtn').textContent = '▶ 재개';
+  }
+  function reset(){
+    clearInterval(s.timer);
+    Object.assign(s,{running:false,cost:0,elapsed:0,warned:false,overed:false,ended:false,snap:null,ann:''});
+    $('toggleBtn').textContent = '▶ 회의 시작';
+    $('endBtn').disabled = true;
+    $('alert').textContent = '';
+    $('costSr').textContent = '';
+    $('stateSr').textContent = '';
+    $('resultSec').hidden = true;
+    render();
+  }
+  async function end(){
+    if (s.running) pause();
+    if (s.elapsed < 1){ return; }
+    s.ended = true;
+    s.snap = {people: people(), target: target()};
+    $('toggleBtn').textContent = '▶ 새 회의 시작';
+    $('endBtn').disabled = true;
+    $('resultSec').hidden = false;
+    render();
+    await drawCard();
+    $('resultSec').scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block:'start'});
+  }
+
+  $('toggleBtn').addEventListener('click', () => s.running ? pause() : start());
+  $('endBtn').addEventListener('click', end);
+  $('resetBtn').addEventListener('click', reset);
+
+  // 모드 전환
+  function syncMode(){
+    const m = mode();
+    $('presetBox').hidden = m !== 'preset';
+    $('annualBox').hidden = m !== 'annual';
+    $('hourlyBox').hidden = m !== 'hourly';
+    render();
+  }
+  document.querySelectorAll('input[name="mode"],input[name="preset"]').forEach(e => e.addEventListener('change', syncMode));
+  ['people','target','annual','hourly'].forEach(id => $(id).addEventListener('input', () => { s.warned = s.overed = false; render(); }));
+
+  // 체크리스트
+  function verdictInfo(){
+    const c = document.querySelectorAll('.chk:checked').length;
+    if (c === 0) return {c, t:'해당되는 항목을 체크해 보세요.'};
+    if (c === 1) return {c, t:'🙂 회의가 어느 정도 필요했어요. 다음엔 안건을 더 선명하게!'};
+    if (c === 2) return {c, t:'🤨 절반은 메일로 가능했을지도? 사전 자료 공유를 시도해 보세요.'};
+    return {c, t:'📧 이 회의는 메일(또는 메신저)로 충분했을 가능성이 높아요!'};
+  }
+  document.querySelectorAll('.chk').forEach(e => e.addEventListener('change', () => {
+    $('verdict').textContent = verdictInfo().t;
+    if (s.ended) drawCard();
+  }));
+
+  // 결과 카드
+  function shareText(){
+    const chick = s.cost / ITEMS[0].p;
+    return `🔥 우리 회의 ${fmtTime(s.elapsed)} 동안 ${won(s.cost)} 태웠습니다! (${cardPeople()}명 · 치킨 ${fmtN(chick)}마리) — 회의 몸값 시계`;
+  }
+  function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  async function drawCard(){
+    try { await Promise.all([document.fonts.load('900 60px "Noto Sans KR"'), document.fonts.load('700 40px "Noto Sans KR"'), document.fonts.load('500 30px "Noto Sans KR"'), document.fonts.load('100px "Share Tech Mono"')]); } catch(e){}
+    const c = $('card'), x = c.getContext('2d'), W = 1080;
+    const tgMin = cardTarget();
+    const over = s.elapsed > tgMin*60;
+    const col = over ? '#FF2E4D' : '#FF5A36';
+    x.clearRect(0,0,W,W);
+    x.shadowBlur = 0;
+    x.fillStyle = '#0E0F13'; x.fillRect(0,0,W,W);
+    const g = x.createRadialGradient(540,180,10,540,180,700);
+    g.addColorStop(0, over ? 'rgba(255,46,77,.5)' : 'rgba(255,90,54,.45)'); g.addColorStop(1,'rgba(14,15,19,0)');
+    x.fillStyle = g; x.fillRect(0,0,W,W);
+    x.strokeStyle = col; x.lineWidth = 6; rr(x,40,40,W-80,W-80,40); x.stroke();
+    x.textAlign = 'center';
+    x.fillStyle = '#C6FF3D'; x.font = '700 36px "Noto Sans KR"'; x.fillText('MEETING COST CERTIFICATE', 540, 135);
+    x.fillStyle = '#F3F4F6'; x.font = '900 82px "Noto Sans KR"'; x.fillText('회의 몸값 인증', 540, 235);
+    x.fillStyle = '#A8ADB8'; x.font = '500 34px "Noto Sans KR"'; x.fillText('이 회의에 타버린 비용', 540, 330);
+    let txt = won(s.cost), fs = 190;
+    x.font = `${fs}px "Share Tech Mono"`;
+    while (x.measureText(txt).width > 900 && fs > 60){ fs -= 6; x.font = `${fs}px "Share Tech Mono"`; }
+    x.fillStyle = col; x.shadowColor = col; x.shadowBlur = 40; x.fillText(txt, 540, 330 + fs*0.95); x.shadowBlur = 0;
+    // 통계
+    const y0 = 600, items = [['경과 시간', fmtTime(s.elapsed)], ['참석자', cardPeople() + '명'], ['목표 시간', tgMin + '분']];
+    items.forEach((it,i) => {
+      const cx = 200 + i*340;
+      x.fillStyle = '#1F222D'; rr(x,cx-140,y0,280,140,24); x.fill();
+      x.fillStyle = '#A8ADB8'; x.font = '500 28px "Noto Sans KR"'; x.fillText(it[0], cx, y0+48);
+      x.fillStyle = '#F3F4F6'; x.font = '58px "Share Tech Mono"'; x.fillText(it[1], cx, y0+112, 260);
+    });
+    x.fillStyle = '#F3F4F6'; x.font = '700 40px "Noto Sans KR"';
+    x.fillText(`🍗 치킨 ${fmtN(s.cost/ITEMS[0].p)}마리  ·  ☕ 커피 ${fmtN(s.cost/ITEMS[1].p)}잔`, 540, 840, 960);
+    x.fillStyle = over ? '#FF2E4D' : '#C6FF3D'; x.font = '700 34px "Noto Sans KR"';
+    const vi = verdictInfo();
+    const line = over ? `🚨 목표 시간 ${fmtTime(s.elapsed - tgMin*60)} 초과` : '✅ 목표 시간 내 종료';
+    x.fillText(line, 540, 900);
+    if (vi.c >= 2){ x.fillStyle = '#A8ADB8'; x.font = '500 30px "Noto Sans KR"'; x.fillText('📧 이 회의, 메일로 가능했을지도?', 540, 950); }
+    x.fillStyle = '#A8ADB8'; x.font = '500 26px "Noto Sans KR"';
+    x.fillText(`회의 몸값 시계 · ${new Date().getFullYear()}`, 540, 1002);
+  }
+  let toastTimer = null;
+  const toast = m => { $('toast').textContent = m; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').textContent = ''; }, 3000); };
+  const blob = () => new Promise(r => $('card').toBlob(r, 'image/png'));
+  $('saveBtn').addEventListener('click', async () => {
+    try {
+      const b = await blob();
+      if (!b) throw new Error('no blob');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = 'meeting-cost-card.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast('이미지를 저장했어요!');
+    } catch(e){ toast('이미지 저장에 실패했어요.'); }
+  });
+  $('shareBtn').addEventListener('click', async () => {
+    try {
+      const b = await blob();
+      const f = b ? new File([b], 'meeting-cost-card.png', {type:'image/png'}) : null;
+      if (f && navigator.canShare && navigator.canShare({files:[f]})) await navigator.share({files:[f], text:shareText()});
+      else if (navigator.share) await navigator.share({text:shareText()});
+      else { await navigator.clipboard.writeText(shareText()); toast('공유를 지원하지 않아 문구를 복사했어요.'); }
+    } catch(e){ if (e.name !== 'AbortError') toast('공유에 실패했어요. 이미지 저장을 이용해 주세요.'); }
+  });
+  $('copyBtn').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(shareText()); toast('문구를 복사했어요!'); }
+    catch(e){ toast('복사에 실패했어요.'); }
+  });
+
+  syncMode();
+})();
+</script>
+</body>
+</html>
