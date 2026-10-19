@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>점심시간 증발 계산기 – 내 점심 1시간, 몇 분 남았을까?</title>
+<meta name="description" content="메뉴 고민, 이동, 웨이팅, 주문 대기, 식사, 복귀까지. 점심시간 60분 중 진짜 내 자유시간과 증발률, 연간 사라지는 시간을 계산해 보세요.">
+<meta property="og:title" content="점심시간 증발 계산기 🍚⏳">
+<meta property="og:description" content="줄 서고, 고르고, 걷는 사이 내 점심 1시간이 몇 분 남았는지 알려드립니다.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FF8A3D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pri:#FF8A3D; --pri-d:#B84A08; --cream:#FFF6E8; --card:#FFFFFF;
+  --ink:#3B2A1E; --sub:#6F5A4A; --line:#F3DFC6; --free:#2A7D4F;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;
+  background-image:radial-gradient(circle at 10% 0%,#FFE3C4 0,transparent 40%),radial-gradient(circle at 100% 20%,#FFEBD2 0,transparent 35%);}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1,h2,h3{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;margin:0}
+header{text-align:center;padding:24px 8px 8px}
+header h1{font-size:clamp(2rem,8vw,2.8rem);color:var(--pri-d);line-height:1.2}
+header p{color:var(--sub);margin:10px 0 0;font-size:1rem}
+.card{background:var(--card);border-radius:24px;padding:20px;margin-top:18px;box-shadow:0 6px 0 var(--line);border:2px solid var(--line)}
+.card h2{font-size:1.4rem;margin-bottom:4px}
+.hint{color:var(--sub);font-size:.9rem;margin:0 0 14px}
+.row{padding:12px 0;border-top:1px dashed var(--line)}
+.row:first-of-type{border-top:0}
+.row label{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:6px}
+.row output{background:var(--cream);border-radius:999px;padding:2px 12px;color:var(--pri-d);font-weight:700;min-width:64px;text-align:center}
+input[type=range]{width:100%;height:32px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:12px;border-radius:99px;background:linear-gradient(90deg,var(--c) var(--p),#F3E4CF var(--p))}
+input[type=range]::-moz-range-track{height:12px;border-radius:99px;background:#F3E4CF}
+input[type=range]::-moz-range-progress{height:12px;border-radius:99px;background:var(--c)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:4px solid var(--c);margin-top:-8px;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:4px solid var(--c)}
+input[type=range]:focus-visible{outline:3px solid var(--pri-d);outline-offset:2px;border-radius:8px}
+.total-bar{display:flex;justify-content:space-between;font-size:.9rem;color:var(--sub);margin-top:8px;flex-wrap:wrap;gap:4px}
+.over{color:#B3261E;font-weight:700}
+.chart-box{display:flex;flex-direction:column;align-items:center;gap:14px}
+.donut{position:relative;width:min(260px,76vw);aspect-ratio:1}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut circle{transition:stroke-dasharray .4s,stroke-dashoffset .4s}
+.donut .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mid b{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;font-size:2.6rem;color:var(--free);line-height:1}
+.mid span{font-size:.85rem;color:var(--sub)}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;list-style:none;padding:0;margin:0;width:100%;font-size:.9rem}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px;flex:none}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;width:100%}
+.stat{background:var(--cream);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;font-size:1.7rem;color:var(--pri-d)}
+.stat span{font-size:.82rem;color:var(--sub)}
+.year{background:linear-gradient(135deg,#A63E08,#BF530F);color:#fff;border-radius:20px;padding:16px;text-align:center;margin-top:12px;width:100%}
+.year b{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;font-size:2rem}
+.year p{margin:0;font-size:.95rem}
+.type-card{background:linear-gradient(160deg,#FFF1DC,#FFD9B0);border-radius:24px;padding:24px 18px;text-align:center;border:3px solid var(--pri)}
+.type-card .em{font-size:3.5rem;line-height:1.1}
+.type-card h3{font-size:1.8rem;color:var(--pri-d);margin:6px 0}
+.type-card p{margin:6px 0;color:var(--ink)}
+.type-card .mini{font-size:.85rem;color:var(--sub);margin-top:10px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 18px;cursor:pointer;min-height:46px;flex:1;min-width:130px}
+.b-pri{background:var(--pri-d);color:#fff}
+.b-sec{background:#fff;color:var(--pri-d);border:2px solid var(--pri-d)}
+button:hover{filter:brightness(1.06)}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #3B2A1E;outline-offset:2px}
+.tips{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.tips li{display:flex;gap:12px;background:var(--cream);border-radius:16px;padding:12px 14px}
+.tips .ic{font-size:1.6rem}
+.tips strong{display:block}
+.tips span.d{font-size:.9rem;color:var(--sub)}
+.menu-out{text-align:center;font-family:'Jua','Noto Sans KR',sans-serif;font-size:1.8rem;color:var(--pri-d);min-height:3rem;margin:10px 0 2px}
+.menu-note{text-align:center;color:var(--sub);font-size:.9rem;margin:0}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;transition:.3s;opacity:0;z-index:9;font-size:.92rem;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%);opacity:1}
+footer{text-align:center;color:var(--sub);font-size:.8rem;padding:24px 0 8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+@media(min-width:600px){.legend{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🍚 점심시간 증발 계산기 ⏳</h1>
+  <p>줄 서고, 고르고, 걷는 사이 내 점심 1시간이 몇 분 남았는지 알려드립니다</p>
+</header>
+
+<main>
+<section class="card" aria-labelledby="h-in">
+  <h2 id="h-in">① 오늘 점심, 어디에 썼나요?</h2>
+  <p class="hint">슬라이더를 움직여 단계별 소요 시간(분)을 입력하세요.</p>
+  <div class="row"><label for="s0"><span>🤔 메뉴 고민</span><output id="o0" for="s0"></output></label><input type="range" id="s0" min="0" max="30" step="1" value="8"></div>
+  <div class="row"><label for="s1"><span>🚶 식당까지 이동</span><output id="o1" for="s1"></output></label><input type="range" id="s1" min="0" max="30" step="1" value="8"></div>
+  <div class="row"><label for="s2"><span>🧍 웨이팅</span><output id="o2" for="s2"></output></label><input type="range" id="s2" min="0" max="40" step="1" value="10"></div>
+  <div class="row"><label for="s3"><span>🧾 주문 후 음식 대기</span><output id="o3" for="s3"></output></label><input type="range" id="s3" min="0" max="30" step="1" value="7"></div>
+  <div class="row"><label for="s4"><span>🍽️ 식사</span><output id="o4" for="s4"></output></label><input type="range" id="s4" min="0" max="40" step="1" value="15"></div>
+  <div class="row"><label for="s5"><span>🏃 사무실 복귀</span><output id="o5" for="s5"></output></label><input type="range" id="s5" min="0" max="30" step="1" value="8"></div>
+  <div class="total-bar">
+    <span>총 사용: <b id="used">0</b>분 / 점심시간 <label for="lunchLen" style="display:inline">길이</label>
+      <select id="lunchLen" style="font:inherit;border-radius:8px;border:1px solid var(--line);padding:2px 6px">
+        <option value="60" selected>60분</option><option value="50">50분</option><option value="70">70분</option><option value="90">90분</option>
+      </select></span>
+    <span id="warn" role="status"></span>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <label for="days"><span>📅 주당 출근일</span><output id="od" for="days"></output></label>
+    <input type="range" id="days" min="1" max="7" step="1" value="5">
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-res">
+  <h2 id="h-res">② 내 점심 결과</h2>
+  <p class="hint">식사를 제외한 모든 시간을 '증발'로 계산하고, 남는 시간을 순수 자유시간으로 봅니다.</p>
+  <div class="chart-box">
+    <div class="donut" role="img" id="donutLabel">
+      <svg viewBox="0 0 120 120" id="svg" aria-hidden="true"></svg>
+      <div class="mid"><b id="freeBig">0분</b><span>순수 자유시간</span></div>
+    </div>
+    <ul class="legend" id="legend"></ul>
+    <div class="stats">
+      <div class="stat"><b id="evap">0%</b><span>점심 증발률</span></div>
+      <div class="stat"><b id="lost">0분</b><span>식사 외 사라진 시간</span></div>
+    </div>
+    <div class="year">
+      <p>1년(연 48주 기준) 동안 점심에 증발하는 시간은</p>
+      <b id="yearDays">0일</b>
+      <p id="yearSub"></p>
+    </div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-type">
+  <h2 id="h-type">③ 오늘의 점심 유형</h2>
+  <div class="type-card" id="typeCard">
+    <div class="em" id="tEm" aria-hidden="true">🍱</div>
+    <h3 id="tName"></h3>
+    <p id="tDesc"></p>
+    <p><b id="tNum"></b></p>
+    <p class="mini">점심시간 증발 계산기 · 나도 계산해보기</p>
+  </div>
+  <div class="btns">
+    <button class="b-pri" id="saveBtn" type="button">🖼️ 이미지로 저장</button>
+    <button class="b-sec" id="shareBtn" type="button">📤 공유하기</button>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-tip">
+  <h2 id="h-tip">④ 시간 아끼는 팁 3가지</h2>
+  <p class="hint">내 입력값에서 가장 많이 새는 구간 기준으로 골랐어요.</p>
+  <ul class="tips" id="tips"></ul>
+</section>
+
+<section class="card" aria-labelledby="h-menu">
+  <h2 id="h-menu">⑤ 오늘 뭐 먹지?</h2>
+  <p class="hint">웨이팅이 적은 메뉴 위주로 골라드려요.</p>
+  <div class="menu-out" id="menuOut" aria-live="polite">🎲 눌러보세요!</div>
+  <p class="menu-note" id="menuNote"></p>
+  <div class="btns"><button class="b-pri" id="menuBtn" type="button">🎲 랜덤 메뉴 추천</button></div>
+</section>
+</main>
+
+<footer>© <span id="yr"></span> 점심시간 증발 계산기 · 모든 계산은 내 브라우저에서만 이뤄져요</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var steps=[
+    {n:'메뉴 고민',e:'🤔',c:'#9B7BEA'},
+    {n:'이동',e:'🚶',c:'#4DA3E8'},
+    {n:'웨이팅',e:'🧍',c:'#E8574D'},
+    {n:'음식 대기',e:'🧾',c:'#F2B134'},
+    {n:'식사',e:'🍽️',c:'#4CAF7A'},
+    {n:'복귀',e:'🏃',c:'#E87FB0'}
+  ];
+  var FREE_C='#BFE8CF';
+  var $=function(id){return document.getElementById(id)};
+  var sl=steps.map(function(_,i){return $('s'+i)});
+  var lenSel=$('lunchLen'), daysEl=$('days');
+  $('yr').textContent=new Date().getFullYear();
+
+  // 범례
+  var lg=$('legend');
+  steps.forEach(function(s){lg.insertAdjacentHTML('beforeend','<li><i style="background:'+s.c+'"></i>'+s.e+' '+s.n+'</li>')});
+  lg.insertAdjacentHTML('beforeend','<li><i style="background:'+FREE_C+'"></i>✨ 자유시간</li>');
+
+  var state={};
+
+  function calc(){
+    var vals=sl.map(function(s){return +s.value});
+    var total=+lenSel.value;
+    var used=vals.reduce(function(a,b){return a+b},0);
+    var free=Math.max(0,total-used);
+    var lost=vals.reduce(function(a,v,i){return i===4?a:a+v},0); // 식사 제외
+    var evapMin=Math.min(total,lost);
+    var evap=Math.round(evapMin/total*100);
+    var days=+daysEl.value;
+    var yearMin=evapMin*days*48;
+    var yearDays=yearMin/60/24;
+    var yearHours=yearMin/60;
+    state={vals:vals,total:total,used:used,free:free,lost:lost,evap:evap,days:days,yearDays:yearDays,yearHours:yearHours};
+    return state;
+  }
+
+  function slideFill(){
+    sl.forEach(function(s,i){
+      var p=(s.value-s.min)/(s.max-s.min)*100;
+      s.style.setProperty('--p',p+'%');
+      s.style.setProperty('--c',steps[i].c);
+      s.setAttribute('aria-valuetext',s.value+'분');
+      $('o'+i).textContent=s.value+'분';
+    });
+    var dp=(daysEl.value-daysEl.min)/(daysEl.max-daysEl.min)*100;
+    daysEl.style.setProperty('--p',dp+'%');daysEl.style.setProperty('--c','#FF8A3D');
+    daysEl.setAttribute('aria-valuetext',daysEl.value+'일');
+    $('od').textContent=daysEl.value+'일';
+  }
+
+  function drawDonut(st){
+    var r=44,C=2*Math.PI*r,off=0,html='<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="#F3E4CF" stroke-width="18"/>';
+    var scale=Math.max(st.total,st.used);
+    var parts=st.vals.map(function(v,i){return{v:v,c:steps[i].c}});
+    parts.push({v:st.free,c:FREE_C});
+    parts.forEach(function(p){
+      if(p.v<=0)return;
+      var len=p.v/scale*C;
+      html+='<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="'+p.c+'" stroke-width="18" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'"/>';
+      off+=len;
+    });
+    $('svg').innerHTML=html;
+  }
+
+  function fmtYear(st){
+    var d=st.yearDays;
+    return d>=1?d.toFixed(1)+'일':Math.round(st.yearHours)+'시간';
+  }
+
+  function getType(st){
+    var v=st.vals,total=st.total;
+    var idx=[0,1,2,3,5];
+    if(st.free===0&&st.used>total) return {e:'🔥',n:'점심 오버런러',d:'점심시간을 이미 넘겼어요. 오후 첫 회의가 위험합니다!'};
+    if(st.evap<=35&&st.free>=10) return {e:'⚡',n:'효율 식사러',d:'동선도 결정도 빠른 당신. 점심시간을 제대로 누리는 고수예요.'};
+    var maxI=idx.reduce(function(a,b){return v[b]>v[a]?b:a},idx[0]);
+    var map={
+      0:{e:'🌀',n:'메뉴 방황러',d:'"아무거나"가 제일 어려운 사람. 메뉴 고민에 점심이 새고 있어요.'},
+      1:{e:'🥾',n:'점심 도보 여행자',d:'맛집을 찾아 멀리 떠나는 중. 걷다 보면 점심이 끝나요.'},
+      2:{e:'🧍',n:'웨이팅 순례자',d:'줄 서는 것도 맛의 일부? 대기 줄이 당신의 단골 코스예요.'},
+      3:{e:'⏲️',n:'주방 기다리미',d:'주문 후 음식이 나오기까지 인내심 수련 중이에요.'},
+      5:{e:'🏃',n:'복귀 스프린터',d:'돌아가는 길이 길어서 마지막은 늘 달리기입니다.'}
+    };
+    return map[maxI];
+  }
+
+  function getTips(st){
+    var v=st.vals;
+    var pool={
+      0:[['📝','메뉴 미리 정하기','전날 퇴근길이나 아침에 후보 2곳만 정해두면 고민 시간이 뚝 줄어요.'],['🎲','랜덤 룰렛 활용','결정 장애일 땐 아래 랜덤 추천 버튼에 맡겨보세요.']],
+      1:[['🏢','사내 식당·건물 내 식당','이동 시간이 큰 편이에요. 걸어서 5분 이내 식당을 단골로 만들어보세요.'],['☂️','가까운 곳 위주 리스트','날씨 나쁜 날용 근거리 식당 3곳을 저장해 두세요.']],
+      2:[['⏰','피크타임 피하기','11:30 전에 출발하거나 12:40 이후에 가면 줄이 확 줄어요.'],['📱','원격 줄서기·예약','캐치테이블·테이블링 같은 원격 줄서기를 활용해 보세요.']],
+      3:[['🍲','빨리 나오는 메뉴 선택','국밥, 덮밥, 김밥처럼 조리 시간이 짧은 메뉴가 유리해요.'],['📞','미리 주문하기','가능한 곳은 출발 전 전화·앱으로 선주문하세요.']],
+      5:[['🧳','복귀 여유 버퍼 두기','복귀 시간까지 계산해 식사 종료 시각을 정해두세요.'],['🍱','도시락 데이 만들기','주 1~2회 도시락이면 이동과 복귀 시간을 통째로 아낄 수 있어요.']]
+    };
+    var order=[0,1,2,3,5].sort(function(a,b){return v[b]-v[a]});
+    var out=[];
+    order.forEach(function(k){
+      if(out.length<3&&v[k]>0) out.push(pool[k][0]);
+    });
+    order.forEach(function(k){
+      if(out.length<3&&v[k]>0&&out.indexOf(pool[k][1])<0) out.push(pool[k][1]);
+    });
+    var fallback=[['🍱','도시락 데이','주 1회만 도시락을 싸도 한 달에 수 시간이 생겨요.'],['🏢','사내 식당 이용','줄은 있어도 이동·주문이 빨라 총합이 짧아요.'],['📝','메뉴 미리 정하기','전날 미리 정하면 고민이 사라져요.']];
+    fallback.forEach(function(f){ if(out.length<3&&!out.some(function(o){return o[1]===f[1]})) out.push(f); });
+    return out.slice(0,3);
+  }
+
+  function render(){
+    slideFill();
+    var st=calc();
+    $('used').textContent=st.used;
+    var w=$('warn');
+    if(st.used>st.total){w.textContent='⚠️ '+(st.used-st.total)+'분 초과!';w.className='over'}
+    else{w.textContent='남은 시간 '+st.free+'분';w.className=''}
+    drawDonut(st);
+    $('freeBig').textContent=st.free+'분';
+    $('evap').textContent=st.evap+'%';
+    $('lost').textContent=st.lost+'분';
+    $('donutLabel').setAttribute('aria-label','점심 '+st.total+'분 중 자유시간 '+st.free+'분, 증발률 '+st.evap+'퍼센트');
+    $('yearDays').textContent=fmtYear(st);
+    $('yearSub').textContent='약 '+Math.round(st.yearHours)+'시간 · 식사 시간 제외, 주 '+st.days+'일 기준';
+    var t=getType(st);state.type=t;
+    $('tEm').textContent=t.e;$('tName').textContent=t.n;$('tDesc').textContent=t.d;
+    $('tNum').textContent='점심 '+st.total+'분 중 자유시간 '+st.free+'분 · 증발률 '+st.evap+'% · 연 '+fmtYear(st)+' 증발';
+    $('tips').innerHTML=getTips(st).map(function(t){
+      return '<li><span class="ic" aria-hidden="true">'+t[0]+'</span><div><strong>'+t[1]+'</strong><span class="d">'+t[2]+'</span></div></li>';
+    }).join('');
+  }
+
+  sl.concat([lenSel,daysEl]).forEach(function(el){el.addEventListener('input',render);el.addEventListener('change',render)});
+
+  // 토스트
+  var tt;
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2200)}
+
+  // 이미지 저장 (canvas)
+  function wrap(ctx,text,x,y,maxW,lh){
+    var line='',lines=[];
+    text.split('').forEach(function(ch){
+      var test=line+ch;
+      if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=ch}else line=test;
+    });
+    lines.push(line);
+    lines.forEach(function(l,i){ctx.fillText(l,x,y+i*lh)});
+    return y+lines.length*lh;
+  }
+  function makeCanvas(){
+    var st=state,t=st.type;
+    var W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;
+    var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#FFF1DC');g.addColorStop(1,'#FFC794');
+    x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.textAlign='center';x.fillStyle='#B84A08';
+    x.font='700 44px "Jua","Noto Sans KR",sans-serif';
+    x.fillText('점심시간 증발 계산기',W/2,120,900);
+    x.font='220px sans-serif';x.fillText(t.e,W/2,400);
+    x.fillStyle='#3B2A1E';x.font='110px "Jua","Noto Sans KR",sans-serif';
+    x.fillText(t.n,W/2,560,980);
+    x.fillStyle='#6F5A4A';x.font='40px "Noto Sans KR",sans-serif';
+    wrap(x,t.d,W/2,640,860,56);
+    // 박스
+    x.fillStyle='#fff';
+    x.beginPath();
+    if(x.roundRect){x.roundRect(90,780,900,330,40)}else{x.rect(90,780,900,330)}
+    x.fill();
+    x.fillStyle='#3B2A1E';x.font='700 46px "Noto Sans KR",sans-serif';
+    x.fillText('점심 '+st.total+'분 중 자유시간',W/2,860,860);
+    x.fillStyle='#2A7D4F';x.font='140px "Jua","Noto Sans KR",sans-serif';
+    x.fillText(st.free+'분',W/2,1000,860);
+    x.fillStyle='#B84A08';x.font='700 44px "Noto Sans KR",sans-serif';
+    x.fillText('증발률 '+st.evap+'%  ·  1년에 '+fmtYear(st)+' 증발',W/2,1070,860);
+    x.fillStyle='#6F5A4A';x.font='36px "Noto Sans KR",sans-serif';
+    x.fillText('나의 점심은 얼마나 증발할까? 🍚⏳',W/2,1230,960);
+    x.fillText('© '+new Date().getFullYear()+' 점심시간 증발 계산기',W/2,1290,960);
+    return c;
+  }
+  function getBlob(){
+    var load=(document.fonts&&document.fonts.load)
+      ?Promise.all([document.fonts.load('110px "Jua"','점심'),document.fonts.load('700 44px "Noto Sans KR"','점심')]).catch(function(){})
+      :Promise.resolve();
+    return load.then(function(){
+      return new Promise(function(res){
+        try{makeCanvas().toBlob(res,'image/png')}catch(e){res(null)}
+      });
+    });
+  }
+  $('saveBtn').addEventListener('click',function(){
+    getBlob().then(function(b){
+      if(!b){toast('이미지 생성에 실패했어요');return}
+      var a=document.createElement('a');
+      var url=URL.createObjectURL(b);
+      a.href=url;a.download='lunch-type.png';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(function(){URL.revokeObjectURL(url)},1000);
+      toast('이미지가 저장됐어요 📥');
+    });
+  });
+  $('shareBtn').addEventListener('click',function(){
+    var st=state;
+    var text='나는 「'+st.type.n+'」 '+st.type.e+'\n점심 '+st.total+'분 중 자유시간 '+st.free+'분, 증발률 '+st.evap+'%!\n1년에 점심으로 '+fmtYear(st)+' 증발 😱';
+    getBlob().then(function(b){
+      var file=null;
+      try{file=b?new File([b],'lunch-type.png',{type:'image/png'}):null}catch(e){file=null}
+      var data={title:'점심시간 증발 계산기',text:text};
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})) data.files=[file];
+      else if(location.protocol.indexOf('http')===0) data.url=location.href;
+      if(navigator.share){
+        navigator.share(data).catch(function(e){if(e&&e.name!=='AbortError')copy(text)});
+      } else copy(text);
+    });
+  });
+  function copy(text){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){toast('결과 문구를 복사했어요 📋')},function(){toast('복사에 실패했어요')});
+    } else {
+      var ta=document.createElement('textarea');ta.value=text;
+      ta.setAttribute('readonly','');
+      ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');toast('결과 문구를 복사했어요 📋')}catch(e){toast('복사에 실패했어요')}
+      ta.remove();
+    }
+  }
+
+  // 랜덤 메뉴 (웨이팅 적은 유형 우선)
+  var menus=[
+    {n:'🍚 국밥',w:1,note:'회전이 빠르고 음식이 금방 나와요'},
+    {n:'🍛 카레덮밥',w:1,note:'조리 시간이 짧아요'},
+    {n:'🥪 샌드위치',w:1,note:'포장해서 바로 먹기 좋아요'},
+    {n:'🍙 김밥 & 라면',w:1,note:'분식집은 회전율 최고'},
+    {n:'🥗 샐러드',w:1,note:'주문 즉시 수령 가능'},
+    {n:'🍜 칼국수',w:2,note:'보통 무난한 대기'},
+    {n:'🍝 파스타',w:3,note:'점심 피크엔 줄이 길 수 있어요'},
+    {n:'🍣 초밥',w:3,note:'인기 맛집은 웨이팅 주의'},
+    {n:'🥩 고기 백반',w:2,note:'정식 위주로 빠르게'},
+    {n:'🍱 도시락',w:1,note:'이동·대기 시간을 통째로 절약'},
+    {n:'🍔 햄버거',w:1,note:'키오스크 주문으로 빠르게'},
+    {n:'🍲 쌀국수',w:2,note:'국물 메뉴, 보통 속도'}
+  ];
+  var last=-1;
+  $('menuBtn').addEventListener('click',function(){
+    var waitHeavy=state.vals[2]>=10||state.vals[3]>=10;
+    var pool=[];
+    menus.forEach(function(m,i){
+      var wt=waitHeavy?(m.w===1?6:m.w===2?2:0.5):(m.w===1?3:m.w===2?2:1);
+      for(var k=0;k<wt*2;k++)pool.push(i);
+    });
+    var pick;
+    do{pick=pool[Math.floor(Math.random()*pool.length)]}while(pick===last&&menus.length>1);
+    last=pick;
+    $('menuOut').textContent=menus[pick].n;
+    $('menuNote').textContent=menus[pick].note+(waitHeavy?' · 웨이팅이 긴 편이라 빠른 메뉴 위주로 골랐어요':'');
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
