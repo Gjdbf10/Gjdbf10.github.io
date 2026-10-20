@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>월급 vs 커피값 환산기 – 내 소비는 몇 분의 노동?</title>
+<meta name="description" content="월급을 입력하고 오늘 쓴 커피, 배달, 택시 비용이 내 노동 몇 분·몇 시간인지 바로 확인하세요. 입력값은 저장되지 않습니다.">
+<meta property="og:title" content="월급 vs 커피값 환산기">
+<meta property="og:description" content="아메리카노 1잔은 내 노동 몇 분? 소비를 '내 시간'으로 환산해 보세요.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#8B5E3C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown:#8B5E3C; --brown-d:#5E3D24; --cream:#FBF4E8; --paper:#FFFDF8; --latte:#EAD7BD; --ink:#3A2819; --muted:#6F5946; --accent:#C2410C;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;
+  background-image:radial-gradient(var(--latte) 1px,transparent 1px);background-size:22px 22px}
+h1,h2,h3{font-family:'Jua','Noto Sans KR',sans-serif;font-weight:400;margin:0}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+header{text-align:center;padding:28px 8px 12px}
+header h1{font-size:clamp(2rem,8vw,2.8rem);color:var(--brown-d);line-height:1.2}
+header p{margin:8px 0 0;color:var(--muted);font-size:1.02rem}
+.badge{display:inline-block;background:var(--brown);color:#fff;border-radius:99px;padding:4px 12px;font-size:.8rem;margin-top:12px}
+section.card{background:var(--paper);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 2px 0 var(--latte),0 8px 20px rgba(94,61,36,.08);border:1px solid var(--latte)}
+section.card h2{font-size:1.35rem;color:var(--brown-d);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+label,.lbl{display:block;font-weight:500;font-size:.9rem;margin-bottom:4px;color:var(--brown-d)}
+input,select{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--latte);border-radius:12px;background:#fff;color:var(--ink);min-height:44px}
+input:focus,select:focus,button:focus-visible{outline:3px solid #E9A86B;outline-offset:1px;border-color:var(--brown)}
+.seg{display:flex;gap:6px;background:var(--cream);padding:4px;border-radius:14px;border:1px solid var(--latte)}
+.seg button{flex:1}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;min-height:44px;padding:8px 14px}
+.seg button{background:transparent;color:var(--muted);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--brown);color:#fff}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--cream);border:2px solid var(--latte);color:var(--ink);font-weight:500}
+.chip:hover{border-color:var(--brown);background:#f5e8d2}
+.chip small{color:var(--muted);margin-left:4px}
+.add{display:grid;grid-template-columns:1fr 110px 90px;gap:8px;margin-top:14px}
+.add .name{grid-column:1}
+@media(max-width:480px){.add{grid-template-columns:1fr 1fr}.add .name{grid-column:1/-1}.add .price{grid-column:1/-1}.add button{grid-column:1/-1}}
+.primary{background:var(--brown);color:#fff;font-weight:700}
+.primary:hover{background:var(--brown-d)}
+.ghost{background:#fff;border:2px solid var(--brown);color:var(--brown-d);font-weight:700}
+.ghost:hover{background:var(--cream)}
+ul.items{list-style:none;margin:14px 0 0;padding:0}
+ul.items li{display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;padding:12px 0;border-bottom:2px dashed var(--latte)}
+ul.items li:last-child{border-bottom:0}
+.iname{font-weight:700}
+.imeta{font-size:.85rem;color:var(--muted)}
+.irow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+.irow select{width:auto;min-height:38px;padding:4px 8px}
+.irow input{width:72px;min-height:38px;padding:4px 8px}
+.del{background:transparent;color:var(--accent);font-weight:700;min-height:38px}
+.empty{color:var(--muted);text-align:center;padding:14px 0;margin:0}
+.err{color:#B91C1C;font-size:.88rem;min-height:1.2em;margin:6px 0 0}
+/* receipt */
+.receipt{font-family:'Nanum Gothic Coding',monospace;background:#fff;color:#2b1d12;padding:22px 20px;position:relative;
+  border-radius:4px;box-shadow:0 6px 18px rgba(94,61,36,.18);margin-top:6px}
+.receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:10px;
+  background:linear-gradient(135deg,transparent 75%,#fff 75%) 0 0/14px 10px,linear-gradient(225deg,transparent 75%,#fff 75%) 0 0/14px 10px}
+.receipt::before{top:-9px;transform:scaleY(-1);filter:drop-shadow(0 1px 0 var(--latte))}
+.receipt::after{bottom:-9px;filter:drop-shadow(0 1px 0 var(--latte))}
+.receipt h3{text-align:center;font-size:1.3rem;font-family:'Jua',sans-serif}
+.receipt .sub{text-align:center;font-size:.78rem;color:#7a6652;margin-bottom:10px}
+.line{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;padding:3px 0}
+.line.dash{border-top:2px dashed #cdb89b;margin-top:8px;padding-top:10px}
+.big{text-align:center;margin:12px 0 4px}
+.big .num{font-family:'Jua',sans-serif;font-size:2.3rem;color:var(--brown);line-height:1.2}
+.big .cap{font-size:.82rem;color:#7a6652}
+.quips{list-style:none;padding:0;margin:10px 0 0}
+.quips li{background:var(--cream);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:.88rem;font-family:'Noto Sans KR',sans-serif}
+.tabs{margin-bottom:10px}
+.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.actions button{flex:1;min-width:140px}
+.note{font-size:.82rem;color:var(--muted);margin-top:10px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--brown-d);color:#fff;padding:10px 18px;border-radius:99px;transition:.3s;opacity:0;z-index:9;max-width:90vw}
+#toast.show{transform:translateX(-50%);opacity:1}
+footer{text-align:center;font-size:.8rem;color:var(--muted);padding:24px 0 8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>☕ 월급 vs 커피값 환산기</h1>
+  <p>오늘 마신 아메리카노 3잔, 내 노동 몇 분어치일까? 💸</p>
+  <span class="badge">🔒 입력값은 저장되지 않아요</span>
+</header>
+
+<main>
+<section class="card" aria-labelledby="h-income">
+  <h2 id="h-income">① 내 몸값 설정</h2>
+  <div class="lbl" id="lbl-mode">입력 방식</div>
+  <div class="seg" role="group" aria-labelledby="lbl-mode" style="margin-bottom:12px">
+    <button type="button" id="mMonth" aria-pressed="true">월급</button>
+    <button type="button" id="mHour" aria-pressed="false">시급</button>
+  </div>
+  <div class="grid">
+    <div>
+      <label for="wage" id="wageLbl">월급 (원)</label>
+      <input id="wage" type="text" inputmode="numeric" value="3,000,000" autocomplete="off">
+    </div>
+    <div id="taxBox">
+      <label for="tax">세전 / 세후</label>
+      <select id="tax">
+        <option value="post">세후 (실수령액)</option>
+        <option value="pre">세전 (약 10% 공제 가정)</option>
+      </select>
+    </div>
+    <div>
+      <label for="hours">하루 근무시간</label>
+      <input id="hours" type="number" min="1" max="24" step="0.5" value="8">
+    </div>
+    <div>
+      <label for="days">월 근무일</label>
+      <input id="days" type="number" min="1" max="31" value="21">
+    </div>
+  </div>
+  <p class="note" id="wageInfo" aria-live="polite"></p>
+</section>
+
+<section class="card" aria-labelledby="h-items">
+  <h2 id="h-items">② 소비 담기</h2>
+  <div class="presets" id="presets" role="group" aria-label="소비 프리셋"></div>
+  <form class="add" id="addForm">
+    <div class="name"><label class="sr" for="cName">항목 이름</label><input id="cName" placeholder="직접 입력 (예: 마라탕)" maxlength="20"></div>
+    <div class="price"><label class="sr" for="cPrice">금액</label><input id="cPrice" type="text" inputmode="numeric" placeholder="금액(원)" autocomplete="off"></div>
+    <button class="primary" type="submit">+ 담기</button>
+  </form>
+  <p class="err" id="err" role="alert"></p>
+  <ul class="items" id="items"></ul>
+</section>
+
+<section class="card" aria-labelledby="h-res" id="resSec">
+  <h2 id="h-res">③ 영수증 결과</h2>
+  <div class="seg tabs" role="group" aria-label="기간 기준">
+    <button type="button" data-view="once" aria-pressed="false">1회 기준</button>
+    <button type="button" data-view="month" aria-pressed="true">한 달</button>
+    <button type="button" data-view="year" aria-pressed="false">1년</button>
+  </div>
+  <div class="receipt" id="receipt" aria-live="polite"></div>
+  <div class="actions">
+    <button class="primary" id="saveBtn" type="button">🖼 이미지로 저장</button>
+    <button class="ghost" id="shareBtn" type="button">🔗 공유하기</button>
+  </div>
+  <p class="note">이미지는 인스타 스토리 비율(9:16)로 저장돼요.</p>
+</section>
+</main>
+
+<footer>© <span id="yr"></span> 월급 vs 커피값 환산기 · 모든 계산은 내 브라우저 안에서만 이뤄져요</footer>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString('ko-KR');
+const nf=n=>Number.isInteger(n)?fmt(n):(Math.round(n*10)/10).toLocaleString('ko-KR');
+const num=v=>parseInt(String(v).replace(/[^\d]/g,''),10)||0;
+$('#yr').textContent=new Date().getFullYear();
+
+const PRESETS=[
+ {e:'☕',n:'아메리카노',p:4500,f:'d'},
+ {e:'🛵',n:'배달음식',p:18000,f:'w'},
+ {e:'🚕',n:'택시',p:12000,f:'w'},
+ {e:'🏪',n:'편의점',p:5000,f:'d'},
+ {e:'📺',n:'구독 서비스',p:14500,f:'m'},
+ {e:'🍻',n:'술자리',p:35000,f:'w'},
+ {e:'🍱',n:'점심 외식',p:11000,f:'d'},
+ {e:'🧋',n:'디저트·음료',p:6500,f:'w'}
+];
+let state={mode:'month',view:'month',items:[]};
+let idSeq=0;
+
+function params(){
+  const wage=num($('#wage').value);
+  const hours=Math.max(parseFloat($('#hours').value)||0,0);
+  const days=Math.max(parseFloat($('#days').value)||0,0);
+  let net=wage;
+  if(state.mode==='month'){
+    if($('#tax').value==='pre') net=wage*0.9;
+  }
+  let hourly;
+  if(state.mode==='month') hourly=(hours*days)>0?net/(hours*days):0;
+  else hourly=wage;
+  return {wage,hours,days,hourly,perMin:hourly/60};
+}
+function monthMult(f,days){return f==='d'?days:f==='w'?4.3:f==='m'?1:0}
+function dur(min){
+  if(!isFinite(min)||min<=0) return '0분';
+  const tot=Math.round(min);
+  const h=Math.floor(tot/60), m=tot-h*60;
+  if(h===0) return m+'분';
+  if(h>=100) return fmt(h)+'시간';
+  return h+'시간'+(m?' '+m+'분':'');
+}
+function workdays(min,p){return p.hours>0?min/60/p.hours:0}
+
+function renderPresets(){
+  $('#presets').innerHTML=PRESETS.map((x,i)=>`<button type="button" class="chip" data-i="${i}">${x.e} ${x.n}<small>${fmt(x.p)}원</small></button>`).join('');
+}
+function addItem(name,price,freq){
+  state.items.push({id:'i'+(++idSeq),name,price,freq:freq||'d',cnt:1});
+  render();
+}
+function render(){
+  const p=params();
+  $('#wageLbl').textContent=state.mode==='month'?'월급 (원)':'시급 (원)';
+  $('#taxBox').style.display=state.mode==='month'?'':'none';
+  $('#mMonth').setAttribute('aria-pressed',String(state.mode==='month'));
+  $('#mHour').setAttribute('aria-pressed',String(state.mode==='hour'));
+  $('#wageInfo').textContent=p.hourly>0?`👉 내 1시간은 약 ${fmt(p.hourly)}원, 1분은 약 ${fmt(p.perMin)}원이에요.`:'금액과 근무시간을 입력해 주세요.';
+  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===state.view)));
+
+  const ul=$('#items');
+  if(!state.items.length) ul.innerHTML='<li class="empty" style="display:block">위 버튼을 눌러 오늘의 소비를 담아보세요 ☝️</li>';
+  else ul.innerHTML=state.items.map(it=>{
+    const min=p.perMin>0?it.price/p.perMin:0;
+    return `<li data-id="${it.id}">
+      <div><div class="iname">${esc(it.name)}</div><div class="imeta">${fmt(it.price)}원 → 노동 <b>${dur(min)}</b></div></div>
+      <button class="del" type="button" data-del="${it.id}" aria-label="${esc(it.name)} 삭제">삭제 ✕</button>
+      <div class="irow">
+        <label class="sr" for="c${it.id}">${esc(it.name)} 반복 횟수</label>
+        <input id="c${it.id}" type="number" min="1" max="99" value="${it.cnt}" data-cnt="${it.id}">
+        <span>회 /</span>
+        <select data-freq="${it.id}" aria-label="${esc(it.name)} 주기">
+          <option value="d"${it.freq==='d'?' selected':''}>하루</option>
+          <option value="w"${it.freq==='w'?' selected':''}>일주일</option>
+          <option value="m"${it.freq==='m'?' selected':''}>한 달</option>
+        </select>
+      </div></li>`}).join('');
+  renderReceipt(p);
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+let last=null;
+function compute(){
+  const p=params();
+  const v=state.view;
+  const rows=state.items.map(it=>{
+    const mm=monthMult(it.freq,p.days)*it.cnt;
+    const mult=v==='once'?it.cnt:v==='month'?mm:mm*12;
+    const total=it.price*mult;
+    return {it,mult,total,min:p.perMin>0?total/p.perMin:0};
+  });
+  const total=rows.reduce((a,r)=>a+r.total,0);
+  const min=rows.reduce((a,r)=>a+r.min,0);
+  return {p,rows,total,min,v};
+}
+function quips(c){
+  const {p,rows,min,total,v}=c;
+  const q=[];
+  if(!rows.length||p.perMin<=0) return q;
+  const wd=workdays(min,p);
+  const label=v==='once'?'이번 소비':v==='month'?'이번 달 소비':'1년 소비';
+  if(wd>=1) q.push(`📅 ${label} = 약 ${wd.toFixed(1)}일치 출근`);
+  else q.push(`⏱ ${label} = 하루 근무의 ${Math.round(wd*100)}%`);
+  const top=rows.slice().sort((a,b)=>b.min-a.min)[0];
+  if(top){
+    const twd=workdays(top.min,p);
+    q.push(twd>=1?`🏆 가장 큰 지출 '${top.it.name}' = ${twd.toFixed(1)}일치 출근`:`🏆 가장 큰 지출 '${top.it.name}' = ${dur(top.min)} 노동`);
+  }
+  const coffee=rows.find(r=>/아메리카노|커피/.test(r.it.name));
+  if(coffee&&v!=='once') q.push(`☕ ${coffee.it.name}만 ${nf(coffee.mult)}번, 노동 ${dur(coffee.min)}`);
+  if(v==='year'&&p.hours>0){const weeks=min/60/(p.hours*5);if(weeks>=1)q.push(`🏖 1년 소비를 벌려면 약 ${weeks.toFixed(1)}주를 꼬박 일해야 해요`)}
+  if(v!=='once'&&p.wage>0&&state.mode==='month'){
+    const pct=(v==='month'?total/p.wage:total/(p.wage*12))*100;
+    q.push(`💰 ${v==='month'?'월급':'연봉'}의 ${pct.toFixed(1)}%가 여기에 쓰여요`);
+  }
+  return q;
+}
+function renderReceipt(p){
+  const c=compute(); last=c;
+  const vt={once:'1회 기준',month:'한 달 누적',year:'1년 누적'}[c.v];
+  const d=new Date();
+  let h=`<h3>☕ 노동 영수증</h3><div class="sub">${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} · ${vt}</div>`;
+  if(!c.rows.length||p.perMin<=0){
+    h+='<p class="empty" style="font-family:\'Noto Sans KR\',sans-serif">소비를 담고 월급을 입력하면<br>여기에 영수증이 출력돼요 🧾</p>';
+  }else{
+    h+=c.rows.map(r=>`<div class="line"><span>${esc(r.it.name)} ×${nf(r.mult)}</span><span>${dur(r.min)}</span></div>`).join('');
+    h+=`<div class="line dash"><span>총 지출</span><span>${fmt(c.total)}원</span></div>`;
+    h+=`<div class="big"><div class="cap">내 노동으로 환산하면</div><div class="num">${dur(c.min)}</div><div class="cap">(${(c.min/60).toFixed(1)}시간)</div></div>`;
+    h+=`<ul class="quips">${quips(c).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  }
+  $('#receipt').innerHTML=h;
+}
+
+/* events */
+$('#presets').addEventListener('click',e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  const x=PRESETS[b.dataset.i]; addItem(x.e+' '+x.n,x.p,x.f);
+  toast(`${x.n} 담았어요`);
+});
+$('#addForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const n=$('#cName').value.trim(), pr=num($('#cPrice').value);
+  if(!n||pr<=0){$('#err').textContent='항목 이름과 1원 이상의 금액을 입력해 주세요.';return}
+  $('#err').textContent='';
+  addItem(n,pr,'d'); $('#cName').value=''; $('#cPrice').value='';
+  toast(`${n} 담았어요`);
+});
+function reformat(el){
+  const pos=el.selectionStart;
+  const digitsBefore=pos==null?null:el.value.slice(0,pos).replace(/\D/g,'').length;
+  const v=num(el.value);
+  el.value=v?fmt(v):'';
+  if(digitsBefore!=null&&el===document.activeElement){
+    let cnt=0,i=0;
+    while(i<el.value.length&&cnt<digitsBefore){if(/\d/.test(el.value[i]))cnt++;i++}
+    try{el.setSelectionRange(i,i)}catch(_){}
+  }
+}
+['wage','cPrice'].forEach(id=>$('#'+id).addEventListener('input',e=>{
+  reformat(e.target); if(id==='wage')render();
+}));
+['hours','days','tax'].forEach(id=>{
+  $('#'+id).addEventListener('input',render);
+  $('#'+id).addEventListener('change',render);
+});
+$('#mMonth').onclick=()=>{if(state.mode!=='month'){state.mode='month';$('#wage').value='3,000,000'}render()};
+$('#mHour').onclick=()=>{if(state.mode!=='hour'){state.mode='hour';$('#wage').value='12,000'}render()};
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;render()});
+$('#items').addEventListener('click',e=>{
+  const d=e.target.closest('[data-del]'); if(!d) return;
+  state.items=state.items.filter(i=>i.id!==d.dataset.del); render();
+  const nb=document.querySelector('#items .del');
+  if(nb) nb.focus(); else $('#cName').focus();
+});
+$('#items').addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.cnt){
+    const it=state.items.find(i=>i.id===t.dataset.cnt);
+    if(it){it.cnt=Math.min(99,Math.max(1,parseInt(t.value,10)||1));t.value=it.cnt;renderReceipt(params())}
+  }
+  if(t.dataset.freq){
+    const it=state.items.find(i=>i.id===t.dataset.freq);
+    if(it){it.freq=t.value;renderReceipt(params())}
+  }
+});
+
+/* toast */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800)}
+
+/* image (canvas 1080x1920) */
+function wrap(ctx,text,x,y,maxW,lh){
+  let line='',yy=y;
+  for(const ch of text){
+    const t=line+ch;
+    if(ctx.measureText(t).width>maxW&&line){ctx.fillText(line,x,yy);line=ch;yy+=lh}else line=t;
+  }
+  ctx.fillText(line,x,yy);return yy+lh;
+}
+function makeCanvas(){
+  const c=document.createElement('canvas');c.width=1080;c.height=1920;
+  const g=c.getContext('2d');
+  const bg=g.createLinearGradient(0,0,0,1920);bg.addColorStop(0,'#8B5E3C');bg.addColorStop(1,'#5E3D24');
+  g.fillStyle=bg;g.fillRect(0,0,1080,1920);
+  const data=compute();
+  const X=90,W=900,top=250;
+  const rows=data.rows.slice(0,7);
+  const qs=quips(data).slice(0,4);
+  const H=Math.min(1380,560+rows.length*64+qs.length*110);
+  g.fillStyle='#FFFDF8';g.fillRect(X,top,W,H);
+  g.fillStyle='#FFFDF8';
+  for(let i=0;i<W;i+=30){g.beginPath();g.moveTo(X+i,top+H);g.lineTo(X+i+15,top+H+22);g.lineTo(X+i+30,top+H);g.fill()}
+  g.textAlign='center';g.fillStyle='#F6E7D0';g.font='700 46px "Jua","Noto Sans KR",sans-serif';
+  g.fillText('☕ 월급 vs 커피값 환산기',540,150);
+  g.fillStyle='#3A2819';g.font='64px "Jua","Noto Sans KR",sans-serif';
+  g.fillText('노동 영수증',540,top+95);
+  g.font='28px "Noto Sans KR",sans-serif';g.fillStyle='#7a6652';
+  g.fillText({once:'1회 기준',month:'한 달 누적',year:'1년 누적'}[data.v],540,top+140);
+  let y=top+200;
+  g.textAlign='left';g.font='32px "Nanum Gothic Coding","Noto Sans KR",monospace';g.fillStyle='#2b1d12';
+  if(!rows.length||data.p.perMin<=0){
+    g.textAlign='center';g.fillText('소비를 담아 보세요!',540,y+60);
+  }else{
+    rows.forEach(r=>{
+      g.textAlign='left';g.fillText((r.it.name+' ×'+nf(r.mult)).slice(0,16),X+40,y);
+      g.textAlign='right';g.fillText(dur(r.min),X+W-40,y);y+=64;
+    });
+    g.strokeStyle='#cdb89b';g.setLineDash([12,10]);g.lineWidth=3;
+    g.beginPath();g.moveTo(X+40,y-20);g.lineTo(X+W-40,y-20);g.stroke();g.setLineDash([]);
+    y+=40;g.textAlign='center';g.fillStyle='#7a6652';g.font='28px "Noto Sans KR",sans-serif';
+    g.fillText(`총 ${fmt(data.total)}원, 내 노동으로 환산하면`,540,y);y+=90;
+    g.fillStyle='#8B5E3C';g.font='96px "Jua","Noto Sans KR",sans-serif';
+    g.fillText(dur(data.min),540,y);y+=70;
+    g.font='30px "Noto Sans KR",sans-serif';g.fillStyle='#3A2819';
+    qs.forEach(q=>{g.textAlign='center';y=wrap(g,q,540,y+10,780,42)+20});
+  }
+  g.textAlign='center';g.fillStyle='#F6E7D0';g.font='34px "Jua","Noto Sans KR",sans-serif';
+  g.fillText('내 커피 한 잔은 몇 분의 노동일까?',540,1760);
+  g.font='26px "Noto Sans KR",sans-serif';g.fillStyle='#EAD7BD';
+  g.fillText('월급 vs 커피값 환산기 · '+new Date().getFullYear(),540,1810);
+  return c;
+}
+$('#saveBtn').onclick=async()=>{
+  if(!state.items.length){toast('먼저 소비를 담아 주세요');return}
+  try{await document.fonts.ready}catch(e){}
+  const c=makeCanvas();
+  c.toBlob(b=>{
+    if(!b){toast('이미지 생성에 실패했어요');return}
+    const a=document.createElement('a');const u=URL.createObjectURL(b);a.href=u;a.download='노동영수증.png';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);
+    toast('이미지를 저장했어요 🖼');
+  },'image/png');
+};
+$('#shareBtn').onclick=async()=>{
+  const c=last;
+  const text=c&&c.rows.length&&c.p.perMin>0
+    ?`내 소비 ${fmt(c.total)}원 = 노동 ${dur(c.min)}어치! ☕ 월급 vs 커피값 환산기`
+    :'내 소비는 몇 분의 노동일까? ☕ 월급 vs 커피값 환산기';
+  const url=location.href.split('#')[0];
+  try{
+    if(navigator.share){await navigator.share({title:document.title,text,url});return}
+    await navigator.clipboard.writeText(text+' '+url);toast('문구와 링크를 복사했어요 📋');
+  }catch(e){
+    if(e&&e.name==='AbortError')return;
+    toast('공유에 실패했어요. 이미지 저장을 이용해 주세요');
+  }
+};
+
+renderPresets();render();
+})();
+</script>
+</body>
+</html>
