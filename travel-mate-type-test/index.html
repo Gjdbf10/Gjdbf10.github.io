@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>여행 메이트 궁합 테스트 | 같이 여행 가면 우정 끝날까?</title>
+<meta name="description" content="10문항으로 알아보는 나의 여행 빌런 유형! 12가지 유형 카드를 스토리 이미지로 저장하고, 친구와 궁합·모임 역할 분담까지 확인하세요.">
+<meta property="og:title" content="여행 메이트 궁합 테스트 ✈️💥">
+<meta property="og:description" content="같이 여행 가면 우정 끝날까? 10문항으로 나의 여행 유형을 확인하고 친구와 궁합을 비교해 보세요.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2EC4B6">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#2EC4B6; --mint-d:#1B8F84; --mint-l:#DFF8F5;
+  --coral:#FF6B6B; --coral-l:#FFE3DF; --ink:#12343B; --sun:#FFD166;
+  --bg:#F2FCFB; --card:#fff;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:'Noto Sans KR',system-ui,sans-serif; color:var(--ink); line-height:1.6;
+  background:
+    radial-gradient(circle at 12% 8%, #fff 0 60px, transparent 61px),
+    radial-gradient(circle at 88% 14%, #fff 0 40px, transparent 41px),
+    linear-gradient(180deg,#CDF3F0 0%, var(--bg) 40%, #FFF4EE 100%);
+  background-attachment:fixed; min-height:100vh; display:flex; flex-direction:column;
+}
+h1,h2,h3,h4,.jua{font-family:'Jua','Noto Sans KR',sans-serif; font-weight:400; line-height:1.3}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.wrap{width:100%; max-width:640px; margin:0 auto; padding:0 16px}
+header.top{padding:14px 0 6px}
+.brand{display:flex; align-items:center; gap:8px; font-family:'Jua'; font-size:1.25rem}
+.brand span.logo{display:inline-grid; place-items:center; width:38px; height:38px; background:var(--mint); border:3px solid var(--ink); border-radius:50%; box-shadow:2px 2px 0 var(--ink)}
+nav.tabs{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:12px}
+nav.tabs button{
+  background:#fff; border:2.5px solid var(--ink); border-radius:999px; padding:7px 4px; font-weight:700; font-size:.9rem; min-height:44px;
+}
+nav.tabs button[aria-current="page"]{background:var(--ink); color:#fff}
+main{flex:1; padding:14px 0 28px}
+section[hidden]{display:none}
+.card{background:var(--card); border:3px solid var(--ink); border-radius:24px; box-shadow:5px 5px 0 var(--ink); padding:20px}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:48px; padding:10px 20px;
+  background:var(--mint); color:var(--ink); border:3px solid var(--ink); border-radius:999px; font-weight:700; font-size:1rem;
+  box-shadow:3px 3px 0 var(--ink); transition:transform .1s, box-shadow .1s;
+}
+.btn:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+.btn:disabled{opacity:.7; cursor:wait}
+.btn.coral{background:var(--coral)}
+.btn.white{background:#fff}
+.btn.sm{min-height:40px; padding:6px 14px; font-size:.9rem}
+.btn.block{width:100%}
+.row{display:flex; flex-wrap:wrap; gap:10px}
+.muted{color:#3d5a60; font-size:.92rem}
+/* hero */
+.hero{text-align:center; position:relative; overflow:hidden}
+.hero .floaties{font-size:2rem; letter-spacing:6px}
+.hero h1{font-size:clamp(1.9rem,8vw,2.6rem); margin:8px 0}
+.hero h1 em{font-style:normal; background:linear-gradient(transparent 60%, var(--sun) 60%)}
+.chips{display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:14px 0 18px}
+.chip{background:var(--mint-l); border:2px solid var(--ink); border-radius:999px; padding:3px 12px; font-size:.85rem; font-weight:700}
+.banner{background:var(--coral-l); border:3px dashed var(--coral); border-radius:18px; padding:12px 14px; margin-bottom:14px}
+.stack>*+*{margin-top:14px}
+.teasers{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:18px}
+.teasers div{background:#fff; border:2px solid var(--ink); border-radius:16px; padding:8px 4px; font-size:.8rem; font-weight:700}
+.teasers b{display:block; font-size:1.6rem}
+/* quiz */
+.progress{height:16px; background:#fff; border:3px solid var(--ink); border-radius:999px; overflow:hidden}
+.progress i{display:block; height:100%; background:repeating-linear-gradient(45deg,var(--coral) 0 10px,#ff8c8c 10px 20px); transition:width .3s}
+.qmeta{display:flex; justify-content:space-between; align-items:center; margin:8px 2px; font-weight:700}
+.qtag{display:inline-block; background:var(--sun); border:2px solid var(--ink); border-radius:999px; padding:1px 12px; font-size:.82rem}
+.q h2{font-size:1.45rem; margin:10px 0 16px}
+.opts{display:grid; gap:10px}
+.opt{
+  text-align:left; background:#fff; border:3px solid var(--ink); border-radius:18px; padding:13px 16px; min-height:56px; font-weight:500;
+  display:flex; gap:10px; align-items:flex-start; transition:background .15s, transform .1s;
+}
+.opt b{flex:none; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:var(--mint); border:2px solid var(--ink); font-size:.85rem}
+.opt:hover{background:var(--mint-l)}
+.opt[aria-pressed="true"]{background:var(--sun); transform:scale(.99)}
+/* type card */
+.tcard{background:#fff; border:3px solid var(--ink); border-radius:28px; box-shadow:6px 6px 0 var(--ink); overflow:hidden; text-align:center}
+.tcard .top{background:var(--tc); padding:18px 16px 56px; border-bottom:3px solid var(--ink); position:relative}
+.kicker{display:inline-block; margin:0; background:#fff; border:2px solid var(--ink); border-radius:999px; padding:1px 14px; font-weight:700; font-size:.85rem}
+.sticker{
+  width:128px; height:128px; margin:-62px auto 0; display:grid; place-items:center; font-size:4.4rem;
+  background:#fff; border:4px solid var(--ink); border-radius:50%; box-shadow:4px 4px 0 var(--ink); position:relative;
+}
+.tcard .body{padding:10px 18px 20px}
+.tcard h2{font-size:1.75rem; margin:10px 0 4px}
+.tcard .line{margin:0 0 10px; font-weight:500}
+.say{background:var(--coral-l); border:2px dashed var(--coral); border-radius:14px; padding:8px 12px; font-weight:700; margin:10px 0}
+.meter{margin:12px 0; text-align:left; font-weight:700; font-size:.9rem}
+.meter .bar{height:14px; background:#eee; border:2px solid var(--ink); border-radius:999px; overflow:hidden; margin-top:4px}
+.meter .bar i{display:block; height:100%; background:linear-gradient(90deg,var(--sun),var(--coral))}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.pair div{border:2.5px solid var(--ink); border-radius:16px; padding:8px 6px; font-size:.85rem}
+.pair .good{background:var(--mint-l)} .pair .bad{background:var(--coral-l)}
+.pair b{display:block; font-family:'Jua'; font-weight:400; font-size:1.02rem}
+.role{margin:12px 0 0; font-size:.9rem}
+.actions{display:grid; gap:10px; margin-top:16px}
+.hidden-type{font-size:.9rem; margin-top:10px}
+/* compare */
+.field{display:grid; gap:4px; margin-bottom:10px; min-width:0}
+.field label{font-weight:700}
+select{
+  font:inherit; padding:11px 12px; border:3px solid var(--ink); border-radius:14px; background:#fff; color:var(--ink); min-height:48px;
+  width:100%; min-width:0; text-overflow:ellipsis;
+}
+.vs{display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:8px; align-items:end}
+.vs .x{font-family:'Jua'; font-size:1.5rem; padding-bottom:10px}
+.score{text-align:center; margin:14px 0}
+.score .num{font-family:'Jua'; font-size:4.2rem; line-height:1; color:var(--coral); -webkit-text-stroke:2px var(--ink); paint-order:stroke fill}
+.score .lbl{font-family:'Jua'; font-size:1.3rem}
+.duo{display:flex; justify-content:center; gap:10px; font-size:2.6rem}
+.fight{background:#fff8e6; border:2.5px solid var(--ink); border-radius:16px; padding:10px 14px; margin-top:10px}
+.fight h4{margin:0 0 4px; font-size:1.05rem}
+.fight p{margin:2px 0; font-size:.92rem}
+.tip{background:var(--mint-l); border:2.5px solid var(--ink); border-radius:16px; padding:10px 14px; margin-top:10px; font-weight:500}
+/* gallery / group */
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.gbtn{
+  background:var(--tc,#fff); border:3px solid var(--ink); border-radius:20px; padding:10px 4px; text-align:center; box-shadow:3px 3px 0 var(--ink);
+  font-weight:700; font-size:.78rem; line-height:1.3; min-height:92px;
+}
+.gbtn span{display:block; font-size:2rem}
+.gbtn:hover{transform:translateY(-2px)}
+.members{display:flex; flex-wrap:wrap; gap:8px; min-height:44px; margin:10px 0}
+.member{display:inline-flex; align-items:center; gap:4px; background:var(--tc); border:2.5px solid var(--ink); border-radius:999px; padding:3px 6px 3px 12px; font-weight:700; font-size:.85rem}
+.member button{background:#fff; border-radius:50%; width:32px; height:32px; line-height:1; border:2px solid var(--ink); font-weight:700}
+table{width:100%; border-collapse:collapse; font-size:.9rem}
+th,td{border:2px solid var(--ink); padding:7px 8px; text-align:left}
+th{background:var(--mint-l)}
+ul.clean{padding-left:18px; margin:6px 0}
+h2.sec{font-size:1.5rem; margin:0 0 4px}
+/* dialog + toast */
+dialog{border:3px solid var(--ink); border-radius:24px; padding:16px; max-width:min(92vw,460px); width:100%; box-shadow:6px 6px 0 var(--ink); background:var(--bg); color:var(--ink)}
+dialog::backdrop{background:rgba(18,52,59,.55)}
+dialog img{width:100%; max-height:62vh; object-fit:contain; border:3px solid var(--ink); border-radius:16px; background:#fff}
+.toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(30px); opacity:0; background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; transition:.25s; z-index:50; pointer-events:none; max-width:90vw; text-align:center}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+footer{text-align:center; padding:16px; font-size:.82rem; color:#3d5a60}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+@media (min-width:520px){.actions.two{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="logo" aria-hidden="true">✈️</span> 여행 메이트 궁합 테스트</div>
+    <nav class="tabs" aria-label="주요 메뉴">
+      <button data-nav="home">테스트</button>
+      <button data-nav="compare">궁합</button>
+      <button data-nav="group">모임</button>
+      <button data-nav="gallery">갤러리</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="home" aria-labelledby="homeTitle">
+    <div id="friendBanner" class="banner" hidden></div>
+    <div class="card hero">
+      <div class="floaties" aria-hidden="true">🧳🌴📸🍜</div>
+      <p class="chip" style="display:inline-block;margin:6px 0 0">같이 여행 가면 싸울 확률 ???%</p>
+      <h1 id="homeTitle" tabindex="-1">같이 여행 가면<br><em>우정 끝날까?</em></h1>
+      <p>숙소, 일정, 맛집 줄 서기, 사진 찍어주기까지. 실제 여행에서 갈리는 10가지 상황에 답하면 나의 <b>여행 빌런 유형</b>이 한 장의 카드로 나와요.</p>
+      <div class="chips"><span class="chip">📝 10문항</span><span class="chip">⏱️ 약 2분</span><span class="chip">🎴 12가지 유형</span><span class="chip">🔒 로그인 없음</span></div>
+      <div class="stack">
+        <button class="btn coral block" id="startBtn">테스트 시작하기 ✈️</button>
+        <button class="btn white block" id="savedBtn" hidden>내 저장된 결과 보기</button>
+      </div>
+      <div class="teasers" aria-hidden="true">
+        <div><b>📋</b>일정표 장군</div><div><b>🧭</b>방랑자</div><div><b>🍜</b>미식가</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" hidden aria-labelledby="qTitle">
+    <div class="qmeta"><span class="qtag" id="qTag"></span><span id="qCount" aria-live="polite"></span></div>
+    <div class="progress" role="progressbar" aria-label="테스트 진행률" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="prog"><i style="width:0"></i></div>
+    <div class="card q" style="margin-top:14px">
+      <h2 id="qTitle" tabindex="-1"></h2>
+      <div class="opts" id="opts"></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn white sm" id="prevBtn">← 이전 질문</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" hidden aria-labelledby="resTitle">
+    <h2 id="resTitle" class="sec" tabindex="-1" style="text-align:center">🎉 나의 여행 유형은?</h2>
+    <div id="resCard"></div>
+    <div class="actions two">
+      <button class="btn coral" id="saveImg">🖼️ 스토리 이미지로 저장</button>
+      <button class="btn" id="shareLink">🔗 링크 공유하기</button>
+      <button class="btn white" id="goCompare">💞 친구와 궁합 보기</button>
+      <button class="btn white" id="retry">🔄 다시 하기</button>
+    </div>
+    <div id="resFriend"></div>
+    <p class="muted" style="text-align:center"><button class="btn white sm" id="toGallery">다른 유형 미리보기</button></p>
+  </section>
+
+  <!-- COMPARE -->
+  <section id="compare" hidden aria-labelledby="cmpTitle">
+    <div class="card">
+      <h2 id="cmpTitle" class="sec" tabindex="-1">💞 우리 궁합 점수</h2>
+      <p class="muted">내 유형과 친구 유형을 고르면 궁합 점수와 싸울 포인트를 알려드려요. 친구에게 받은 링크를 열면 자동으로 채워져요.</p>
+      <div class="vs">
+        <div class="field"><label for="selA">나의 유형</label><select id="selA"></select></div>
+        <div class="x" aria-hidden="true">×</div>
+        <div class="field"><label for="selB">친구의 유형</label><select id="selB"></select></div>
+      </div>
+      <div id="cmpOut" aria-live="polite"></div>
+    </div>
+    <p class="muted" style="text-align:center;margin-top:12px">내 유형을 모른다면? <button class="btn sm white" data-nav="home">테스트 하러 가기</button></p>
+  </section>
+
+  <!-- GROUP -->
+  <section id="group" hidden aria-labelledby="grpTitle">
+    <div class="card">
+      <h2 id="grpTitle" class="sec" tabindex="-1">👯 단톡방 모임 모드</h2>
+      <p class="muted">함께 가는 멤버들의 유형을 눌러 추가하세요 (최대 12명). 팀 구성 분석과 역할 분담을 추천해 드려요.</p>
+      <div class="grid" id="grpGrid"></div>
+      <h3 style="margin:16px 0 0;font-size:1.1rem">우리 멤버 <span id="grpCount">(0명)</span></h3>
+      <div class="members" id="members" aria-live="polite"></div>
+      <button class="btn white sm" id="grpClear">전체 비우기</button>
+    </div>
+    <div id="grpOut" style="margin-top:14px"></div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" hidden aria-labelledby="galTitle">
+    <div class="card">
+      <h2 id="galTitle" class="sec" tabindex="-1">🎴 12가지 여행 유형</h2>
+      <p class="muted">카드를 누르면 자세한 내용을 볼 수 있어요.</p>
+      <div class="grid" id="galGrid"></div>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 여행 메이트 궁합 테스트 · 브라우저에서만 동작하며 어떤 정보도 서버로 전송하지 않아요.</footer>
+
+<dialog id="detailDlg" aria-label="유형 상세"><div id="detailBody"></div>
+  <div class="row" style="margin-top:12px;justify-content:center">
+    <button class="btn sm" id="detailCmp">이 유형으로 궁합 보기</button>
+    <button class="btn sm white" data-close>닫기</button>
+  </div>
+</dialog>
+<dialog id="imgDlg" aria-label="결과 이미지 미리보기">
+  <p style="margin:0 0 8px;font-weight:700">이미지를 저장해 스토리에 올려보세요 📲</p>
+  <img id="imgPrev" alt="내 여행 유형 결과 카드 이미지">
+  <div class="row" style="margin-top:12px;justify-content:center">
+    <a class="btn sm coral" id="dlLink" download="travel-mate-card.png" style="text-decoration:none">다운로드</a>
+    <button class="btn sm white" data-close>닫기</button>
+  </div>
+  <p class="muted" style="margin:8px 0 0">모바일에서 저장이 안 되면 이미지를 길게 눌러 저장하세요.</p>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+/* ---------- DATA ---------- */
+// axes: [계획성, 활동량, 지출, 사교성]
+const TYPES=[
+ {id:'pl',emoji:'📋',name:'분 단위 일정표 장군',short:'일정표 장군',line:'여행 전날 이미 엑셀 3탭 완성. 지각자는 용서 없다.',say:'10분 뒤에 출발해야 다음 일정 맞아!',v:78,best:'fl',worst:'wa',role:'길잡이(일정 총괄)',c:'#BDE6F5',ax:[10,7,5,4]},
+ {id:'wa',emoji:'🧭',name:'일단 걷고 보는 방랑자',short:'방랑자',line:'목적지는 걷다 보면 생긴다. 지도 앱은 장식품.',say:'저쪽 골목 예뻐 보이는데 가볼까?',v:70,best:'ad',worst:'wo',role:'탐험 선발대(골목 정찰)',c:'#FFE0A8',ax:[2,8,5,5]},
+ {id:'fo',emoji:'🍜',name:'맛집 레이더 미식가',short:'미식가',line:'여행의 8할은 식사. 밥 먹으면서 다음 끼니를 고민한다.',say:'아까 먹은 건 아까고, 저녁은 어디야?',v:64,best:'mo',worst:'bu',role:'맛집 담당',c:'#FFC9B8',ax:[6,5,8,6]},
+ {id:'ph',emoji:'📸',name:'사진 감독님',short:'사진 감독님',line:'인생샷 한 장에 20분. 포즈 디렉팅은 기본 옵션.',say:'잠깐만, 한 장만 더! 이번엔 점프샷!',v:68,best:'fl',worst:'ad',role:'사진사',c:'#E3CCF7',ax:[6,6,6,5]},
+ {id:'bu',emoji:'💰',name:'짠내 총무 요정',short:'짠내 총무',line:'1원 단위 정산 완벽. 가성비가 곧 신념이다.',say:'이거 저기가 더 싼데 다시 볼까?',v:66,best:'cu',worst:'fo',role:'총무',c:'#C9F2C7',ax:[7,5,1,4]},
+ {id:'re',emoji:'🛋️',name:'숙소 붙박이 휴양러',short:'휴양러',line:'관광은 선택, 낮잠은 필수. 숙소 수영장이 메인 코스.',say:'오늘은 그냥 쉬면 안 돼?',v:52,best:'mo',worst:'ad',role:'숙소 담당',c:'#FFD6E8',ax:[3,1,7,3]},
+ {id:'ad',emoji:'🪂',name:'액티비티 대장',short:'액티비티 대장',line:'체력 무한. 새벽 일출 트레킹을 "가볍게"라고 부른다.',say:'이거 안 타면 후회한다, 가자!',v:74,best:'wa',worst:'re',role:'액티비티 담당',c:'#FFB4A2',ax:[4,10,7,7]},
+ {id:'cu',emoji:'🏛️',name:'박물관 도슨트',short:'도슨트',line:'표지판을 끝까지 읽는 사람. 역사 해설이 자동 재생된다.',say:'이거 사실 말이야, 1700년대에는…',v:58,best:'bu',worst:'so',role:'가이드(해설 담당)',c:'#E8DCC4',ax:[8,6,4,3]},
+ {id:'mo',emoji:'☕',name:'감성 카페 수집가',short:'카페 수집가',line:'동선보다 분위기. 창가 자리와 조명이 최우선이다.',say:'여기 분위기 너무 좋다, 한 잔만 더 하자',v:55,best:'ph',worst:'bu',role:'카페·플레이리스트 담당',c:'#F5D5C0',ax:[4,3,8,4]},
+ {id:'so',emoji:'🤝',name:'인싸 친화력 만렙',short:'친화력 만렙',line:'하루 만에 현지 친구 세 명. 모르는 사람도 일행이 된다.',say:'저분들이랑 같이 먹자고 할까?',v:60,best:'ph',worst:'wo',role:'분위기 메이커',c:'#FFF0A6',ax:[3,7,6,10]},
+ {id:'wo',emoji:'🧯',name:'안전제일 걱정 인형',short:'걱정 인형',line:'상비약, 보조배터리, 여권 사본까지 완벽. 가방이 약국급.',say:'여권 챙겼지? 충전기는? 우산은?',v:62,best:'cu',worst:'ad',role:'안전 담당',c:'#D6E4FF',ax:[9,3,4,4]},
+ {id:'fl',emoji:'🎲',name:'플랜B 임기응변 천재',short:'임기응변 천재',line:'계획이 틀어져도 웃으며 새 코스를 만든다. 적응력 만렙.',say:'오히려 좋아, 다른 데 가보자!',v:40,best:'pl',worst:'wo',role:'플랜B 담당',c:'#BFF3E4',ax:[2,6,5,8]}
+];
+const T={}; TYPES.forEach((t,i)=>{t.i=i;T[t.id]=t});
+
+const Q=[
+ {tag:'숙소 고르기',q:'여행 숙소를 고를 때 나는?',o:[
+  ['후기·위치·가격을 표로 만들어 비교한다',{pl:2,bu:1,wo:1}],
+  ['사진이 제일 예쁘고 감성 있는 곳이 1순위',{mo:2,ph:2}],
+  ['잠만 자면 되니까 제일 저렴한 곳',{bu:3,wa:1,ad:1}],
+  ['숙소가 곧 여행지! 풀빌라·호캉스가 최고',{re:3,fo:1}]]},
+ {tag:'일정 짜기',q:'여행 일정을 짤 때 나는?',o:[
+  ['분 단위 일정표에 이동 시간까지 넣는다',{pl:3,wo:1}],
+  ['가고 싶은 곳 3개만 정하고 나머진 흐름대로',{fl:2,wa:2}],
+  ['먹을 식당부터 먼저 정한다',{fo:3,mo:1}],
+  ['박물관·유적지·전시부터 체크한다',{cu:3,pl:1}]]},
+ {tag:'맛집 줄 서기',q:'유명 맛집 앞에 웨이팅이 90분이다!',o:[
+  ['기다린다. 이게 여행이지',{fo:3,mo:1}],
+  ['근처 다른 데 가자! 가다 보면 맛집 나와',{fl:2,wa:2}],
+  ['줄 서는 동안 사진 찍고 스토리 올린다',{ph:2,so:2}],
+  ['시간 아깝다, 웨이팅 없는 곳으로 간다',{pl:2,ad:1,bu:1}]]},
+ {tag:'날씨 변수',q:'아침에 일어났더니 폭우, 계획이 망했다.',o:[
+  ['괜찮아, 실내 플랜B 이미 있어',{pl:2,wo:2}],
+  ['오히려 좋아, 비 오는 감성샷 찍으러 간다',{mo:2,ph:2}],
+  ['숙소에서 낮잠 자며 쉰다',{re:3}],
+  ['우비 입고 어쨌든 나간다',{ad:2,wa:1,fl:1}]]},
+ {tag:'사진 찍어주기',q:'친구가 "나 사진 좀 찍어줘!" 한다.',o:[
+  ['구도 잡고 각도 바꿔서 수십 장 찍는다',{ph:3}],
+  ['세 장만 찍고 가자, 갈 길이 멀다',{pl:2,ad:1}],
+  ['자연스러운 게 최고! 몰래 찍어준다',{so:2,mo:1,ph:1}],
+  ['사진보다 눈으로 보는 게 남는 거야',{cu:2,wa:1,re:1}]]},
+ {tag:'예산',q:'여행 중 돈 쓰는 스타일은?',o:[
+  ['가계부 앱에 매일 기록한다',{bu:3,pl:1}],
+  ['먹는 건 절대 아끼지 않는다',{fo:3,mo:1}],
+  ['그때그때 쓴다. 분위기 따라 쏜다',{so:2,fl:1,ad:1}],
+  ['비상금과 여행자 보험은 필수다',{wo:3,pl:1}]]},
+ {tag:'길 찾기',q:'낯선 곳에서 지도 앱이 먹통이 됐다!',o:[
+  ['일단 감으로 걷는다. 이것도 여행이다',{wa:3,ad:1}],
+  ['현지인에게 말 걸어서 길을 묻는다',{so:3,fl:1}],
+  ['캡처해 둔 오프라인 지도를 꺼낸다',{pl:2,wo:2}],
+  ['근처 카페에 들어가 와이파이부터 잡는다',{mo:2,re:1,fo:1}]]},
+ {tag:'자유 시간',q:'반나절 자유 시간이 생겼다. 뭐 할래?',o:[
+  ['패러글라이딩·서핑·트레킹 같은 액티비티',{ad:3}],
+  ['시장과 골목을 돌며 길거리 간식 투어',{fo:2,wa:2}],
+  ['미술관이나 역사 투어',{cu:3}],
+  ['숙소 침대에서 아무것도 안 하기',{re:3}]]},
+ {tag:'마지막 밤',q:'여행 마지막 밤, 나는 이러고 있다.',o:[
+  ['다 같이 모여 술 한잔, 추억 이야기',{so:3,fl:1}],
+  ['내일 비행기 시간 체크하고 짐 정리',{wo:2,pl:2}],
+  ['야경 명소에서 마지막 인생샷 찍기',{ph:2,mo:2}],
+  ['동네 한 바퀴 돌며 기념품 득템',{wa:2,cu:1,bu:1}]]},
+ {tag:'말버릇',q:'여행 중 내가 제일 많이 하는 말은?',o:[
+  ['"다음 일정 몇 시지?"',{pl:2,wo:1}],
+  ['"여기 진짜 예쁘다, 잠깐만!"',{ph:2,mo:2}],
+  ['"배고파… 뭐 먹을래?"',{fo:3}],
+  ['"일단 가보자!"',{wa:2,ad:1,fl:1}]]}
+];
+
+const AX=[
+ {t:'계획 vs 즉흥',hi:'내일 9시 출발이야, 알람 맞춰 놔!',lo:'일단 자고 일어나서 정하자~'},
+ {t:'강행군 vs 휴식',hi:'오늘 2만 보 채우자!',lo:'다리 아파… 카페에서 좀 앉자'},
+ {t:'플렉스 vs 가성비',hi:'여행 왔는데 이 정도는 써야지',lo:'그거 너무 비싼데 다른 데 없을까?'},
+ {t:'같이 놀기 vs 조용히',hi:'저쪽 사람들이랑 같이 놀자!',lo:'우리끼리 조용히 있으면 안 될까?'}
+];
+
+/* ---------- STATE ---------- */
+let qi=0, answers=[], me=null, friend=null, cmpA=null, cmpB=null, members=[], lock=false;
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+};
+const sv=store.get('tm_me'); if(sv&&T[sv]) me=sv;
+const m=location.hash.match(/t=([a-z]{2})/); if(m&&T[m[1]]) friend=m[1];
+
+/* ---------- HELPERS ---------- */
+const VIEWS=['home','quiz','result','compare','group','gallery'];
+const NAVMAP={home:'home',quiz:'home',result:'home',compare:'compare',group:'group',gallery:'gallery'};
+function show(v){
+  VIEWS.forEach(x=>{$('#'+x).hidden=(x!==v)});
+  $$('nav.tabs button').forEach(b=>{ if(b.dataset.nav===NAVMAP[v]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  window.scrollTo(0,0);
+  const h=$('#'+v).querySelector('h1,h2'); if(h){h.setAttribute('tabindex','-1'); h.focus({preventScroll:true});}
+  if(v==='compare') renderCompare();
+  if(v==='group') renderGroup();
+}
+let toastT;
+function toast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2200);}
+function shareUrl(id){return location.href.split('#')[0]+'#t='+id;}
+function hash2(a,b){const k=[a,b].sort().join(''); let h=0; for(const c of k) h=(h*31+c.charCodeAt(0))%1000; return h;}
+
+/* ---------- COMPAT ---------- */
+function compat(aId,bId){
+  const a=T[aId], b=T[bId], h=hash2(aId,bId);
+  const diffs=a.ax.map((v,i)=>Math.abs(v-b.ax[i]));
+  const avg=diffs.reduce((s,x)=>s+x,0)/4;
+  let score, note='';
+  if(aId===bId){score=72+h%9; note='똑같은 유형끼리라 말이 잘 통해요. 대신 둘 다 같은 약점이라 아무도 못 말릴 수 있어요.';}
+  else if(a.best===bId||b.best===aId){score=91+h%8; note='서로의 빈틈을 채워 주는 환상의 짝꿍이에요!';}
+  else if(a.worst===bId||b.worst===aId){score=18+h%15; note='취향이 정면으로 부딪히는 조합이에요. 미리 규칙을 정해 두세요.';}
+  else{score=Math.max(38,Math.min(86,Math.round(88-avg*6)))+(h%5-2);}
+  let label,tip;
+  if(score>=90){label='여행 찰떡 듀오 🥹'; tip='역할만 나누면 평생 여행 메이트! 다음 여행도 바로 예약하세요.';}
+  else if(score>=75){label='서로 맞춰 가면 최고 😊'; tip='큰 충돌은 없어요. 하루 한 번 "오늘 하고 싶은 것"만 공유해도 충분해요.';}
+  else if(score>=55){label='조율하면 괜찮은 사이 🙂'; tip='하루는 A의 코스, 하루는 B의 코스로 번갈아 정하면 평화가 와요.';}
+  else if(score>=35){label='싸울 포인트 주의보 ⚠️'; tip='출발 전에 예산 상한, 기상 시간, 필수 일정 1개씩만 합의해 두세요.';}
+  else{label='숙소 도착 전 우정 위기 🚨'; tip='단둘이 장기 여행은 위험! 하루 반나절은 각자 시간을 갖는 걸 추천해요.';}
+  const order=diffs.map((d,i)=>({d,i})).sort((x,y)=>y.d-x.d).filter(x=>x.d>=3).slice(0,2);
+  const fights=order.map(({i})=>{
+    const hi=a.ax[i]>=b.ax[i]?a:b, lo=hi===a?b:a;
+    return {title:AX[i].t,hi,lo,hq:AX[i].hi,lq:AX[i].lo};
+  });
+  return {score,label,tip,note,fights,a,b};
+}
+function cmpHTML(aId,bId){
+  const r=compat(aId,bId), a=r.a, b=r.b;
+  let f=r.fights.map(x=>`<div class="fight"><h4>⚡ ${x.title}</h4>
+    <p><b>${x.hi.emoji} ${x.hi.short}</b> “${x.hq}”</p>
+    <p><b>${x.lo.emoji} ${x.lo.short}</b> “${x.lq}”</p></div>`).join('');
+  if(!f) f=`<div class="fight"><h4>⚡ 싸울 포인트</h4><p>성향 차이가 크지 않아 큰 싸움은 없어요. 대신 둘 다 결정을 미루면 "아무거나"가 끝없이 이어질 수 있어요.</p></div>`;
+  return `<div class="score"><div class="duo" aria-hidden="true"><span>${a.emoji}</span><span>💞</span><span>${b.emoji}</span></div>
+    <p class="muted" style="margin:4px 0"><b>${a.name}</b> × <b>${b.name}</b></p>
+    <div class="num">${r.score}<small style="font-size:1.5rem">점</small></div>
+    <div class="lbl">${r.label}</div></div>
+    ${r.note?`<div class="tip">${r.note}</div>`:''}
+    <h3 style="margin:14px 0 0;font-size:1.1rem">우리가 싸울 포인트</h3>${f}
+    <div class="tip">💡 ${r.tip}</div>`;
+}
+
+/* ---------- CARD ---------- */
+function cardHTML(t,kicker){
+  const best=T[t.best], worst=T[t.worst];
+  return `<article class="tcard" style="--tc:${t.c}" aria-label="${t.name} 카드">
+    <div class="top"><p class="kicker">${kicker||'여행 유형'}</p></div>
+    <div class="sticker" aria-hidden="true">${t.emoji}</div>
+    <div class="body">
+      <h2>${t.name}</h2>
+      <p class="line">${t.line}</p>
+      <p class="say">“${t.say}”</p>
+      <div class="meter">여행 빌런 지수 ${t.v}%
+        <div class="bar" role="img" aria-label="빌런 지수 ${t.v}퍼센트"><i style="width:${t.v}%"></i></div></div>
+      <div class="pair">
+        <div class="good">💞 최고의 짝꿍<b>${best.emoji} ${best.short}</b></div>
+        <div class="bad">💥 최악의 짝꿍<b>${worst.emoji} ${worst.short}</b></div>
+      </div>
+      <p class="role">🎒 모임에서 추천 역할: <b>${t.role}</b></p>
+    </div></article>`;
+}
+
+/* ---------- QUIZ ---------- */
+function renderQ(){
+  const q=Q[qi];
+  $('#qTag').textContent=q.tag;
+  $('#qCount').textContent=(qi+1)+' / '+Q.length;
+  const p=$('#prog'); p.setAttribute('aria-valuenow',qi); p.firstElementChild.style.width=(qi/Q.length*100)+'%';
+  $('#qTitle').textContent=q.q;
+  const o=$('#opts'); o.innerHTML='';
+  q.o.forEach((opt,idx)=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.type='button';
+    b.setAttribute('aria-pressed', answers[qi]===idx?'true':'false');
+    b.innerHTML=`<b>${'ABCD'[idx]}</b><span>${opt[0]}</span>`;
+    b.addEventListener('click',()=>{
+      if(lock) return;
+      lock=true;
+      answers[qi]=idx;
+      $$('.opt').forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      setTimeout(()=>{
+        lock=false;
+        if(qi<Q.length-1){qi++; renderQ(); $('#qTitle').focus({preventScroll:true});} else finish();
+      },220);
+    });
+    o.appendChild(b);
+  });
+  $('#prevBtn').style.visibility=qi===0?'hidden':'visible';
+}
+function startQuiz(){qi=0; answers=[]; lock=false; show('quiz'); renderQ();}
+function finish(){
+  const sc={}; TYPES.forEach(t=>sc[t.id]=0);
+  answers.forEach((a,i)=>{ if(a==null||!Q[i].o[a]) return; const pts=Q[i].o[a][1]; for(const k in pts) sc[k]+=pts[k];});
+  const ranked=TYPES.slice().sort((x,y)=>sc[y.id]-sc[x.id]||x.i-y.i);
+  me=ranked[0].id; window._second=ranked[1].id;
+  cmpA=null;
+  store.set('tm_me',me); store.set('tm_2nd',window._second);
+  renderResult(); show('result');
+}
+
+/* ---------- RESULT ---------- */
+function renderResult(){
+  if(!me||!T[me]) return;
+  const t=T[me];
+  $('#resCard').innerHTML=cardHTML(t,'나의 여행 유형')+
+    (window._second&&T[window._second]?`<p class="hidden-type" style="text-align:center">🫣 숨은 2순위 성향: <b>${T[window._second].emoji} ${T[window._second].name}</b></p>`:'');
+  const rf=$('#resFriend');
+  if(friend){
+    rf.innerHTML=`<div class="card" style="margin-top:14px"><h3 style="margin:0 0 4px;font-size:1.25rem">💌 링크를 보낸 친구와의 궁합</h3>${cmpHTML(me,friend)}</div>`;
+  } else rf.innerHTML='';
+}
+async function makeImage(t){
+  try{ await Promise.all([document.fonts.load('80px Jua'),document.fonts.load('700 36px "Noto Sans KR"')]); }catch(e){}
+  const W=1080,H=1920, c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
+  const EF='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"';
+  const J=`Jua, "Noto Sans KR", ${EF}, sans-serif`, N=`"Noto Sans KR", ${EF}, sans-serif`;
+  const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#CDF3F0'); g.addColorStop(1,t.c);
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(255,255,255,.55)';
+  [[120,140,90],[960,1760,130],[920,120,50],[80,1650,60]].forEach(([a,b,r])=>{x.beginPath(); x.arc(a,b,r,0,7); x.fill();});
+  const rr=(X,Y,w,h,r)=>{x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+w,Y,X+w,Y+h,r); x.arcTo(X+w,Y+h,X,Y+h,r); x.arcTo(X,Y+h,X,Y,r); x.arcTo(X,Y,X+w,Y,r); x.closePath();};
+  const wrap=(s,X,Y,mw,lh,max)=>{let line='',ls=[]; for(const ch of s){const tt=line+ch; if(x.measureText(tt).width>mw&&line){ls.push(line); line=ch;} else line=tt;} ls.push(line); ls=ls.slice(0,max); ls.forEach((l,i)=>x.fillText(l,X,Y+i*lh)); return Y+(ls.length-1)*lh;};
+  x.textAlign='center'; x.fillStyle='#12343B';
+  x.font=`44px ${J}`; x.fillText('✈️ 여행 메이트 궁합 테스트',540,140);
+  // card
+  x.fillStyle='#12343B'; rr(84,244,940,1380,56); x.fill();
+  x.fillStyle='#fff'; x.strokeStyle='#12343B'; x.lineWidth=8; rr(70,220,940,1380,56); x.fill(); x.stroke();
+  x.fillStyle='#D9483F'; x.font=`bold 40px ${N}`; x.fillText('나의 여행 유형',540,310);
+  x.fillStyle=t.c; x.beginPath(); x.arc(540,520,200,0,7); x.fill(); x.lineWidth=8; x.stroke();
+  x.fillStyle='#12343B'; x.font=`220px ${EF}`; x.textBaseline='alphabetic'; x.fillText(t.emoji,540,600);
+  x.fillStyle='#12343B'; x.font=`76px ${J}`;
+  const nl=wrap(t.name,540,830,840,92,2);
+  x.font=`38px ${N}`; x.fillStyle='#294a52';
+  wrap(t.line,540,nl+78,800,54,3);
+  // meter
+  x.textAlign='left'; x.fillStyle='#12343B'; x.font=`bold 36px ${N}`; x.fillText(`여행 빌런 지수 ${t.v}%`,140,1190);
+  x.fillStyle='#eee'; rr(140,1208,800,34,17); x.fill(); x.lineWidth=5; x.stroke();
+  const mg=x.createLinearGradient(140,0,940,0); mg.addColorStop(0,'#FFD166'); mg.addColorStop(1,'#FF6B6B');
+  x.fillStyle=mg; rr(140,1208,800*t.v/100,34,17); x.fill(); x.stroke();
+  // pair
+  const box=(X,bg,title,ty)=>{x.fillStyle=bg; x.lineWidth=6; rr(X,1290,390,250,36); x.fill(); x.stroke();
+    x.textAlign='center'; x.fillStyle='#12343B'; x.font=`bold 34px ${N}`; x.fillText(title,X+195,1346);
+    x.font=`70px ${EF}`; x.fillText(ty.emoji,X+195,1432); x.font=`40px ${J}`; x.fillText(ty.short,X+195,1500);};
+  box(140,'#DFF8F5','💞 최고의 짝꿍',T[t.best]); box(550,'#FFE3DF','💥 최악의 짝꿍',T[t.worst]);
+  x.textAlign='center'; x.fillStyle='#12343B'; x.font=`50px ${J}`; x.fillText('너의 유형은? 우리 궁합 확인해보자!',540,1730);
+  x.font=`bold 32px ${N}`; x.fillStyle='#1B6B63'; x.fillText('#여행메이트궁합테스트  #같이여행가면싸울확률',540,1800);
+  return c;
+}
+
+/* ---------- COMPARE ---------- */
+function fillSel(sel,val){
+  sel.innerHTML=TYPES.map(t=>`<option value="${t.id}">${t.emoji} ${t.name}</option>`).join('');
+  sel.value=val;
+}
+function renderCompare(){
+  cmpA=cmpA||me||'pl'; cmpB=cmpB||friend||(T[cmpA].best);
+  fillSel($('#selA'),cmpA); fillSel($('#selB'),cmpB);
+  $('#cmpOut').innerHTML=cmpHTML(cmpA,cmpB);
+}
+
+/* ---------- GROUP ---------- */
+function renderGroup(){
+  const g=$('#grpGrid');
+  if(!g.children.length){
+    TYPES.forEach(t=>{
+      const b=document.createElement('button'); b.className='gbtn'; b.type='button'; b.style.setProperty('--tc',t.c);
+      b.setAttribute('aria-label',t.name+' 추가');
+      b.innerHTML=`<span aria-hidden="true">${t.emoji}</span>${t.short}`;
+      b.addEventListener('click',()=>{ if(members.length>=12){toast('최대 12명까지 가능해요'); return;} members.push(t.id); renderGroup(); });
+      g.appendChild(b);
+    });
+  }
+  $('#grpCount').textContent=`(${members.length}명)`;
+  $('#members').innerHTML=members.length?'':'<span class="muted">위에서 멤버의 유형을 눌러 추가하세요.</span>';
+  members.forEach((id,i)=>{
+    const t=T[id], s=document.createElement('span'); s.className='member'; s.style.setProperty('--tc',t.c);
+    s.innerHTML=`${t.emoji} ${t.short}`;
+    const x=document.createElement('button'); x.type='button'; x.textContent='×'; x.setAttribute('aria-label',t.short+' 삭제');
+    x.addEventListener('click',()=>{members.splice(i,1); renderGroup();});
+    s.appendChild(x); $('#members').appendChild(s);
+  });
+  const out=$('#grpOut');
+  if(members.length<2){ out.innerHTML=members.length?'<div class="card"><p class="muted" style="margin:0">2명 이상 추가하면 팀 분석이 시작돼요.</p></div>':''; return; }
+  const n=members.length;
+  const avg=[0,1,2,3].map(i=>members.reduce((s,id)=>s+T[id].ax[i],0)/n);
+  const msg=[
+    avg[0]>=7?'📋 계획 과잉 팀: 일정이 빡빡해질 수 있어요. 하루에 "비워 두는 2시간"을 꼭 넣어요.':avg[0]<=4?'🧭 즉흥 팀: 숙소·교통 예약만이라도 출발 전에 확정해 두세요.':'⚖️ 계획과 즉흥의 균형이 좋은 팀이에요.',
+    avg[1]>=7?'🪂 체력 파티: 쉬는 시간을 일부러 확보하지 않으면 3일 차에 쓰러져요.':avg[1]<=4?'🛋️ 느긋한 팀: 하루에 핵심 일정 1~2개에 집중하면 만족도가 높아요.':'🚶 활동량이 적당히 섞여 있어요.',
+    avg[2]>=7?'💳 지갑이 쉽게 열리는 팀: 일일 예산 상한을 미리 공유하세요.':avg[2]<=4?'🪙 알뜰한 팀: 마지막 날 저녁은 한 번쯤 플렉스해 보세요.':'💵 소비 성향이 무난하게 섞여 있어요.',
+    avg[3]>=7?'🎉 시끌벅적 팀: 각자 조용히 쉬는 시간도 챙겨 주세요.':avg[3]<=4?'🤫 조용한 팀: 대화 주제나 보드게임을 준비하면 좋아요.':'🗣️ 외향·내향이 적절히 섞여 있어요.'
+  ];
+  // pairs
+  let sum=0,cnt=0,best={s:-1},worst={s:101};
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+    const s=compat(members[i],members[j]).score; sum+=s;cnt++;
+    if(s>best.s) best={s,i,j};
+    if(s<worst.s) worst={s,i,j};
+  }
+  const mean=Math.round(sum/cnt), risk=100-mean;
+  // roles
+  const roles=members.map(()=>[]); const used={};
+  members.forEach((id,i)=>{ const r=T[id].role; roles[i].push(used[id]?r+' 보조':r); used[id]=1; });
+  const topBy=k=>members.reduce((bi,id,i)=>T[id].ax[k]>T[members[bi]].ax[k]?i:bi,0);
+  if(!members.includes('bu')) roles[topBy(0)].push('총무(겸임)');
+  if(!members.includes('pl')) roles[topBy(0)].push('길잡이(겸임)');
+  if(!members.includes('ph')) roles[topBy(3)].push('사진사(겸임)');
+  const rows=members.map((id,i)=>`<tr><td>${T[id].emoji} ${T[id].short}</td><td>${roles[i].join(', ')}</td></tr>`).join('');
+  const pn=p=>`${T[members[p.i]].emoji}${T[members[p.i]].short} × ${T[members[p.j]].emoji}${T[members[p.j]].short}`;
+  out.innerHTML=`<div class="card stack">
+    <h3 style="margin:0;font-size:1.35rem">📊 팀 분석 리포트</h3>
+    <div class="score" style="margin:0"><div class="lbl">팀 평균 궁합 ${mean}점 · 싸움 위험도 ${risk}%</div>
+      <div class="meter" style="max-width:360px;margin:6px auto"><div class="bar" role="img" aria-label="싸움 위험도 ${risk}퍼센트"><i style="width:${risk}%"></i></div></div></div>
+    <ul class="clean">${msg.map(s=>`<li>${s}</li>`).join('')}</ul>
+    <div class="tip">💞 베스트 페어: <b>${pn(best)}</b> (${best.s}점)</div>
+    <div class="fight"><h4>🚨 주의 페어</h4><p><b>${pn(worst)}</b> (${worst.s}점) — 같은 방·같은 차 배정은 피하는 게 좋아요.</p></div>
+    <h3 style="margin:6px 0 0;font-size:1.2rem">🎒 역할 분담 추천</h3>
+    <table><thead><tr><th>멤버</th><th>맡을 역할</th></tr></thead><tbody>${rows}</tbody></table>
+    <button class="btn block" id="grpShare">📋 분석 결과 복사하기</button></div>`;
+  $('#grpShare').addEventListener('click',()=>{
+    const txt=`[여행 메이트 궁합 테스트] 모임 분석\n멤버: ${members.map(id=>T[id].short).join(', ')}\n팀 평균 궁합 ${mean}점 / 싸움 위험도 ${risk}%\n`+
+      members.map((id,i)=>`- ${T[id].short}: ${roles[i].join(', ')}`).join('\n')+`\n${location.href.split('#')[0]}`;
+    copy(txt,'분석 결과를 복사했어요!');
+  });
+}
+
+/* ---------- GALLERY ---------- */
+function renderGallery(){
+  const g=$('#galGrid'); g.innerHTML='';
+  TYPES.forEach(t=>{
+    const b=document.createElement('button'); b.className='gbtn'; b.type='button'; b.style.setProperty('--tc',t.c);
+    b.innerHTML=`<span aria-hidden="true">${t.emoji}</span>${t.name}`;
+    b.addEventListener('click',()=>openDetail(t.id));
+    g.appendChild(b);
+  });
+}
+let detailId=null;
+function openDetail(id){
+  detailId=id; $('#detailBody').innerHTML=cardHTML(T[id],'유형 미리보기');
+  $('#detailDlg').showModal();
+}
+
+/* ---------- COPY / SHARE ---------- */
+function copy(text,msg){
+  const done=()=>toast(msg||'복사했어요!');
+  function fb(){const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){toast('복사에 실패했어요. 직접 복사해 주세요.');} ta.remove();}
+  if(navigator.clipboard&&window.isSecureContext){ navigator.clipboard.writeText(text).then(done,()=>fb()); } else fb();
+}
+
+/* ---------- EVENTS ---------- */
+$$('[data-nav]').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.nav; if(v==='home') { refreshHome(); }
+  show(v);
+}));
+$$('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+$$('dialog').forEach(d=>d.addEventListener('click',e=>{
+  if(e.target!==d) return;
+  const r=d.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) d.close();
+}));
+$('#startBtn').addEventListener('click',startQuiz);
+$('#savedBtn').addEventListener('click',()=>{ if(!me) return; window._second=store.get('tm_2nd'); renderResult(); show('result');});
+$('#prevBtn').addEventListener('click',()=>{ if(lock) return; if(qi>0){qi--; renderQ();} });
+$('#retry').addEventListener('click',startQuiz);
+$('#toGallery').addEventListener('click',()=>show('gallery'));
+$('#goCompare').addEventListener('click',()=>{cmpA=me; cmpB=friend||T[me].best; show('compare');});
+$('#selA').addEventListener('change',e=>{cmpA=e.target.value; $('#cmpOut').innerHTML=cmpHTML(cmpA,cmpB);});
+$('#selB').addEventListener('change',e=>{cmpB=e.target.value; $('#cmpOut').innerHTML=cmpHTML(cmpA,cmpB);});
+$('#grpClear').addEventListener('click',()=>{members=[]; renderGroup();});
+$('#detailCmp').addEventListener('click',()=>{ $('#detailDlg').close(); cmpB=detailId; cmpA=me||cmpA||'pl'; show('compare'); });
+$('#shareLink').addEventListener('click',async()=>{
+  const t=T[me], url=shareUrl(me);
+  const text=`나의 여행 유형은 "${t.name}" ${t.emoji}\n같이 여행 가면 싸울 확률은? 내 유형이랑 궁합 확인해봐!`;
+  if(navigator.share){
+    try{ await navigator.share({title:'여행 메이트 궁합 테스트',text,url}); return; }catch(e){ if(e&&e.name==='AbortError') return; }
+  }
+  copy(text+'\n'+url,'공유 문구와 링크를 복사했어요!');
+});
+$('#saveImg').addEventListener('click',async()=>{
+  const btn=$('#saveImg'); btn.disabled=true; btn.textContent='이미지 만드는 중…';
+  try{
+    const c=await makeImage(T[me]); const url=c.toDataURL('image/png');
+    $('#imgPrev').src=url; $('#dlLink').href=url;
+    $('#dlLink').download='travel-mate-'+me+'.png';
+    $('#imgDlg').showModal();
+  }catch(e){ toast('이미지 생성에 실패했어요. 다시 시도해 주세요.'); }
+  btn.disabled=false; btn.textContent='🖼️ 스토리 이미지로 저장';
+});
+window.addEventListener('hashchange',()=>{
+  const mm=location.hash.match(/t=([a-z]{2})/); if(mm&&T[mm[1]]){friend=mm[1]; cmpB=friend; refreshHome();}
+});
+
+function refreshHome(){
+  const fb=$('#friendBanner');
+  if(friend){
+    const t=T[friend]; fb.hidden=false;
+    fb.innerHTML=`<b>💌 친구가 여행 유형을 보냈어요!</b><br>${t.emoji} <b>${t.name}</b> 유형이에요. 나도 테스트하면 우리 궁합 점수와 싸울 포인트를 바로 보여드려요.`;
+  } else fb.hidden=true;
+  $('#savedBtn').hidden=!me;
+  if(me) $('#savedBtn').textContent=`${T[me].emoji} 내 저장된 결과 보기 (${T[me].short})`;
+}
+
+renderGallery();
+refreshHome();
+show('home');
+})();
+</script>
+</body>
+</html>
