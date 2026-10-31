@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>추억 급식체 타임캡슐 | 나는 몇 년생 감성? 10문제 세대 퀴즈</title>
+<meta name="description" content="싸이월드 도토리, 삐삐 8282, 포켓몬빵 띠부씰까지! 90년대·00년대·10년대 추억 퀴즈 10문제로 나의 정신연령 출생연도를 맞혀드립니다. 친구와 점수 코드로 비교해 보세요.">
+<meta property="og:title" content="추억 급식체 타임캡슐 – 나는 몇 년생 감성?">
+<meta property="og:description" content="학창시절 유행어·간식·휴대폰·게임 추억 퀴즈 10문제. 정신연령 출생연도와 세대 칭호를 확인하고 친구와 점수를 비교해 보세요.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FF6B9D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#FF6B9D; --pink-soft:#ffd3e4; --sky:#7DD8FF; --sky-soft:#d6f2ff;
+  --ink:#2a1b3d; --paper:#fff8fc; --lime:#d4ff5c; --ok:#b6f5c8; --bad:#ffc2d6;
+  --pixel:'Press Start 2P','Courier New',monospace;
+  --head:'Do Hyeon','Noto Sans KR',sans-serif;
+  --body:'Noto Sans KR','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; min-height:100vh; font-family:var(--body); color:var(--ink); line-height:1.6;
+  background:
+    linear-gradient(rgba(42,27,61,.06) 1px,transparent 1px) 0 0/24px 24px,
+    linear-gradient(90deg,rgba(42,27,61,.06) 1px,transparent 1px) 0 0/24px 24px,
+    linear-gradient(135deg,#ffd3e4 0%,#e9dcff 50%,#c9efff 100%);
+  background-attachment:fixed;
+  display:flex; flex-direction:column; align-items:center;
+}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:#fff;padding:8px 12px;z-index:99}
+.skip:focus{left:8px;top:8px}
+main{width:100%;max-width:560px;padding:20px 14px 28px;flex:1}
+button,input,label{font-family:inherit}
+:focus-visible{outline:3px solid #1b5cff;outline-offset:2px}
+
+.win{background:var(--paper);border:3px solid var(--ink);border-radius:12px;box-shadow:6px 6px 0 var(--ink);overflow:hidden;margin-bottom:18px}
+.win-title{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;background:linear-gradient(90deg,var(--pink),var(--sky));border-bottom:3px solid var(--ink);font-family:var(--pixel);font-size:10px;color:var(--ink)}
+.win-title .dots{display:flex;gap:5px}
+.win-title .dots i{width:12px;height:12px;border:2px solid var(--ink);background:#fff;display:block;border-radius:3px}
+.win-body{padding:20px 18px}
+
+h1{font-family:var(--head);font-weight:400;font-size:clamp(30px,8vw,42px);line-height:1.15;margin:8px 0 6px;letter-spacing:-.5px}
+h1 .hl{background:linear-gradient(transparent 55%,var(--pink) 55%);padding:0 3px}
+h2{font-family:var(--head);font-weight:400;font-size:22px;margin:0 0 8px}
+.tag{margin:0 0 16px;font-size:15px}
+.badge{display:inline-block;font-family:var(--pixel);font-size:9px;background:var(--ink);color:var(--lime);padding:6px 8px;border-radius:4px}
+.hero{display:flex;justify-content:center}
+.cassette{width:150px;height:auto;animation:bob 3s ease-in-out infinite}
+.reel{transform-box:fill-box;transform-origin:center;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){.cassette,.reel,.share-card .reel{animation:none}*{scroll-behavior:auto!important}}
+
+fieldset{border:0;padding:0;margin:18px 0 0;min-width:0}
+legend{font-weight:700;margin-bottom:8px;padding:0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{position:relative;display:block}
+.mode input{position:absolute;opacity:0;pointer-events:none}
+.mode span{display:block;border:3px solid var(--ink);border-radius:10px;padding:10px 8px;background:#fff;cursor:pointer;text-align:center;font-weight:700;font-size:14px;box-shadow:3px 3px 0 var(--ink);transition:transform .08s}
+.mode span small{display:block;font-weight:400;font-size:12px;opacity:.85}
+.mode input:checked + span{background:var(--pink);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.mode input:focus-visible + span{outline:3px solid #1b5cff;outline-offset:2px}
+
+.field{margin-top:16px}
+.field label{display:block;font-weight:700;font-size:14px;margin-bottom:5px}
+.field .hint{font-size:12px;opacity:.8;margin-top:4px}
+.row{display:flex;gap:8px}
+input[type=text]{flex:1;min-width:0;border:3px solid var(--ink);border-radius:8px;padding:10px 12px;font-size:16px;background:#fff;color:var(--ink)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:3px solid var(--ink);border-radius:10px;background:var(--pink);color:var(--ink);font-weight:700;font-size:16px;padding:12px 18px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;min-height:48px}
+.btn:hover{background:#ff82ac}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.sky{background:var(--sky)}
+.btn.sky:hover{background:#97e0ff}
+.btn.ghost{background:#fff;box-shadow:3px 3px 0 var(--ink)}
+.btn.small{font-size:14px;padding:8px 12px;min-height:44px}
+.btn.block{width:100%}
+.start-btn{margin-top:22px;font-size:18px}
+
+.friend{margin-top:14px;padding:10px 12px;border:3px dashed var(--ink);border-radius:10px;background:var(--sky-soft);font-size:14px}
+.friend[hidden]{display:none}
+.msg{font-size:13px;margin-top:6px;min-height:1.2em;color:#9a0f43;font-weight:500}
+
+.hud{display:flex;justify-content:space-between;align-items:center;font-family:var(--pixel);font-size:10px;margin-bottom:8px}
+.bar{height:16px;border:3px solid var(--ink);border-radius:8px;background:#fff;overflow:hidden;margin-bottom:16px}
+.bar div{height:100%;width:0;background:repeating-linear-gradient(45deg,var(--pink) 0 8px,#ff93b9 8px 16px);transition:width .3s}
+.era-chip{display:inline-block;font-size:12px;font-weight:700;border:2px solid var(--ink);border-radius:20px;padding:1px 10px;background:var(--lime);margin-bottom:8px}
+.q-text{font-family:var(--head);font-size:clamp(21px,5.5vw,26px);line-height:1.4;margin:0 0 16px;font-weight:400}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;width:100%;border:3px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);padding:11px 12px;font-size:16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);min-height:52px}
+.opt:hover:not(:disabled){background:var(--sky-soft)}
+.opt .k{flex:none;font-family:var(--pixel);font-size:10px;width:26px;height:26px;display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:5px}
+.opt .t{flex:1}
+.opt .mark{flex:none;font-weight:700}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--ok)}
+.opt.wrong{background:var(--bad)}
+.opt.dim{opacity:.7}
+.story{margin-top:16px;border:3px solid var(--ink);border-radius:10px;background:#fffbd6;padding:12px 14px;box-shadow:4px 4px 0 var(--ink)}
+.story[hidden]{display:none}
+.story .verdict{font-family:var(--head);font-size:20px;margin:0}
+.story .st{font-family:var(--pixel);font-size:9px;margin:8px 0 4px;display:block}
+.story p{margin:0;font-size:15px}
+.next-wrap{margin-top:16px;text-align:right}
+.next-wrap[hidden]{display:none}
+
+/* 결과 카드 */
+.share-card{width:min(100%,360px);margin:0 auto;border:4px solid var(--ink);border-radius:18px;box-shadow:7px 7px 0 var(--ink);padding:18px 18px 16px;text-align:center;position:relative;overflow:hidden;
+  background:
+   radial-gradient(circle at 15% 12%,#fff 0 2px,transparent 3px),
+   radial-gradient(circle at 85% 22%,#fff 0 2px,transparent 3px),
+   radial-gradient(circle at 70% 60%,#fff 0 2px,transparent 3px),
+   linear-gradient(170deg,#ffb3d0 0%,#e7d6ff 45%,#a9e6ff 100%)}
+.share-card .top{font-family:var(--pixel);font-size:9px;display:flex;justify-content:space-between;margin-bottom:8px}
+.share-card .who{font-weight:700;font-size:15px;margin:0}
+.share-card .cassette{width:96px;animation:none}
+.share-card .reel{animation:spin 4s linear infinite}
+.share-card .lab{font-family:var(--pixel);font-size:9px;margin:10px 0 6px}
+.share-card .year{font-family:var(--head);font-size:64px;line-height:1;margin:0;color:var(--ink);text-shadow:3px 3px 0 #fff}
+.share-card .year small{font-size:26px}
+.share-card .title{display:inline-block;margin:10px 0 4px;background:var(--ink);color:var(--lime);font-family:var(--head);font-size:21px;padding:4px 14px;border-radius:8px}
+.share-card .rank{font-weight:700;margin:6px 0 0;font-size:15px}
+.squares{display:flex;justify-content:center;gap:4px;margin:12px 0 6px;flex-wrap:wrap}
+.squares i{width:20px;height:20px;border:2px solid var(--ink);border-radius:4px;background:#fff;display:block}
+.squares i.on{background:var(--pink)}
+.score-big{font-family:var(--pixel);font-size:16px;margin:4px 0 10px}
+.cmt{background:rgba(255,255,255,.75);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:14px;margin:0 0 10px;text-align:left}
+.code-line{font-family:var(--pixel);font-size:9px;line-height:1.8}
+.code-line b{background:#fff;border:2px solid var(--ink);padding:2px 6px;border-radius:4px;font-size:11px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.tip{text-align:center;font-size:13px;margin:12px 0 0;opacity:.85}
+.vs{margin-top:18px;border:3px solid var(--ink);border-radius:12px;background:var(--sky-soft);padding:12px 14px}
+.vs[hidden]{display:none}
+.vs h3{font-family:var(--head);font-weight:400;font-size:19px;margin:0 0 6px}
+.vs table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+.vs th,.vs td{border:2px solid var(--ink);padding:5px 6px;text-align:center;background:#fff}
+.vs th{background:var(--pink-soft)}
+details{border:3px solid var(--ink);border-radius:10px;background:#fff;margin-top:14px;padding:0}
+summary{cursor:pointer;font-weight:700;padding:11px 14px;min-height:44px}
+.rev{list-style:none;margin:0;padding:0 14px 8px}
+.rev li{border-top:2px dashed var(--ink);padding:10px 0;font-size:14px}
+.rev li b{display:block;margin-bottom:2px}
+.rev .ans{font-size:13px}
+
+footer{width:100%;text-align:center;font-size:13px;padding:14px;border-top:3px solid var(--ink);background:var(--paper)}
+footer span{font-family:var(--pixel);font-size:9px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+[hidden]{display:none!important}
+@media (min-width:480px){.win-body{padding:24px 26px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<main id="main">
+
+  <!-- 시작 화면 -->
+  <section id="screen-start" class="win" aria-labelledby="title">
+    <div class="win-title"><span>TIME_CAPSULE.EXE</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="hero">
+        <svg class="cassette" viewBox="0 0 120 84" role="img" aria-label="카세트테이프 아이콘">
+          <rect x="4" y="4" width="112" height="72" rx="9" fill="#FF6B9D" stroke="#2a1b3d" stroke-width="4"/>
+          <rect x="15" y="12" width="90" height="34" rx="5" fill="#fff8fc" stroke="#2a1b3d" stroke-width="3"/>
+          <g class="reel"><circle cx="40" cy="29" r="10" fill="#7DD8FF" stroke="#2a1b3d" stroke-width="3"/><path d="M40 21v16M32 29h16" stroke="#2a1b3d" stroke-width="3"/></g>
+          <g class="reel"><circle cx="80" cy="29" r="10" fill="#7DD8FF" stroke="#2a1b3d" stroke-width="3"/><path d="M80 21v16M72 29h16" stroke="#2a1b3d" stroke-width="3"/></g>
+          <path d="M26 76l8-18h52l8 18z" fill="#2a1b3d"/>
+          <circle cx="44" cy="67" r="3" fill="#fff8fc"/><circle cx="76" cy="67" r="3" fill="#fff8fc"/>
+          <rect x="52" y="63" width="16" height="8" rx="2" fill="#d4ff5c"/>
+        </svg>
+      </div>
+      <p style="text-align:center;margin:10px 0 0"><span class="badge">1990s · 2000s · 2010s</span></p>
+      <h1 id="title" style="text-align:center">추억 <span class="hl">급식체</span><br>타임캡슐</h1>
+      <p class="tag" style="text-align:center">'야자 땡땡이', '싸이월드 도토리' 기억나면 당신 몇 년생? 10문제로 맞혀드립니다 📼</p>
+
+      <div id="friend-banner" class="friend" hidden>
+        <strong>👯 친구의 기록이 도착했어요</strong>
+        <div id="friend-text"></div>
+        <button type="button" class="btn ghost small" id="friend-clear" style="margin-top:8px">친구 기록 지우기</button>
+      </div>
+
+      <fieldset>
+        <legend>어떤 시절로 돌아갈까요?</legend>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="mode" value="M" checked><span>🌀 전체 믹스<small>세대 골고루</small></span></label>
+          <label class="mode"><input type="radio" name="mode" value="A"><span>📼 90년대<small>삐삐 · PC통신</small></span></label>
+          <label class="mode"><input type="radio" name="mode" value="B"><span>💿 00년대<small>싸이월드 · 월드컵</small></span></label>
+          <label class="mode"><input type="radio" name="mode" value="C"><span>📱 10년대<small>카톡 · 급식체</small></span></label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="nick">결과 카드에 넣을 이름 (선택)</label>
+        <input type="text" id="nick" maxlength="8" placeholder="예: 야자도망자" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="vs-code">친구 점수 코드 (있다면)</label>
+        <div class="row">
+          <input type="text" id="vs-code" placeholder="예: M7-1994" autocomplete="off" aria-describedby="vs-msg">
+          <button type="button" class="btn sky small" id="vs-apply">적용</button>
+        </div>
+        <div class="msg" id="vs-msg" role="status"></div>
+      </div>
+
+      <button type="button" class="btn block start-btn" id="start">▶ 타임캡슐 열기</button>
+      <p class="tip" id="pool-info"></p>
+    </div>
+  </section>
+
+  <!-- 퀴즈 화면 -->
+  <section id="screen-quiz" class="win" aria-labelledby="q-text" hidden>
+    <div class="win-title"><span id="quiz-mode">QUIZ.EXE</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="hud"><span id="q-num">Q1/10</span><span id="q-score">SCORE 0</span></div>
+      <div class="bar" id="bar" role="progressbar" aria-label="퀴즈 진행률" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div id="bar-fill"></div></div>
+      <span class="era-chip" id="era-chip"></span>
+      <h2 class="q-text" id="q-text" tabindex="-1"></h2>
+      <div class="opts" id="opts" role="group" aria-label="보기"></div>
+      <div class="story" id="story" role="status" aria-live="polite" hidden>
+        <p class="verdict" id="verdict"></p>
+        <span class="st">📼 그 시절 이야기</span>
+        <p id="story-text"></p>
+      </div>
+      <div class="next-wrap" id="next-wrap" hidden>
+        <button type="button" class="btn" id="next">다음 문제 ▶</button>
+      </div>
+      <p class="tip">키보드 1~4번으로도 고를 수 있어요.</p>
+    </div>
+  </section>
+
+  <!-- 결과 화면 -->
+  <section id="screen-result" class="win" aria-labelledby="res-h" hidden>
+    <div class="win-title"><span>RESULT.EXE</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="win-body">
+      <h2 id="res-h" tabindex="-1" style="text-align:center">타임캡슐 결과가 나왔어요!</h2>
+
+      <div class="share-card" id="card">
+        <div class="top"><span>TIME CAPSULE</span><span id="c-mode"></span></div>
+        <svg class="cassette" viewBox="0 0 120 84" aria-hidden="true">
+          <rect x="4" y="4" width="112" height="72" rx="9" fill="#FF6B9D" stroke="#2a1b3d" stroke-width="4"/>
+          <rect x="15" y="12" width="90" height="34" rx="5" fill="#fff8fc" stroke="#2a1b3d" stroke-width="3"/>
+          <g class="reel"><circle cx="40" cy="29" r="10" fill="#7DD8FF" stroke="#2a1b3d" stroke-width="3"/><path d="M40 21v16M32 29h16" stroke="#2a1b3d" stroke-width="3"/></g>
+          <g class="reel"><circle cx="80" cy="29" r="10" fill="#7DD8FF" stroke="#2a1b3d" stroke-width="3"/><path d="M80 21v16M72 29h16" stroke="#2a1b3d" stroke-width="3"/></g>
+          <path d="M26 76l8-18h52l8 18z" fill="#2a1b3d"/>
+          <circle cx="44" cy="67" r="3" fill="#fff8fc"/><circle cx="76" cy="67" r="3" fill="#fff8fc"/>
+          <rect x="52" y="63" width="16" height="8" rx="2" fill="#d4ff5c"/>
+        </svg>
+        <p class="who" id="c-who"></p>
+        <p class="lab">MY MENTAL BIRTH YEAR</p>
+        <p class="year"><span id="c-year"></span><small>년생</small></p>
+        <div class="title" id="c-title"></div>
+        <p class="rank" id="c-rank"></p>
+        <div class="squares" id="c-squares" aria-hidden="true"></div>
+        <p class="score-big" id="c-score"></p>
+        <p class="cmt" id="c-cmt"></p>
+        <div class="code-line">MY CODE <b id="c-code"></b></div>
+      </div>
+      <p class="tip">📸 위 카드를 그대로 캡처해서 공유해 보세요!</p>
+
+      <div class="vs" id="vs-box" hidden aria-live="polite"></div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="share-link">🔗 비교 링크 공유</button>
+        <button type="button" class="btn sky" id="copy-code">📋 점수 코드 복사</button>
+        <button type="button" class="btn ghost" id="retry">↺ 다시 하기</button>
+      </div>
+
+      <details>
+        <summary>📖 문제별 정답 &amp; 그 시절 이야기 다시 보기</summary>
+        <ul class="rev" id="review"></ul>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer><span>TIME CAPSULE</span> © <span id="yr" style="font-family:inherit;font-size:inherit">2026</span> 추억 급식체 타임캡슐</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ===== 문제 풀 (e: 세대, by: 그 시절을 겪었을 법한 출생연도) ===== */
+const QUESTIONS = [
+  // 90년대
+  {e:'90',by:1988,q:"삐삐에 찍히던 숫자 '8282'가 뜻하는 말은?",o:["빨리빨리","사랑해","잘 자","어디야"],a:0,s:"숫자를 소리 나는 대로 읽어 말을 전하던 삐삐 암호! 8282는 '빨리빨리', 486은 '사랑해'처럼 쓰였고, 공중전화 앞엔 늘 줄이 길었죠."},
+  {e:'90',by:1989,q:"1992년 데뷔 무대에서 랩과 힙합을 대중에게 알린 서태지와 아이들의 데뷔곡은?",o:["난 알아요","하여가","교실 이데아","컴백홈"],a:0,s:"'난 알아요'는 1992년 발표된 데뷔곡이에요. 이후 가요계의 판도가 바뀌었고, 학교 앞 문방구엔 브로마이드가 넘쳐났습니다."},
+  {e:'90',by:1991,q:"포켓몬빵을 먹는 진짜 이유! 빵 속에 들어 있던 수집품은?",o:["띠부씰(떼었다 붙이는 스티커)","야광 카드","미니 피규어","구슬"],a:0,s:"포켓몬빵은 1990년대 말에 처음 나왔고, 띠부씰 모으기 열풍이 불었어요. 2022년 재출시 때 편의점 오픈런이 다시 벌어졌죠."},
+  {e:'90',by:1987,q:"다음 중 '전화선 PC통신' 서비스가 아닌 것은?",o:["싸이월드","하이텔","천리안","나우누리"],a:0,s:"하이텔·천리안·나우누리·유니텔이 PC통신 대표 주자였어요. 모뎀 연결할 때 나던 '삐~지직' 소리, 아직 귀에 남아 있죠?"},
+  {e:'90',by:1990,q:"스타크래프트에 등장하는 세 종족이 아닌 것은?",o:["오크","테란","저그","프로토스"],a:0,s:"오크는 같은 회사의 워크래프트 시리즈 종족이에요. 1998년 발매된 스타크래프트는 PC방 문화와 프로게이머 시대를 열었습니다."},
+  {e:'90',by:1986,q:"H.O.T.와 함께 1세대 아이돌 라이벌로 불린 그룹은?",o:["젝스키스","동방신기","빅뱅","샤이니"],a:0,s:"1997년 데뷔한 젝스키스! 팬클럽 풍선 색이 H.O.T.는 흰색, 젝스키스는 노란색이라 콘서트장이 두 빛깔로 갈렸어요."},
+  {e:'90',by:1990,q:"문방구 앞 뽑기 '달고나'를 만들 때 기본이 되는 재료 조합은?",o:["설탕 + 소다","밀가루 + 소금","꿀 + 우유","설탕 + 식초"],a:0,s:"국자에 설탕을 녹이고 소다를 살짝 넣으면 부풀어 오르죠. 모양을 깨뜨리지 않고 떼어내면 성공, 깨지면 한 판 더!"},
+  {e:'90',by:1988,q:"컴퓨터 '저장' 버튼 아이콘의 원래 모델이 된 물건은?",o:["플로피 디스크","CD","카세트테이프","USB"],a:0,s:"1.44MB 용량의 플로피 디스크가 그 주인공이에요. 이제는 실물을 본 적 없는 세대도 저장 아이콘은 알고 있답니다."},
+  {e:'90',by:1985,q:"늘어난 카세트테이프를 다시 감을 때 흔히 쓰던 도구는?",o:["연필","가위","빨대","자"],a:0,s:"테이프 구멍에 연필을 꽂아 빙글빙글 돌리던 그 기술! 카세트가 늘어지면 '제발 살아나라' 하며 감았죠."},
+  {e:'90',by:1987,q:"1998년 외환위기 때 국민이 참여한 대표적인 운동은?",o:["금 모으기 운동","새마을 운동","국채보상운동","에너지 절약의 날"],a:0,s:"장롱 속 돌 반지와 금붙이를 들고 은행 앞에 줄을 섰던 금 모으기 운동. 어려운 시절을 함께 넘기려던 기억으로 남아 있어요."},
+  {e:'90',by:1991,q:"1997년 무렵 학교에 몰래 들고 와 '밥 주기'를 하던 가상 애완동물 기기는?",o:["다마고치","게임보이","워크맨","삐삐"],a:0,s:"일본 반다이가 1996년 내놓은 다마고치는 한국에서도 큰 인기였어요. 수업 중에 삐빅거리면 압수당하기 십상이었죠."},
+
+  // 00년대
+  {e:'00',by:1993,q:"싸이월드에서 배경음악이나 미니미를 살 때 쓰던 화폐는?",o:["도토리","밤","별","코인"],a:0,s:"도토리 몇 개로 BGM을 사서 미니홈피를 꾸미던 감성! 새벽 감성 다이어리와 함께 지금은 추억의 상징이 됐어요."},
+  {e:'00',by:1994,q:"싸이월드에서 친구 관계를 맺는 것을 부르던 말은?",o:["일촌","이촌","단짝","팔로우"],a:0,s:"일촌을 맺으면 '내 사랑 ○○' 같은 일촌명을 붙이고 일촌평을 남겼죠. 일촌 수가 곧 인기의 척도였습니다."},
+  {e:'00',by:1995,q:"다음 중 2000년대에 쓰던 메신저가 아닌 것은?",o:["카카오톡","버디버디","MSN 메신저","네이트온"],a:0,s:"카카오톡은 2010년에 나왔어요. 그 전엔 버디버디로 쪽지를 보내고, 네이트온 대화명으로 기분을 표현했습니다."},
+  {e:'00',by:1992,q:"2000년대 중반 큰 인기를 끈 '초콜릿폰'을 만든 회사는?",o:["LG전자","삼성전자","팬택","모토로라"],a:0,s:"검은 바디에 터치 버튼이 반짝이던 LG 초콜릿폰은 디자인 폰 열풍을 일으켰어요. 폴더폰·슬라이드폰 전성기였죠."},
+  {e:'00',by:1993,q:"2000년대 초 MP3 파일을 공유하던 서비스는?",o:["소리바다","멜론","스포티파이","유튜브"],a:0,s:"2000년 시작한 소리바다에서 곡을 내려받아 MP3 플레이어에 넣어 다녔어요. 이후 저작권 문제로 유료 음악 서비스 시대가 열렸습니다."},
+  {e:'00',by:1996,q:"카트라이더에서 코너를 빠르게 도는 핵심 기술은?",o:["드리프트","점프","순간이동","낙하"],a:0,s:"2004년 출시된 카트라이더! 드리프트로 부스터 게이지를 채워 달리는 맛에 PC방 밤샘이 이어졌죠."},
+  {e:'00',by:1992,q:"2004년 드라마 '풀하우스'에서 남자 주인공을 맡은 가수 겸 배우는?",o:["비(Rain)","세븐","이효리","보아"],a:0,s:"비와 송혜교가 주연한 '풀하우스'는 아시아에서 큰 인기를 얻었어요. 로맨틱 코미디 하면 떠오르는 명작이죠."},
+  {e:'00',by:1988,q:"드라마 '겨울연가'로 일본에서 '욘사마'라 불린 배우는?",o:["배용준","원빈","장동건","권상우"],a:0,s:"2002년 방영된 겨울연가는 한류의 시작을 알린 작품으로 꼽혀요. 목도리와 눈 내리는 풍경이 상징이 됐죠."},
+  {e:'00',by:1995,q:"2000년대 인터넷 유행어 '안습'의 뜻은?",o:["안구에 습기 찬다(슬프다)","안전하게 습득","안녕 습관","안 씻고 습하다"],a:0,s:"너무 슬프거나 안타까울 때 눈에 눈물이 맺힌다는 뜻이에요. '엽기', '얼짱', '즐~'과 함께 인터넷 시대의 말투였어요."},
+  {e:'00',by:1984,q:"2002 한일 월드컵에서 한국을 4강으로 이끈 감독은?",o:["거스 히딩크","봉준호","박항서","차범근"],a:0,s:"'아직도 배고프다'는 말로 유명한 히딩크 감독! 붉은 악마 응원과 '대~한민국' 박수가 온 나라를 하나로 묶었습니다."},
+  {e:'00',by:1996,q:"'야자'는 무슨 뜻일까요?",o:["야간 자율학습","야외 자습","야구 자유시간","야채 자판기"],a:0,s:"이름은 '자율'인데 사실상 필수였던 야간 자율학습. 야자 땡땡이는 학창시절 최고의 스릴이었죠."},
+
+  // 10년대
+  {e:'10',by:2000,q:"카카오톡 메시지 옆에 뜨는 노란 숫자 '1'의 의미는?",o:["아직 읽지 않은 사람 수","메시지 전송 순서","중요 표시","친구 레벨"],a:0,s:"카톡은 2010년 3월에 등장했어요. 숫자 1이 사라지지 않으면 읽씹인지 못 본 건지 하루 종일 마음이 쓰였죠."},
+  {e:'10',by:2001,q:"2017년 초 포켓몬 GO 열풍 때, 한국 정식 출시 전 플레이 가능 지역으로 몰려든 곳은?",o:["속초","제주","부산","강릉"],a:0,s:"한국 정식 출시 전에 일부 지역에서만 게임이 되어 속초행 버스가 북적였어요. 포켓몬 잡으러 떠나는 여행이 유행이었죠."},
+  {e:'10',by:2000,q:"배틀그라운드에서 우승했을 때 나오는 문구는?",o:["이겼닭! 오늘 저녁은 치킨이닭!","승리하였습니다","GG 웰플레이","당신이 최후의 1인"],a:0,s:"2017년 배그 열풍과 함께 이 문구가 대유행했어요. 게임 승리 후 정말 치킨을 시켜 먹는 문화로 이어졌습니다."},
+  {e:'10',by:1999,q:"애니팡을 계속하기 위해 카톡 친구들과 주고받던 것은?",o:["하트","도토리","별사탕","다이아"],a:0,s:"2012년 애니팡은 하트가 떨어지면 친구에게 받아야 했어요. 카톡 알림 폭탄으로 '하트 보내지 마세요' 짤이 돌 정도였죠."},
+  {e:'10',by:2002,q:"'프로듀스 101'에서 시청자를 부르던 말은?",o:["국민 프로듀서","국민 심사위원","국민 마스터","국민 팬"],a:0,s:"2016년 방송된 프로듀스 101은 시청자 투표로 데뷔 멤버를 뽑았어요. '국민 프로듀서님, 제 이름은…'이 유행어였죠."},
+  {e:'10',by:1999,q:"아이폰이 한국에 정식 출시된 해는?",o:["2009년","2007년","2011년","2013년"],a:0,s:"2009년 11월 아이폰 3GS가 국내에 처음 정식 출시됐어요. 그 뒤 스마트폰 시대가 열리며 폴더폰이 서서히 사라졌습니다."},
+  {e:'10',by:2001,q:"2014년 얼음물을 뒤집어쓰며 기부를 이어가던 캠페인은?",o:["아이스버킷 챌린지","물 절약 캠페인","샤워 챌린지","빙수 이벤트"],a:0,s:"루게릭병(ALS) 환우를 돕기 위한 아이스버킷 챌린지는 SNS로 퍼져 전 세계 유명인이 참여했어요. 다음 사람 지목이 핵심이었죠."},
+  {e:'10',by:1998,q:"2012년 싸이의 '강남스타일'을 상징하는 춤 이름은?",o:["말춤","로봇춤","웨이브","기차춤"],a:0,s:"말 타는 듯한 동작의 말춤은 전 세계 사람들이 따라 췄고, 유튜브 조회수 기록도 세웠어요."},
+  {e:'10',by:2002,q:"'TMI'의 원래 뜻은?",o:["Too Much Information","Try My Idea","Time Made It","Top Music Index"],a:0,s:"너무 많은 정보를 말할 때 '그건 TMI야'라고 하죠. 친구들 사이에서 대화 끊는 마법의 말이었어요."},
+  {e:'10',by:2003,q:"'얼죽아'는 무엇의 줄임말일까요?",o:["얼어 죽어도 아이스 아메리카노","얼굴이 죽도록 아름다워","얼마나 죽도록 아팠니","얼린 죽 아침 식사"],a:0,s:"한겨울에도 아이스 아메리카노를 고집하는 사람들을 가리키는 말이에요. 2010년대 후반 카페 문화와 함께 퍼졌죠."},
+  {e:'10',by:2003,q:"'급식체'란 무엇일까요?",o:["학생들이 쓰는 유행어 말투","급식 메뉴 이름","학교 식당 규칙","급식실 노래"],a:0,s:"'ㅇㅈ?', '뇌피셜'처럼 청소년들 사이에서 퍼진 말투를 이르는 말이에요. 해마다 새 말이 생겼다가 사라지는 게 매력이죠."},
+  {e:'10',by:2002,q:"'ㅇㄱㄹㅇ'은 무슨 뜻일까요?",o:["이거 레알(진짜)","이건 로얄","일기 그리기 연습","이것 괜찮을까"],a:0,s:"초성만 쓰는 대화가 유행하던 시절, '이거 레알'이라는 감탄으로 많이 썼어요. 카톡 속 초성 대화의 대표 사례죠."},
+  {e:'10',by:1996,q:"2015년 무한도전 특집 '토토가'가 뜻하는 말은?",o:["토요일 토요일은 가수다","토요일 토크가 가득","토닥토닥 가요","토마토 가요제"],a:0,s:"터보, SES, 쿨, 김건모 등 90년대 가수가 무대에 오르며 전국이 복고 열풍에 휩싸였어요. 부모와 자녀가 같이 본 방송이었죠."},
+  {e:'10',by:2001,q:"'갑분싸'는 무슨 뜻일까요?",o:["갑자기 분위기 싸해짐","갑자기 분식 싸게 팔기","갑옷 분장 싸움","갑을 분리 싸인"],a:0,s:"말 한마디 때문에 갑자기 분위기가 어색해질 때 쓰는 말이에요. 어색한 침묵을 한 단어로 정리해 주는 효자 단어였죠."}
+];
+
+const MODES = {
+  M:{label:'전체 믹스',icon:'🌀'},
+  A:{label:'90년대',icon:'📼'},
+  B:{label:'00년대',icon:'💿'},
+  C:{label:'10년대',icon:'📱'}
+};
+const ERA_OF = {A:'90',B:'00',C:'10'};
+const ERA_LABEL = {'90':'📼 90년대','00':'💿 00년대','10':'📱 10년대'};
+const TOTAL = 10;
+
+/* ===== 유틸 ===== */
+const $ = id => document.getElementById(id);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let toastTimer;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+function show(id){['screen-start','screen-quiz','screen-result'].forEach(s=>$(s).hidden=(s!==id));window.scrollTo(0,0);}
+async function copyText(text){
+  try{ if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true;} }catch(e){}
+  const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);return ok;
+}
+
+/* ===== 상태 ===== */
+let state={mode:'M',qs:[],i:0,score:0,log:[],locked:false,nick:'',code:''};
+let friend=null;
+
+/* ===== 코드 ===== */
+function makeCode(mode,score,year){return mode+score+'-'+year;}
+function parseCode(raw){
+  const m=/^([MABC])(\d{1,2})-(\d{4})$/.exec((raw||'').trim().toUpperCase());
+  if(!m) return null;
+  const score=+m[2], year=+m[3];
+  if(score<0||score>TOTAL||year<1975||year>2020) return null;
+  return {mode:m[1],score,year,code:m[1]+score+'-'+year};
+}
+function readHash(){
+  const m=/[#&]vs=([^&]+)/.exec(location.hash||'');
+  if(!m) return null;
+  try{ return parseCode(decodeURIComponent(m[1])); }catch(e){ return null; }
+}
+function renderFriend(){
+  const b=$('friend-banner');
+  if(!friend){b.hidden=true;return;}
+  b.hidden=false;
+  $('friend-text').textContent=`${MODES[friend.mode].icon} ${MODES[friend.mode].label} 모드 · ${friend.score}/${TOTAL}점 · ${friend.year}년생 감성 (코드 ${friend.code})`;
+}
+
+/* ===== 출제 ===== */
+function pickQuestions(mode){
+  if(mode==='M'){
+    const eras=['90','00','10'];
+    const bigger=eras[Math.floor(Math.random()*3)];
+    let out=[];
+    eras.forEach(e=>{
+      const n=e===bigger?4:3;
+      out=out.concat(shuffle(QUESTIONS.filter(q=>q.e===e)).slice(0,n));
+    });
+    return shuffle(out);
+  }
+  return shuffle(QUESTIONS.filter(q=>q.e===ERA_OF[mode])).slice(0,TOTAL);
+}
+
+/* ===== 퀴즈 진행 ===== */
+function startQuiz(){
+  state.mode=document.querySelector('input[name=mode]:checked').value;
+  state.nick=$('nick').value.trim();
+  state.qs=pickQuestions(state.mode);
+  state.i=0;state.score=0;state.log=[];
+  $('quiz-mode').textContent=MODES[state.mode].icon+' '+MODES[state.mode].label;
+  show('screen-quiz');
+  renderQ();
+}
+function renderQ(){
+  const q=state.qs[state.i];
+  state.locked=false;
+  const total=state.qs.length;
+  $('q-num').textContent=`Q${state.i+1}/${total}`;
+  $('q-score').textContent='SCORE '+state.score;
+  $('bar-fill').style.width=(state.i/total*100)+'%';
+  $('bar').setAttribute('aria-valuenow',state.i);
+  $('bar').setAttribute('aria-valuemax',total);
+  $('era-chip').textContent=ERA_LABEL[q.e];
+  $('q-text').textContent=q.q;
+  $('story').hidden=true;$('next-wrap').hidden=true;
+  const opts=shuffle(q.o.map((t,idx)=>({t,ok:idx===q.a})));
+  q._shown=opts;
+  const box=$('opts');box.innerHTML='';
+  opts.forEach((op,idx)=>{
+    const b=document.createElement('button');
+    b.type='button';b.className='opt';b.dataset.idx=idx;
+    b.innerHTML='<span class="k" aria-hidden="true"></span><span class="t"></span><span class="mark"></span>';
+    b.querySelector('.k').textContent=idx+1;
+    b.querySelector('.t').textContent=op.t;
+    b.addEventListener('click',()=>choose(idx));
+    box.appendChild(b);
+  });
+  $('q-text').focus({preventScroll:true});
+}
+function choose(idx){
+  if(state.locked) return;
+  state.locked=true;
+  const q=state.qs[state.i];
+  const picked=q._shown[idx];
+  const ok=picked.ok;
+  if(ok) state.score++;
+  state.log.push({q,ok,picked:picked.t});
+  const btns=[...$('opts').children];
+  btns.forEach((b,i)=>{
+    b.disabled=true;
+    const isOk=q._shown[i].ok;
+    if(isOk){b.classList.add('correct');b.querySelector('.mark').textContent='✔ 정답';}
+    else if(i===idx){b.classList.add('wrong');b.querySelector('.mark').textContent='✖ 오답';}
+    else b.classList.add('dim');
+  });
+  $('q-score').textContent='SCORE '+state.score;
+  $('verdict').textContent=ok?'🎉 정답! 기억력 좋은데요?':'😅 아쉬워요! 정답은 "'+q.o[q.a]+'"';
+  $('story-text').textContent=q.s;
+  $('story').hidden=false;
+  const last=state.i===state.qs.length-1;
+  $('next').textContent=last?'결과 보기 🎁':'다음 문제 ▶';
+  $('next-wrap').hidden=false;
+  $('next').focus();
+}
+function next(){
+  if(state.i>=state.qs.length-1){showResult();return;}
+  state.i++;renderQ();
+}
+
+/* ===== 결과 ===== */
+function estimateYear(){
+  const ok=state.log.filter(l=>l.ok);
+  if(!ok.length) return 2010;
+  return Math.round(ok.reduce((s,l)=>s+l.q.by,0)/ok.length);
+}
+function genOf(year,score){
+  if(score===0) return {name:'추억 신생아형',icon:'🍼'};
+  if(year<=1990) return {name:'90년대 초딩형',icon:'📼'};
+  if(year<=1997) return {name:'00년대 싸이월드형',icon:'💿'};
+  return {name:'10년대 카톡형',icon:'📱'};
+}
+function rankOf(s){
+  if(s===10) return ['🏆 추억 백과사전','만점! 당신은 걸어 다니는 타임캡슐이에요. 그 시절 문방구 사장님도 인정할 실력!'];
+  if(s>=8) return ['🥇 골수 추억러','거의 다 맞혔어요. 학창시절 유행은 놓친 적 없는 분위기 메이커였군요.'];
+  if(s>=6) return ['🥈 감성 중급자','꽤 많이 기억하고 있어요. 친구들과 모이면 "그때 그랬지"를 이끄는 타입!'];
+  if(s>=4) return ['🥉 추억 수집가','반은 기억, 반은 가물가물. 해설 카드를 보며 그 시절을 다시 채워 보세요.'];
+  if(s>=2) return ['🎧 새내기 감성','아직 타임머신 부팅 중! 부모님이나 선배에게 물어보면 이야기보따리가 열릴 거예요.'];
+  return ['🍼 추억 신생아','이번엔 낯선 시절이었나 봐요. 다른 세대 모드로 도전해 보세요!'];
+}
+function showResult(){
+  const score=state.score,total=state.qs.length,year=estimateYear();
+  const g=genOf(year,score),r=rankOf(score);
+  const code=makeCode(state.mode,score,year);
+  $('c-mode').textContent=MODES[state.mode].icon+' '+MODES[state.mode].label;
+  $('c-who').textContent=(state.nick?state.nick:'나')+'의 추억 나이';
+  $('c-year').textContent=year;
+  $('c-title').textContent=g.icon+' '+g.name;
+  $('c-rank').textContent=r[0];
+  $('c-score').textContent=score+' / '+total;
+  $('c-cmt').textContent=r[1];
+  $('c-code').textContent=code;
+  const sq=$('c-squares');sq.innerHTML='';
+  state.log.forEach(l=>{const i=document.createElement('i');if(l.ok)i.className='on';sq.appendChild(i);});
+  // 비교
+  const vs=$('vs-box');
+  if(friend){
+    const ds=score-friend.score, dy=year-friend.year;
+    let line;
+    if(ds>0) line=`내가 ${ds}점 앞서요! 😎`;
+    else if(ds<0) line=`친구가 ${-ds}점 앞서요! 다시 도전해 볼까요? 🔥`;
+    else line='점수가 똑같아요! 취향 도플갱어 🤝';
+    let yl;
+    if(dy===0) yl='정신연령 출생연도까지 같아요!';
+    else yl=`추억 나이는 내가 친구보다 ${Math.abs(dy)}년 ${dy<0?'형·누나 쪽':'동생 쪽'}이에요.`;
+    vs.innerHTML='<h3>👯 친구와 비교</h3><table><thead><tr><th></th><th>점수</th><th>출생연도 감성</th></tr></thead><tbody>'+
+      `<tr><th scope="row">나</th><td>${score}/${total}</td><td>${year}년생</td></tr>`+
+      `<tr><th scope="row">친구</th><td>${friend.score}/${TOTAL}</td><td>${friend.year}년생</td></tr></tbody></table>`+
+      `<div></div>`;
+    const d=vs.lastChild;d.textContent=line+' '+yl;
+    vs.hidden=false;
+  } else vs.hidden=true;
+  // 리뷰
+  const rv=$('review');rv.innerHTML='';
+  state.log.forEach((l,i)=>{
+    const li=document.createElement('li');
+    const b=document.createElement('b');b.textContent=(l.ok?'✅ ':'❌ ')+'Q'+(i+1)+'. '+l.q.q;
+    const a=document.createElement('div');a.className='ans';a.textContent='정답: '+l.q.o[l.q.a]+(l.ok?'':' (내 답: '+l.picked+')');
+    const s=document.createElement('div');s.textContent='📼 '+l.q.s;
+    li.append(b,a,s);rv.appendChild(li);
+  });
+  state.code=code;
+  show('screen-result');
+  $('res-h').focus({preventScroll:true});
+}
+
+/* ===== 이벤트 ===== */
+$('start').addEventListener('click',startQuiz);
+$('next').addEventListener('click',next);
+$('retry').addEventListener('click',()=>{show('screen-start');});
+$('vs-apply').addEventListener('click',applyCode);
+$('vs-code').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyCode();}});
+function applyCode(){
+  const v=$('vs-code').value;
+  const msg=$('vs-msg');
+  if(!v.trim()){msg.textContent='코드를 입력해 주세요. 예: M7-1994';return;}
+  const p=parseCode(v);
+  if(!p){msg.textContent='코드 형식이 올바르지 않아요. 예: M7-1994';return;}
+  friend=p;msg.textContent='';$('vs-code').value='';renderFriend();toast('친구 기록을 불러왔어요!');
+}
+$('friend-clear').addEventListener('click',()=>{
+  friend=null;renderFriend();
+  if(history.replaceState) history.replaceState(null,'',location.pathname+location.search); else location.hash='';
+});
+$('copy-code').addEventListener('click',async()=>{
+  const ok=await copyText(state.code);
+  toast(ok?'점수 코드를 복사했어요: '+state.code:'복사에 실패했어요. 코드를 직접 적어 주세요: '+state.code);
+});
+$('share-link').addEventListener('click',async()=>{
+  const base=location.href.split('#')[0];
+  const url=base+'#vs='+encodeURIComponent(state.code);
+  const text=`나는 추억 퀴즈 ${state.score}점, ${estimateYear()}년생 감성! 너도 도전해 봐 📼`;
+  if(navigator.share){
+    try{await navigator.share({title:document.title,text,url});return;}catch(e){if(e&&e.name==='AbortError')return;}
+  }
+  const ok=await copyText(text+' '+url);
+  toast(ok?'비교 링크를 복사했어요!':'복사 실패: '+url);
+});
+document.addEventListener('keydown',e=>{
+  if($('screen-quiz').hidden||state.locked) return;
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=4){const b=$('opts').children[n-1];if(b)b.click();}
+});
+window.addEventListener('hashchange',()=>{const p=readHash();if(p){friend=p;renderFriend();}});
+
+/* ===== 초기화 ===== */
+$('yr').textContent=new Date().getFullYear();
+$('pool-info').textContent=`문제 ${QUESTIONS.length}개 중 매번 ${TOTAL}문제가 랜덤 출제돼요.`;
+friend=readHash();renderFriend();
+})();
+</script>
+</body>
+</html>
