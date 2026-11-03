@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>댕냥 이름점 – 우리 애 이름 운세 생성기</title>
+<meta name="description" content="반려동물 이름과 생일만 넣으면 전생 직업, 숨겨진 성격, 행운의 간식과 산책 시간까지! 같은 이름은 항상 같은 결과가 나오는 댕냥 이름 운세 생성기.">
+<meta property="og:title" content="댕냥 이름점 – 우리 애 이름 운세 생성기">
+<meta property="og:description" content="우리 집 댕댕이·냥이 이름, 사주로 풀면 '재벌 3세'일 수도? 전생 직업과 오늘의 운세를 확인하고 9:16 카드로 저장하세요.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FFB35C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#FFB35C;
+  --primary-d:#A65800;
+  --cream:#FFF7EA;
+  --mint:#BFEBDD;
+  --mint-d:#1F7A63;
+  --ink:#4A3426;
+  --card:#FFFFFF;
+  --line:#F0DFC6;
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:'Gowun Dodum',system-ui,sans-serif;color:var(--ink);
+  background:var(--cream);
+  background-image:radial-gradient(circle at 10% 0%,#FFE6C4 0,transparent 40%),radial-gradient(circle at 100% 20%,#DDF5EC 0,transparent 35%);
+  line-height:1.6;min-height:100vh;display:flex;flex-direction:column;
+}
+h1,h2,h3,.jua{font-family:'Jua','Gowun Dodum',sans-serif;font-weight:400}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 12px;text-align:center}
+.paw{font-size:34px;display:inline-block;animation:wiggle 3s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@media (prefers-reduced-motion:reduce){.paw{animation:none}html{scroll-behavior:auto}.btn,.toast{transition:none}}
+h1{margin:4px 0;font-size:clamp(26px,7vw,36px);line-height:1.25}
+h1 span{color:var(--primary-d)}
+.tagline{margin:0;font-size:16px}
+.tabs{display:flex;gap:6px;background:#FFEBD0;padding:5px;border-radius:999px;margin:20px 0 14px}
+.tab{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-family:'Jua',sans-serif;font-size:clamp(13px,3.9vw,15px);padding:10px 2px;border-radius:999px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--primary);box-shadow:0 2px 0 var(--primary-d)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--mint-d);outline-offset:2px}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 6px 0 var(--line)}
+.panel[hidden]{display:none}
+.row{display:grid;gap:12px;margin-bottom:14px}
+.row>div{min-width:0}
+@media(min-width:520px){.row.two{grid-template-columns:1fr 1fr}}
+label{display:block;font-family:'Jua',sans-serif;font-size:15px;margin-bottom:4px}
+input,select{width:100%;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border:2px solid var(--line);border-radius:14px;background:#FFFCF6;color:var(--ink)}
+input[type=date]{min-height:50px}
+input:focus,select:focus{border-color:var(--primary)}
+fieldset{border:2px dashed var(--line);border-radius:14px;padding:12px 14px 4px;margin:0 0 14px;min-width:0}
+legend{font-family:'Jua',sans-serif;padding:0 6px;color:var(--primary-d)}
+.btn{width:100%;border:0;font-family:'Jua',sans-serif;font-size:18px;padding:14px;border-radius:16px;background:var(--primary);color:#3b2410;cursor:pointer;box-shadow:0 4px 0 var(--primary-d);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--primary-d)}
+.btn.mint{background:var(--mint);box-shadow:0 4px 0 #8CCDB9;color:#0f3d31}
+.btns{display:grid;gap:10px;margin-top:14px}
+@media(min-width:520px){.btns{grid-template-columns:1fr 1fr}}
+.err{color:#B3261E;font-size:14px;min-height:20px;margin:0 0 8px}
+.result{margin-top:18px}
+.result:focus{outline:none}
+.result[hidden]{display:none}
+.hero{text-align:center;background:linear-gradient(160deg,#FFE2B8,#D9F4EA);border-radius:var(--radius);padding:22px 16px;border:2px solid var(--line);overflow-wrap:anywhere}
+.hero .emoji{font-size:54px}
+.hero h2{margin:6px 0;font-size:clamp(20px,5.5vw,26px);line-height:1.35}
+.hero p{margin:0}
+.grid{display:grid;gap:10px;margin-top:12px}
+@media(min-width:520px){.grid{grid-template-columns:1fr 1fr}}
+.item{background:#FFFCF6;border:2px solid var(--line);border-radius:16px;padding:12px 14px;overflow-wrap:anywhere}
+.item b{display:block;font-family:'Jua',sans-serif;font-weight:400;color:var(--primary-d);font-size:14px}
+.item span{font-size:16px}
+.meter{height:12px;background:#F4E7D2;border-radius:99px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#FF8F6B);border-radius:99px}
+.swatches{display:flex;gap:8px;margin-top:6px}
+.sw{width:38px;height:38px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.score{font-size:48px;text-align:center;font-family:'Jua';color:var(--primary-d);margin:0}
+.note{font-size:13px;color:#6d5846;text-align:center;margin:12px 0 0}
+footer{margin-top:auto;padding:28px 16px 24px;text-align:center;font-size:13px;color:#6d5846}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:9;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="paw" aria-hidden="true">🐾</div>
+    <h1>댕냥 <span>이름점</span></h1>
+    <p class="tagline">우리 집 댕댕이·냥이 이름, 사주로 풀면 '재벌 3세'일 수도? 🐶🐱✨</p>
+  </header>
+
+  <main>
+    <div class="tabs" role="tablist" aria-label="기능 선택">
+      <button type="button" class="tab" role="tab" id="t1" aria-selected="true" aria-controls="p1">이름 운세</button>
+      <button type="button" class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">오늘의 운세</button>
+      <button type="button" class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">댕냥 케미</button>
+    </div>
+
+    <!-- 이름 운세 -->
+    <section class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
+      <form id="f1" novalidate>
+        <div class="row two">
+          <div><label for="n1">반려동물 이름</label><input id="n1" maxlength="12" placeholder="예: 치즈" autocomplete="off" aria-describedby="e1"></div>
+          <div><label for="s1">종류</label>
+            <select id="s1"><option value="dog">강아지 🐶</option><option value="cat">고양이 🐱</option><option value="hamster">햄스터 🐹</option><option value="etc">기타 🐾</option></select></div>
+        </div>
+        <div class="row"><div><label for="b1">생일 또는 입양일</label><input id="b1" type="date" aria-describedby="e1"></div></div>
+        <p class="err" id="e1" role="alert"></p>
+        <button class="btn" type="submit">전생 확인하기 🔮</button>
+      </form>
+      <div class="result" id="r1" role="region" aria-label="이름 운세 결과" tabindex="-1" hidden></div>
+    </section>
+
+    <!-- 오늘의 운세 -->
+    <section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+      <form id="f2" novalidate>
+        <div class="row two">
+          <div><label for="n2">반려동물 이름</label><input id="n2" maxlength="12" placeholder="예: 몽실" autocomplete="off" aria-describedby="e2"></div>
+          <div><label for="s2">종류</label>
+            <select id="s2"><option value="dog">강아지 🐶</option><option value="cat">고양이 🐱</option><option value="hamster">햄스터 🐹</option><option value="etc">기타 🐾</option></select></div>
+        </div>
+        <div class="row"><div><label for="b2">생일 또는 입양일 (선택)</label><input id="b2" type="date" aria-describedby="e2"></div></div>
+        <p class="err" id="e2" role="alert"></p>
+        <button class="btn" type="submit">오늘 운세 보기 ☀️</button>
+      </form>
+      <div class="result" id="r2" role="region" aria-label="오늘의 운세 결과" tabindex="-1" hidden></div>
+    </section>
+
+    <!-- 케미 -->
+    <section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+      <form id="f3" novalidate>
+        <fieldset><legend>첫째</legend>
+          <div class="row"><div><label for="n3a">이름</label><input id="n3a" maxlength="12" placeholder="예: 보리" autocomplete="off" aria-describedby="e3"></div></div>
+        </fieldset>
+        <fieldset><legend>둘째</legend>
+          <div class="row"><div><label for="n3b">이름</label><input id="n3b" maxlength="12" placeholder="예: 나비" autocomplete="off" aria-describedby="e3"></div></div>
+        </fieldset>
+        <p class="err" id="e3" role="alert"></p>
+        <button class="btn mint" type="submit">케미 확인하기 💞</button>
+      </form>
+      <div class="result" id="r3" role="region" aria-label="댕냥 케미 결과" tabindex="-1" hidden></div>
+    </section>
+
+    <p class="note">같은 이름과 날짜를 넣으면 언제나 같은 결과가 나와요. 재미로만 봐주세요! 😸</p>
+  </main>
+</div>
+<footer>© <span id="yr"></span> 댕냥 이름점 · 모든 계산은 내 브라우저에서만 이루어져요</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+$('#yr').textContent=new Date().getFullYear();
+
+/* 미래 날짜 방지 */
+function isoToday(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+$('#b1').max=isoToday();$('#b2').max=isoToday();
+
+function showResult(el){
+  el.hidden=false;
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  try{el.focus({preventScroll:true});}catch(_){}
+}
+
+/* ---------- 해시 / 난수 ---------- */
+function hash(str){
+  let h=2166136261>>>0;
+  for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
+  h^=h>>>13;h=Math.imul(h,0x5bd1e995)>>>0;h^=h>>>15;
+  return h>>>0;
+}
+function rng(seed){
+  let a=seed>>>0;
+  return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+}
+function pick(r,arr){return arr[Math.floor(r()*arr.length)];}
+
+/* 한글 획수 근사: 초성/중성/종성 가중치 */
+const CHO_S=[1,2,1,2,4,3,3,4,8,2,4,1,3,6,5,4,3,4,3];
+const JUNG_S=[2,3,3,4,2,3,3,4,2,4,5,3,3,2,4,5,3,3,1,2,1];
+const JONG_S=[0,1,2,3,1,3,4,2,3,5,6,6,5,6,7,5,3,3,5,2,3,2,3,4,2,4,4,3];
+function strokes(name){
+  let t=0;
+  for(const ch of name){
+    const c=ch.charCodeAt(0);
+    if(c>=0xAC00&&c<=0xD7A3){
+      const x=c-0xAC00;
+      t+=CHO_S[Math.floor(x/588)]+JUNG_S[Math.floor((x%588)/28)]+JONG_S[x%28];
+    }else if(/\S/.test(ch)){t+=(c%7)+2;}
+  }
+  return t;
+}
+
+/* ---------- 데이터 ---------- */
+const SPECIES={dog:{e:'🐶',n:'강아지'},cat:{e:'🐱',n:'고양이'},hamster:{e:'🐹',n:'햄스터'},etc:{e:'🐾',n:'반려동물'}};
+const JOBS=['조선시대 왕실 수라간 총괄','궁중 암행어사 비서실장','한강 라면 맛집 평가단장','강남 빌딩 3채를 가진 건물주','알프스 산장의 치즈 감별사','로마 황제의 전담 낮잠 컨설턴트','고려시대 간식 검수관','월스트리트 새벽 트레이더','베르사유 궁전 쿠션 관리인','해적선의 간식 담당 항해사','우주정거장 야간 경비대장','파리 베이커리의 수석 시식가','동네 평상 위 수박 분배 책임자','대기업 회장님의 무릎 위 고문','탐정 사무소의 수석 냄새 분석관','마법학교 기숙사 사감 선생님','신라 금관 수호 근위대장','할리우드 스턴트 대역 1순위'];
+const PERSONA=['겉은 시크하지만 간식 봉지 소리에 영혼이 나가는 반전 매력','집사의 기분을 3초 만에 스캔하는 눈치 9단','자기가 이 집 주인인 줄 아는 당당한 카리스마','낯선 사람 앞에선 얌전, 집에선 폭주하는 이중생활러','사랑받고 있다는 걸 완벽히 알고 있는 자존감 부자','작은 소리에도 출동하는 24시간 경비 시스템','하루 20시간 잠으로 에너지를 충전하는 효율 중시형','표정은 무심한데 꼬리와 귀는 정직한 솔직 담백형','택배 상자만 보면 눈이 반짝이는 탐험가','집사 껌딱지, 화장실까지 따라오는 의리파'];
+const SNACKS=['닭가슴살 육포','연어 스틱','고구마 말랭이','북어 트릿','치즈 큐브 한 조각','참치 츄르','동결건조 황태','단호박 쿠키','오리 안심 져키','삶은 닭 한 점'];
+const TOYS=['삑삑이 오리 인형','깃털 낚싯대','터그 로프','레이저 포인터(1분 한정)','바스락 공','스크래처 박스','노즈워크 매트','쪼르르 쳇바퀴','택배 상자 아지트','굴러가는 간식볼'];
+const MOODS=['오늘은 무릎 위 명당을 사수하세요','창가 일광욕이 행운을 불러요','현관 앞에서 기다리면 좋은 일이 생겨요','간식 서랍 앞이 오늘의 길지입니다','낯선 택배가 도착하면 대박 조짐','집사와 눈 맞춤 5초가 행운 부스터','이불 속 파고들기가 운을 틔워요','새 장난감 영접의 기운이 감돌아요'];
+const WARN=['남의 밥그릇은 오늘만큼은 패스','소파 쿠션 파헤치기는 흉','한밤중 우다다는 집사 멘탈에 흉','청소기와의 정면 승부는 피하세요','목욕이라는 단어에 주의하세요','화분 쪽 탐험은 오늘 금물'];
+const WALK=['오전 7시 30분','오전 9시 10분','오전 11시 40분','오후 2시 20분','오후 4시 50분','오후 6시 30분','저녁 8시 15분'];
+const PALETTES=[['#FFD8A8','#FFB35C','#8A5A33'],['#FFF1D6','#F4C58A','#B97A4B'],['#D9F4EA','#8CCDB9','#3E7F6C'],['#FFE0E0','#F4A6A6','#A65555'],['#E8E3FF','#B7A9F2','#5E4DA8'],['#EDEDED','#B0B0B0','#555555'],['#FFF6B8','#F2D45C','#8C7415']];
+const TITLES=['먹방 요정','낮잠 장인','꼬리 흔드는 재벌','눈빛 연기자','집사 길들이기 마스터','발바닥 아티스트','귀여움 국가대표'];
+const CHEMI_T=[
+ [90,'전생에 부부였던 환상의 짝꿍'],[75,'서로 간식 나눠 먹는 베스트 프렌드'],[60,'티격태격하다 정드는 현실 룸메이트'],[40,'각자 방석은 존중하는 쿨한 동거인'],[0,'눈 마주치면 하악·으르렁, 그래도 가족']];
+const CHEMI_D=['같이 낮잠 자는 시간이 늘면 점수가 올라가요','간식은 반드시 같은 시간에 나눠 주세요','서로의 방석을 존중하면 평화가 옵니다','함께하는 산책·놀이 시간이 케미 부스터예요','첫째가 양보하면 둘째가 두 배로 보답해요'];
+
+/* ---------- 결과 생성 ---------- */
+function fortune(name,date,sp,dayKey){
+  /* 같은 이름+날짜면 종류와 무관하게 같은 결과 */
+  const base=name.trim()+'|'+(date||'-');
+  const r=rng(hash(base));
+  const o={
+    name:name.trim(),sp,
+    job:pick(r,JOBS),persona:pick(r,PERSONA),snack:pick(r,SNACKS),toy:pick(r,TOYS),
+    walk:pick(r,WALK),pal:pick(r,PALETTES),title:pick(r,TITLES),
+    stroke:strokes(name.trim()),
+    wealth:40+Math.floor(r()*61),love:40+Math.floor(r()*61)
+  };
+  const d=rng(hash(base+'|'+dayKey));
+  o.dayLabel=dateLabel();
+  o.today={mood:35+Math.floor(d()*66),msg:pick(d,MOODS),warn:pick(d,WARN),snack:pick(d,SNACKS),walk:pick(d,WALK),lucky:1+Math.floor(d()*45)};
+  return o;
+}
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function dateLabel(){const d=new Date();return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일';}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function josa(name){ // 받침 여부
+  const c=name.charCodeAt(name.length-1);
+  return (c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28!==0);
+}
+/* 직업명 + 이었던/였던 */
+function jobPast(job){return job+(josa(job)?'이었던':'였던');}
+
+/* ---------- 렌더 ---------- */
+function meter(v){return '<div class="meter" role="img" aria-label="'+v+'점"><i style="width:'+v+'%"></i></div>';}
+function swatches(p){return '<div class="swatches" role="img" aria-label="행운의 털 컬러 '+p.join(', ')+'">'+p.map(c=>'<div class="sw" style="background:'+c+'" title="'+c+'"></div>').join('')+'</div>';}
+
+let last={};
+
+function renderMain(o){
+  const s=SPECIES[o.sp];
+  const topic=josa(o.name)?'은':'는';
+  return `<div class="hero"><div class="emoji" aria-hidden="true">${s.e}</div>
+    <h2>전생에 ${esc(jobPast(o.job))}<br>${esc(o.title)} ${esc(o.name)}</h2>
+    <p>이름 획수 ${o.stroke}획 · ${esc(o.name)}${topic} 오늘도 귀여움 만렙!</p></div>
+    <div class="grid">
+      <div class="item" style="grid-column:1/-1"><b>🎭 숨겨진 성격</b><span>${esc(o.persona)}</span></div>
+      <div class="item"><b>💰 재물운 ${o.wealth}점</b>${meter(o.wealth)}</div>
+      <div class="item"><b>💗 애교운 ${o.love}점</b>${meter(o.love)}</div>
+      <div class="item"><b>🍖 행운의 간식</b><span>${esc(o.snack)}</span></div>
+      <div class="item"><b>🧸 행운의 장난감</b><span>${esc(o.toy)}</span></div>
+      <div class="item"><b>🚶 행운의 산책 시간</b><span>${esc(o.walk)}</span></div>
+      <div class="item"><b>🎨 행운의 털 컬러</b>${swatches(o.pal)}</div>
+    </div>
+    <div class="btns"><button type="button" class="btn mint" data-save="main">📸 스토리 카드 저장</button><button type="button" class="btn" data-share="main">🔗 결과 공유하기</button></div>`;
+}
+function renderToday(o){
+  const t=o.today,s=SPECIES[o.sp];
+  return `<div class="hero"><div class="emoji" aria-hidden="true">${s.e}</div>
+    <h2>${esc(o.name)}의 오늘 운세</h2><p>${esc(o.dayLabel)}</p></div>
+    <div class="grid">
+      <div class="item" style="grid-column:1/-1"><b>😽 오늘의 기분 지수 ${t.mood}점</b>${meter(t.mood)}</div>
+      <div class="item" style="grid-column:1/-1"><b>✨ 오늘의 한마디</b><span>${esc(t.msg)}</span></div>
+      <div class="item"><b>🍖 오늘의 간식</b><span>${esc(t.snack)}</span></div>
+      <div class="item"><b>🚶 오늘의 산책</b><span>${esc(t.walk)}</span></div>
+      <div class="item"><b>⚠️ 오늘의 주의</b><span>${esc(t.warn)}</span></div>
+      <div class="item"><b>🍀 행운의 숫자</b><span>${t.lucky}</span></div>
+    </div>
+    <div class="btns"><button type="button" class="btn mint" data-save="today">📸 스토리 카드 저장</button><button type="button" class="btn" data-share="today">🔗 결과 공유하기</button></div>
+    <p class="note">내일이 되면 운세가 새롭게 바뀌어요. 🌙</p>`;
+}
+function chemi(a,b){
+  const k=[a.trim(),b.trim()].sort().join('+');
+  const r=rng(hash('chemi|'+k));
+  const score=30+Math.floor(r()*71);
+  const title=CHEMI_T.find(x=>score>=x[0])[1];
+  return {a:a.trim(),b:b.trim(),score,title,tip:pick(r,CHEMI_D),snack:pick(r,SNACKS),toy:pick(r,TOYS),walk:pick(r,WALK)};
+}
+function renderChemi(c){
+  return `<div class="hero"><div class="emoji" aria-hidden="true">💞</div>
+    <h2>${esc(c.a)} ♥ ${esc(c.b)}</h2><p class="score">${c.score}%</p><p>${esc(c.title)}</p></div>
+    <div class="grid">
+      <div class="item" style="grid-column:1/-1"><b>💡 케미 조언</b><span>${esc(c.tip)}</span></div>
+      <div class="item"><b>🍖 같이 먹을 간식</b><span>${esc(c.snack)}</span></div>
+      <div class="item"><b>🧸 같이 놀 장난감</b><span>${esc(c.toy)}</span></div>
+      <div class="item" style="grid-column:1/-1"><b>🚶 함께 산책하기 좋은 시간</b><span>${esc(c.walk)}</span></div>
+    </div>
+    <div class="btns"><button type="button" class="btn mint" data-save="chemi">📸 스토리 카드 저장</button><button type="button" class="btn" data-share="chemi">🔗 결과 공유하기</button></div>`;
+}
+
+/* ---------- 폼 핸들러 ---------- */
+function validName(v){return v.trim().length>=1;}
+$('#f1').addEventListener('submit',e=>{
+  e.preventDefault();
+  const n=$('#n1').value,d=$('#b1').value;
+  if(!validName(n)){$('#e1').textContent='이름을 입력해 주세요.';$('#n1').focus();return;}
+  if(!d){$('#e1').textContent='생일 또는 입양일을 선택해 주세요.';$('#b1').focus();return;}
+  if(d>isoToday()){$('#e1').textContent='오늘 이전의 날짜를 선택해 주세요.';$('#b1').focus();return;}
+  $('#e1').textContent='';
+  const o=fortune(n,d,$('#s1').value,'main');last.main=o;
+  const el=$('#r1');el.innerHTML=renderMain(o);showResult(el);
+});
+$('#f2').addEventListener('submit',e=>{
+  e.preventDefault();
+  const n=$('#n2').value,d=$('#b2').value;
+  if(!validName(n)){$('#e2').textContent='이름을 입력해 주세요.';$('#n2').focus();return;}
+  if(d&&d>isoToday()){$('#e2').textContent='오늘 이전의 날짜를 선택해 주세요.';$('#b2').focus();return;}
+  $('#e2').textContent='';
+  const o=fortune(n,d,$('#s2').value,todayKey());last.today=o;
+  const el=$('#r2');el.innerHTML=renderToday(o);showResult(el);
+});
+$('#f3').addEventListener('submit',e=>{
+  e.preventDefault();
+  const a=$('#n3a').value,b=$('#n3b').value;
+  if(!validName(a)||!validName(b)){$('#e3').textContent='두 반려동물의 이름을 모두 입력해 주세요.';(validName(a)?$('#n3b'):$('#n3a')).focus();return;}
+  $('#e3').textContent='';
+  const c=chemi(a,b);last.chemi=c;
+  const el=$('#r3');el.innerHTML=renderChemi(c);showResult(el);
+});
+
+/* ---------- 탭 ---------- */
+const tabs=[...document.querySelectorAll('.tab')];
+function selectTab(t){
+  tabs.forEach(x=>{
+    const on=x===t;
+    x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;
+    document.getElementById(x.getAttribute('aria-controls')).hidden=!on;
+  });
+}
+tabs.forEach((t,i)=>{
+  t.addEventListener('click',()=>selectTab(t));
+  t.addEventListener('keydown',e=>{
+    let n=null;
+    if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+    if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+    if(e.key==='Home')n=tabs[0];
+    if(e.key==='End')n=tabs[tabs.length-1];
+    if(n){e.preventDefault();selectTab(n);n.focus();}
+  });
+});
+
+/* ---------- 토스트 ---------- */
+let tt;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ---------- 캔버스 카드 (1080x1920) ---------- */
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function wrapText(c,text,x,y,maxW,lh,align){
+  c.textAlign=align||'left';
+  let line='',lines=[];
+  for(const ch of text){
+    const test=line+ch;
+    if(c.measureText(test).width>maxW&&line){lines.push(line);line=ch;}else line=test;
+  }
+  if(line)lines.push(line);
+  lines.forEach((l,i)=>c.fillText(l,x,y+i*lh));
+  return y+lines.length*lh;
+}
+function paw(c,x,y,s,col){
+  c.fillStyle=col;
+  c.beginPath();c.ellipse(x,y+s*.25,s*.5,s*.4,0,0,7);c.fill();
+  [[-.6,-.3],[-.2,-.7],[.2,-.7],[.6,-.3]].forEach(p=>{c.beginPath();c.ellipse(x+p[0]*s,y+p[1]*s,s*.2,s*.26,0,0,7);c.fill();});
+}
+function infoRow(c,F,label,text,y){
+  c.font='38px '+F;
+  let line='',n=0;
+  for(const ch of text){const tst=line+ch;if(c.measureText(tst).width>780&&line){n++;line=ch;}else line=tst;}
+  n++;
+  const h=64+n*48;
+  c.fillStyle='#FFF3E0';rr(c,110,y,860,h,30);c.fill();
+  c.textAlign='left';c.fillStyle='#A65800';c.font='32px '+F;c.fillText(label,140,y+44);
+  c.fillStyle='#4A3426';c.font='38px '+F;
+  wrapText(c,text,140,y+94,780,48,'left');
+  return y+h+18;
+}
+function drawCard(kind){
+  const W=1080,H=1920;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const c=cv.getContext('2d');
+  const F="'Jua','Gowun Dodum',sans-serif";
+  const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,'#FFE2B8');g.addColorStop(.55,'#FFF7EA');g.addColorStop(1,'#CDEFE3');
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  for(let i=0;i<14;i++){paw(c,(i*173)%W+40,(i*311)%H+30,22+(i%3)*10,'rgba(255,179,92,.18)');}
+  c.fillStyle='#fff';rr(c,70,150,940,1560,60);c.fill();
+  c.lineWidth=6;c.strokeStyle='#F0DFC6';c.stroke();
+  c.fillStyle='#A65800';c.font='48px '+F;c.textAlign='center';
+  c.fillText('🐾 댕냥 이름점 🐾',W/2,250);
+  c.fillStyle='#4A3426';
+  let y;
+  if(kind==='chemi'){
+    const d=last.chemi;
+    c.font='120px '+F;c.textAlign='center';c.fillText('💞',W/2,400);
+    c.font='64px '+F;y=wrapText(c,d.a+' ♥ '+d.b,W/2,500,820,80,'center');
+    c.fillStyle='#A65800';c.font='140px '+F;c.textAlign='center';c.fillText(d.score+'%',W/2,y+120);
+    c.fillStyle='#4A3426';c.font='50px '+F;y=wrapText(c,d.title,W/2,y+190,820,66,'center');
+    y+=20;
+    const rows=[['💡 케미 조언',d.tip],['🍖 같이 먹을 간식',d.snack],['🧸 같이 놀 장난감',d.toy],['🚶 함께 산책 시간',d.walk]];
+    rows.forEach(r=>{y=infoRow(c,F,r[0],r[1],y);});
+  }else{
+    const o=last[kind];const t=kind==='today';
+    c.font='120px '+F;c.textAlign='center';c.fillText(SPECIES[o.sp].e,W/2,400);
+    if(t){
+      c.font='60px '+F;y=wrapText(c,o.name+'의 오늘 운세',W/2,510,820,76,'center');
+      c.font='36px '+F;c.fillStyle='#6d5846';c.textAlign='center';c.fillText(o.dayLabel,W/2,y+10);
+      c.fillStyle='#A65800';c.font='130px '+F;c.fillText(o.today.mood+'점',W/2,y+150);
+      c.fillStyle='#4A3426';c.font='40px '+F;c.fillText('오늘의 기분 지수',W/2,y+205);
+      y+=250;
+      const rows=[['✨ 오늘의 한마디',o.today.msg],['🍖 오늘의 간식',o.today.snack],['🚶 오늘의 산책',o.today.walk],['⚠️ 오늘의 주의',o.today.warn]];
+      rows.forEach(r=>{y=infoRow(c,F,r[0],r[1],y);});
+    }else{
+      c.font='44px '+F;c.fillStyle='#6d5846';c.textAlign='center';c.fillText('전생에',W/2,500);
+      c.fillStyle='#4A3426';c.font='56px '+F;y=wrapText(c,jobPast(o.job),W/2,570,820,72,'center');
+      c.fillStyle='#A65800';c.font='68px '+F;y=wrapText(c,o.title+' '+o.name,W/2,y+30,820,84,'center');
+      c.fillStyle='#4A3426';y+=10;
+      const rows=[['🎭 숨겨진 성격',o.persona],['🍖 행운의 간식',o.snack],['🧸 행운의 장난감',o.toy],['🚶 행운의 산책 시간',o.walk]];
+      rows.forEach(r=>{y=infoRow(c,F,r[0],r[1],y);});
+      c.fillStyle='#4A3426';c.font='34px '+F;c.textAlign='left';c.fillText('🎨 털 컬러',130,y+50);
+      o.pal.forEach((col,i)=>{c.fillStyle=col;c.beginPath();c.arc(470+i*90,y+38,32,0,7);c.fill();c.lineWidth=4;c.strokeStyle='#fff';c.stroke();});
+    }
+  }
+  c.textAlign='center';c.fillStyle='#6d5846';c.font='34px '+F;
+  c.fillText('#댕냥이름점 #반려동물운세 #우리애전생',W/2,1670);
+  return cv;
+}
+async function save(kind){
+  if(!last[kind]){return;}
+  try{
+    if(document.fonts&&document.fonts.load){
+      try{await Promise.all([document.fonts.load('48px Jua'),document.fonts.load('38px "Gowun Dodum"')]);}catch(_){}
+    }
+    const cv=drawCard(kind);
+    const nm=(kind==='chemi'?last.chemi.a+'-'+last.chemi.b:last[kind].name).replace(/[\\/:*?"<>|\s]+/g,'_');
+    cv.toBlob(b=>{
+      if(!b){toast('이미지 생성에 실패했어요');return;}
+      const a=document.createElement('a');
+      const url=URL.createObjectURL(b);
+      a.href=url;a.download='댕냥이름점-'+nm+'.png';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      toast('카드가 저장되었어요 📸');
+    },'image/png');
+  }catch(err){toast('저장 중 문제가 생겼어요');}
+}
+function shareText(kind){
+  if(kind==='chemi'){const d=last.chemi;return `${d.a} ♥ ${d.b} 케미 ${d.score}% – ${d.title} 🐾 #댕냥이름점`;}
+  const o=last[kind];
+  if(kind==='today')return `${o.name}의 오늘 기분 지수 ${o.today.mood}점! ${o.today.msg} 🐾 #댕냥이름점`;
+  return `전생에 ${jobPast(o.job)} ${o.title} ${o.name}! 🐾 #댕냥이름점`;
+}
+async function share(kind){
+  if(!last[kind])return;
+  const text=shareText(kind);
+  if(navigator.share){
+    try{await navigator.share({title:'댕냥 이름점',text});return;}
+    catch(e){if(e&&e.name==='AbortError')return;}
+  }
+  try{
+    await navigator.clipboard.writeText(text);toast('결과 문구를 복사했어요 📋');
+  }catch(e){
+    toast('공유가 지원되지 않아요. 카드 저장을 이용해 주세요');
+  }
+}
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-save]');if(s){save(s.dataset.save);return;}
+  const h=e.target.closest('[data-share]');if(h){share(h.dataset.share);}
+});
+})();
+</script>
+</body>
+</html>
