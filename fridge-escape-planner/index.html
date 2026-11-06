@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>냉장고 탈출 플래너 – 버리지 않고 다 먹는 7일 식단표</title>
+<meta name="description" content="냉장고 속 재료와 유통기한을 넣으면 임박한 순서대로 정렬하고, 버리지 않고 다 먹는 7일 식단표와 구출 카드를 만들어 드려요. 서버·로그인 없이 내 브라우저에만 저장됩니다.">
+<meta property="og:title" content="냉장고 탈출 플래너 – 버리지 않고 다 먹는 7일 식단표">
+<meta property="og:description" content="유통기한 임박 재료 3개만 넣으면 이번 주 '버리지 않고 다 먹는' 식단표가 나옵니다. 구출한 재료와 아낀 금액도 쌓여요.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#4CAF7A">
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🧲&lt;/text&gt;&lt;/svg&gt;">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#4CAF7A;--deep:#1d5a3a;--ink:#23392d;--cream:#FFFBF0;--paper:#fff;--line:#e6dcc0;--muted:#5d6b62;
+  --red:#b32424;--redbg:#fde8e6;--org:#9a4d00;--orgbg:#fff0dc;--blue:#17609a;--bluebg:#e3f1fb;--ok:#1d6b43;--okbg:#e4f5ea;
+  --yellow:#fff3b0;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:var(--ink);line-height:1.55;font-size:16px;
+  background:var(--cream);background-image:radial-gradient(#e9f3e4 1.5px,transparent 1.5px);background-size:22px 22px}
+h1,h2,h3{font-family:'Jua','Gowun Dodum',sans-serif;font-weight:400;margin:0;line-height:1.25}
+button,input{font:inherit;color:inherit}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid #0d6b3f;outline-offset:2px;border-radius:6px}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 40px}
+header.hero{padding:28px 0 8px;text-align:center}
+.hero h1{font-size:clamp(2rem,7vw,3rem);color:var(--deep)}
+.hero h1 span{background:var(--mint);color:#0d3b24;padding:0 .35em;border-radius:14px;display:inline-block;transform:rotate(-2deg)}
+.tag{font-family:'Gaegu','Gowun Dodum',cursive;font-size:1.35rem;margin:10px auto 0;max-width:560px;font-weight:700;color:var(--ink)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.stat{background:var(--yellow);border-radius:6px 6px 14px 6px;padding:14px 12px;text-align:center;box-shadow:3px 4px 0 rgba(0,0,0,.08);position:relative;min-width:0}
+.stat:nth-child(1){transform:rotate(-1.2deg)}.stat:nth-child(2){transform:rotate(1.2deg);background:#d7f0e0}
+.stat b{display:block;font-family:'Jua','Gowun Dodum',sans-serif;font-size:clamp(1.4rem,6.5vw,2rem);color:var(--deep);font-weight:400;overflow-wrap:anywhere}
+.stat small{font-family:'Gaegu','Gowun Dodum',sans-serif;font-size:1.15rem;font-weight:700}
+.headline{text-align:center;font-family:'Gaegu','Gowun Dodum',sans-serif;font-weight:700;font-size:1.25rem;margin:4px 0 0}
+section.card{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:22px 16px 18px;margin-top:26px;position:relative;box-shadow:0 3px 0 var(--line)}
+section.card::before{content:"";position:absolute;top:-11px;left:22px;width:22px;height:22px;border-radius:50%;background:var(--mint);border:3px solid #fff;box-shadow:0 2px 3px rgba(0,0,0,.25)}
+.card h2{font-size:1.5rem;color:var(--deep);margin-bottom:4px}
+.sub{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+form.add{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:640px){form.add{grid-template-columns:1.4fr 1.2fr 1fr auto;align-items:end}}
+.f{min-width:0}
+.f label{display:block;font-weight:700;font-size:.92rem;margin-bottom:3px}
+input[type=text],input[type=date],input[type=number]{width:100%;padding:10px 12px;border:2px solid #cfc7aa;border-radius:12px;background:#fffdf6;min-height:44px}
+.btn{cursor:pointer;border:2px solid #1d5a3a;background:var(--mint);color:#0b2f1c;font-weight:700;border-radius:999px;padding:9px 18px;min-height:44px;box-shadow:0 3px 0 #1d5a3a;transition:transform .08s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1d5a3a}
+.btn.ghost{background:#fff;color:var(--deep)}
+.btn.sm{min-height:36px;padding:4px 12px;font-size:.88rem;box-shadow:0 2px 0 #1d5a3a}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{cursor:pointer;border:2px dashed #9bc9ac;background:#f1faf4;border-radius:999px;padding:6px 12px;min-height:40px;font-size:.95rem}
+.chip:hover{background:#dff3e6}
+.qt{font-family:'Gaegu','Gowun Dodum',sans-serif;font-weight:700;font-size:1.15rem;margin:16px 0 0}
+.grp{margin-top:16px}
+.grp h3{font-size:1.15rem;margin-bottom:6px}
+.grp h3 small{font-family:'Gowun Dodum',sans-serif;color:var(--muted);font-size:.85rem;margin-left:6px}
+ul.list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.item{border:2px solid;border-radius:14px;padding:10px 12px;display:grid;gap:8px}
+.s0{border-color:#e9a29b;background:var(--redbg)}.s1{border-color:#efbf80;background:var(--orgbg)}.s2{border-color:#9ccbea;background:var(--bluebg)}.s3{border-color:#a5d6b6;background:var(--okbg)}
+.ihead{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ihead strong{font-size:1.1rem;overflow-wrap:anywhere}
+.badge{font-weight:700;font-size:.85rem;padding:2px 10px;border-radius:999px;background:#fff;border:2px solid currentColor}
+.s0 .badge{color:var(--red)}.s1 .badge{color:var(--org)}.s2 .badge{color:var(--blue)}.s3 .badge{color:var(--ok)}
+.irow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.irow input[type=date]{width:auto;min-height:36px;padding:4px 8px}
+.price{font-size:.9rem;color:var(--muted)}
+.empty{text-align:center;padding:22px 10px;color:var(--muted);border:2px dashed var(--line);border-radius:14px}
+.recs{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr))}
+.rec{border:2px solid var(--line);border-radius:14px;padding:12px;background:#fffdf6;display:flex;flex-direction:column;gap:6px}
+.rec h3{font-size:1.15rem}
+.rec p{margin:0;font-size:.9rem}
+.rec .btn{margin-top:auto;align-self:flex-start}
+.mine{color:var(--ok);font-weight:700}.need{color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+ol.plan{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.meal{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;border:2px solid var(--line);border-radius:16px;padding:12px;background:#fff}
+.meal:nth-child(odd){background:#fffdf0}
+.meal.done{background:var(--okbg);border-color:#a5d6b6}
+.meal.done .mb b{text-decoration:line-through;text-decoration-thickness:2px}
+.meal.over{outline:3px dashed var(--mint)}
+.grip{cursor:grab;font-size:1.3rem;color:#8a9a8f;padding-top:2px;user-select:none}
+.day{font-family:'Jua','Gowun Dodum',sans-serif;color:var(--deep);font-size:1rem}
+.mb{min-width:0}
+.mb b{font-size:1.15rem;font-weight:700;overflow-wrap:anywhere}
+.mb p{margin:2px 0 0;font-size:.9rem;overflow-wrap:anywhere}
+.chk{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:700;cursor:pointer;min-height:36px}
+.chk input{width:22px;height:22px;accent-color:#2e8f5b}
+.mv{display:flex;flex-direction:column;gap:4px}
+.mv button{cursor:pointer;border:2px solid var(--line);background:#fff;border-radius:10px;min-width:40px;min-height:36px}
+.mv button:hover{background:#eef8f1}
+.mv button:disabled{opacity:.45;cursor:default}
+details.done-list{margin-top:18px}
+details summary{cursor:pointer;font-weight:700}
+.rl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;list-style:none;padding:0}
+.rl li{background:var(--okbg);border-radius:999px;padding:3px 10px;font-size:.9rem}
+.rl button{border:0;background:none;cursor:pointer;color:var(--deep);text-decoration:underline;min-height:28px}
+footer{text-align:center;margin-top:36px;padding:18px 0;font-size:.85rem;color:var(--muted);border-top:2px dashed var(--line)}
+footer button{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;margin-top:6px;min-height:36px}
+dialog{border:3px solid var(--mint);border-radius:20px;padding:16px;max-width:min(94vw,520px);width:100%;background:var(--cream)}
+dialog::backdrop{background:rgba(20,40,30,.55)}
+dialog img{width:100%;height:auto;border-radius:12px;border:2px solid var(--line);max-height:64vh;object-fit:contain;background:#fff}
+.dlg-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:#17402a;color:#fff;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <h1>🧲 <span>냉장고 탈출</span> 플래너</h1>
+  <p class="tag">유통기한 임박 재료 3개만 넣으면, 이번 주 '버리지 않고 다 먹는' 식단표가 나옵니다 🥬🍳</p>
+  <div class="stats" role="group" aria-label="누적 통계">
+    <div class="stat"><b id="stCount">0개</b><small>구출한 재료</small></div>
+    <div class="stat"><b id="stMoney">₩0</b><small>아낀 금액</small></div>
+  </div>
+  <p class="headline" id="headline"></p>
+</header>
+
+<main>
+<section class="card" aria-labelledby="h-add">
+  <h2 id="h-add">① 냉장고 털어놓기</h2>
+  <p class="sub">재료 이름과 유통기한을 적어주세요. 가격은 비워도 괜찮아요.</p>
+  <form class="add" id="addForm">
+    <div class="f"><label for="fName">재료명</label><input type="text" id="fName" maxlength="14" placeholder="예: 두부" required autocomplete="off"></div>
+    <div class="f"><label for="fDate">유통기한</label><input type="date" id="fDate" required></div>
+    <div class="f"><label for="fPrice">가격(원, 선택)</label><input type="number" id="fPrice" min="0" step="1" inputmode="numeric" placeholder="2000"></div>
+    <button class="btn" type="submit">＋ 넣기</button>
+  </form>
+  <p class="qt">✨ 자주 쓰는 재료 — 누르면 바로 추가돼요 (기한은 평균 보관일 기준, 나중에 고칠 수 있어요)</p>
+  <div class="quick" id="quick"></div>
+</section>
+
+<section class="card" aria-labelledby="h-list">
+  <h2 id="h-list">② 임박순 재료 리스트</h2>
+  <p class="sub">기한이 급한 순서대로 정렬돼요. 색과 글자로 먹을 시점을 알려드려요.</p>
+  <div id="itemGroups"></div>
+  <details class="done-list" id="doneBox" hidden><summary id="doneSum"></summary><ul class="rl" id="doneList"></ul></details>
+</section>
+
+<section class="card" aria-labelledby="h-rec">
+  <h2 id="h-rec">③ 이 재료로 이런 메뉴 어때요?</h2>
+  <p class="sub">내장 레시피 <b id="recCount"></b>개 중 지금 재료와 잘 맞는 메뉴예요. 임박한 재료를 쓰는 메뉴가 먼저 나와요.</p>
+  <div class="recs" id="recs"></div>
+</section>
+
+<section class="card" aria-labelledby="h-plan">
+  <h2 id="h-plan">④ 7일 구출 식단표</h2>
+  <p class="sub">▲▼ 버튼 또는 ⠿ 손잡이를 드래그해서 순서를 바꿀 수 있어요. 먹었다면 체크!</p>
+  <div class="toolbar">
+    <button class="btn" data-act="gen" type="button">🪄 식단표 자동 만들기</button>
+    <button class="btn ghost" data-act="card" type="button">📸 구출 카드 만들기</button>
+  </div>
+  <ol class="plan" id="plan"></ol>
+</section>
+</main>
+
+<footer>
+  <div>🧲 냉장고 탈출 플래너 · © <span id="yr">2026</span></div>
+  <div>모든 데이터는 이 브라우저에만 저장돼요.</div>
+  <button type="button" data-act="reset">저장된 데이터 모두 지우기</button>
+</footer>
+</div>
+
+<dialog id="cardDlg" aria-label="구출 카드 미리보기">
+  <img id="cardImg" alt="이번 주 구출 작전 식단표 카드">
+  <div class="dlg-actions">
+    <a class="btn" id="dl" download="fridge-escape-week.png" href="#" style="text-decoration:none;display:inline-flex;align-items:center">💾 이미지 저장</a>
+    <button class="btn ghost" type="button" id="shareBtn">📤 공유하기</button>
+    <button class="btn ghost" type="button" id="closeDlg">닫기</button>
+  </div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const KEY='fridge-escape-v1';
+const DRE=/^\d{4}-\d{2}-\d{2}$/;
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.items)&&Array.isArray(d.plan)){
+ d.items=d.items.filter(i=>i&&typeof i.id==='string'&&typeof i.name==='string'&&typeof i.exp==='string'&&DRE.test(i.exp));
+ d.plan=d.plan.filter(p=>p&&typeof p.id==='string'&&typeof p.n==='string'&&Array.isArray(p.uses)).map(p=>Object.assign({},p,{e:p.e||'🍳',t:p.t||'',need:Array.isArray(p.need)?p.need:[]}));
+ if(typeof d.planStart!=='string'||!DRE.test(d.planStart))d.planStart=null;
+ return d}}catch(e){}return{items:[],plan:[],planStart:null}}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today0=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};
+const addDays=(n,b)=>{b=b||today0();return new Date(b.getFullYear(),b.getMonth(),b.getDate()+n)};
+const parse=s=>{const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])};
+const dleft=s=>Math.round((parse(s)-today0())/864e5);
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const won=n=>'₩'+Math.round(n).toLocaleString('ko-KR');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400)}
+
+/* ---------- 정규화 / 매칭 ---------- */
+function norm(s){return s.replace(/\s/g,'')
+ .replace(/달걀/g,'계란').replace(/쪽파/g,'대파')
+ .replace(/삼겹살|목살|앞다리살?|돼지[가-힣]*/g,'돼지')
+ .replace(/닭[가-힣]*/g,'닭')
+ .replace(/소고기|쇠고기|불고기|차돌박이|차돌/g,'소고기')
+ .replace(/[가-힣]*(햄|소시지)|스팸|비엔나|베이컨/g,'햄')
+ .replace(/[가-힣]*버섯|팽이|느타리|표고|새송이|양송이/g,'버섯')
+ .replace(/[가-힣]*토마토/g,'토마토')
+ .replace(/소면|국수|스파게티|파스타|우동|칼국수|쫄면|중면/g,'면류')
+ .replace(/즉석밥|햇반|쌀밥|현미밥|잡곡밥/g,'밥')
+ .replace(/식빵|토스트|모닝빵|베이글|빵/g,'식빵')
+ .replace(/양배추/g,'캐비지').replace(/오징어[가-힣]*/g,'오징어').replace(/새우[가-힣]*/g,'새우');}
+const LAB={'캐비지':'양배추','면류':'국수/면','돼지':'돼지고기','닭':'닭고기','햄':'햄·소시지'};
+const lab=k=>LAB[k]||k;
+const PANTRY=new Set(['마늘','고추']);
+function hit(it,k){const n=norm(it.name);return n.includes(k)||(n.length>=2&&k.includes(n))}
+const RAW=`김치볶음밥|🍚|김치,밥,계란|김치를 먼저 볶아 신맛을 날리면 더 고소해요
+계란볶음밥|🍳|밥,계란,대파|대파기름을 먼저 내고 센 불에 빠르게 볶아요
+참치마요덮밥|🐟|참치,밥,양파|마요네즈에 간장 1작은술이 비법이에요
+두부김치|🥢|두부,김치,돼지|두부는 데쳐서 물기를 빼면 간이 잘 배요
+김치찌개|🍲|김치,돼지,두부,대파|묵은 김치일수록 국물이 깊어요
+된장찌개|🥘|두부,애호박,양파,감자|멸치육수가 없으면 쌀뜨물을 써요
+순두부찌개|🌶️|두부,계란,대파,버섯|고춧기름을 내서 시작하면 칼칼해요
+계란말이|🥚|계란,대파,당근|약불에서 돌돌 말면 모양이 예뻐요
+계란찜|🥚|계란,대파|물과 계란을 1:1로 맞추면 폭신해요
+감자전|🥔|감자,양파|감자 갈아 전분을 가라앉힌 뒤 섞어요
+애호박전|🥒|애호박,계란|소금을 뿌려 물기를 빼고 부쳐요
+부추전|🌿|부추,양파|반죽은 묽게, 기름은 넉넉히!
+김치전|🥞|김치,양파|김치국물 한 숟갈이 맛의 비결이에요
+파전|🧅|대파,계란|대파는 길게 두고 반죽을 얇게 펴요
+두부조림|🥢|두부,대파,양파|두부를 먼저 노릇하게 굽고 양념을 부어요
+두부부침|🧈|두부,계란|소금 간 후 키친타월로 물기를 꼭 빼요
+두부스테이크|🍽️|두부,양파,당근|으깬 두부에 다진 채소를 섞어 구워요
+콩나물국|🍲|콩나물,대파|뚜껑은 끝까지 열지 말고 끓여야 비린내가 없어요
+콩나물밥|🍚|콩나물,밥,대파|양념간장을 올려 비벼 먹어요
+콩나물불고기|🥘|콩나물,돼지,양파|콩나물을 아래에 깔고 쪄지듯 익혀요
+시금치나물|🥬|시금치,마늘|30초만 데쳐야 색이 살아요
+시금치계란국|🥣|시금치,계란|계란은 마지막에 풀어 넣어요
+시금치파스타|🍝|시금치,면류,마늘|면수 한 국자로 소스를 만들어요
+버섯볶음|🍄|버섯,양파,대파|물 없이 센 불에서 볶아야 쫄깃해요
+버섯전골|🍲|버섯,두부,배추,대파|버섯을 듬뿍 넣을수록 국물이 시원해요
+버섯덮밥|🍄|버섯,밥,계란|굴소스 한 숟갈로 간단하게!
+감자조림|🥔|감자,양파,당근|간장:설탕:물을 1:1:3으로 졸여요
+감자볶음|🥔|감자,당근,양파|채 썰어 물에 담가 전분을 빼요
+감자수프|🥣|감자,양파,우유|삶은 감자를 우유와 갈면 크림처럼 돼요
+감자샐러드|🥗|감자,계란,오이|뜨거울 때 으깨야 부드러워요
+햄계란토스트|🥪|햄,계란,식빵,치즈|식빵을 버터에 노릇하게 구워요
+그릴드치즈샌드위치|🧀|식빵,치즈,토마토|약불에서 뚜껑 덮고 구우면 치즈가 쭉~
+계란샌드위치|🥪|식빵,계란|삶은 계란에 마요네즈와 소금 약간
+참치샌드위치|🥪|식빵,참치,양파|양파는 물에 담가 매운맛을 빼요
+프렌치토스트|🍞|식빵,계란,우유|계란물에 충분히 적셔 약불로 구워요
+햄야채볶음|🥓|햄,양파,당근|햄을 먼저 볶아 기름을 내요
+부대찌개|🍲|햄,김치,라면,대파|라면사리는 마지막에 넣어요
+라면 업그레이드|🍜|라면,계란,대파|불 끄기 직전 계란을 넣어요
+치즈라면|🧀|라면,치즈,계란|치즈 한 장이 국물을 부드럽게 해요
+볶음우동|🍜|면류,캐비지,양파|굴소스와 간장 1:1로 볶아요
+잔치국수|🍜|면류,애호박,계란,당근|지단과 호박볶음을 고명으로 올려요
+비빔국수|🥢|면류,오이,김치|김치 양념에 설탕 약간이면 새콤달콤!
+토마토계란볶음|🍅|토마토,계란,대파|계란을 먼저 몽글하게 볶아 덜어둬요
+토마토파스타|🍝|토마토,면류,양파,마늘|토마토를 으깨 오래 졸일수록 맛있어요
+카프레제|🍅|토마토,치즈|올리브유와 후추만 뿌려도 완성!
+오이무침|🥒|오이,마늘|소금에 절여 물기를 꼭 짜요
+오이냉국|🥣|오이,미역|식초 한 숟갈로 시원하게!
+파프리카잡채|🫑|파프리카,당근,양파|채소는 각각 살짝씩만 볶아요
+파프리카치즈구이|🫑|파프리카,치즈,햄|에어프라이어 180도 8분이면 끝
+닭가슴살샐러드|🥗|닭,토마토,오이|삶은 닭은 결대로 찢어요
+닭가슴살볶음밥|🍚|닭,밥,당근,양파|잘게 썰어 밥과 함께 볶아요
+닭볶음탕|🍗|닭,감자,당근,양파|닭은 한 번 데쳐서 넣으면 깔끔해요
+닭죽|🥣|닭,밥,당근|참기름 살짝 둘러 마무리해요
+닭가슴살덮밥|🍗|닭,밥,양파|간장+맛술로 달짝지근하게 졸여요
+삼겹살구이|🥓|돼지,상추,마늘|팬에 구우면 기름이 튀어요, 뚜껑 활용!
+돼지고기김치볶음|🥘|돼지,김치,양파|고기를 먼저 볶아 기름을 내요
+제육볶음|🌶️|돼지,양파,대파|고추장:고춧가루:간장 2:1:1
+돼지고기덮밥|🍚|돼지,밥,양파,계란|반숙 계란을 올리면 완성!
+돼지고기가지볶음|🍆|돼지,가지|가지는 기름 대신 물을 조금 넣고 볶아요
+소고기뭇국|🍲|소고기,무,대파|고기와 무를 참기름에 먼저 볶아요
+소불고기|🥩|소고기,양파,버섯,당근|배즙이나 사과즙이 있으면 더 부드러워요
+소고기미역국|🥣|소고기,미역|미역은 불려서 볶다가 끓여요
+소고기덮밥|🍚|소고기,밥,양파,계란|간장 베이스로 졸이듯 볶아요
+어묵볶음|🍢|어묵,양파,당근|뜨거운 물에 헹궈 기름기를 빼요
+어묵탕|🍢|어묵,무,대파|무를 먼저 끓여 국물을 우려요
+어묵볶음밥|🍚|어묵,밥,당근|잘게 다져 센 불에 볶아요
+떡볶이|🌶️|떡,어묵,대파|떡이 딱딱하면 미지근한 물에 불려요
+떡국|🍲|떡,계란,대파|떡은 찬물에 담갔다 넣어요
+치즈떡볶이|🧀|떡,치즈,햄|마지막에 치즈를 올려 뚜껑을 덮어요
+만두국|🥟|만두,계란,대파|만두는 국물이 끓을 때 넣어요
+만두전골|🥟|만두,배추,버섯|배추를 깔고 만두를 둘러요
+양배추볶음|🥬|캐비지,햄,계란|센 불에 짧게 볶아야 아삭해요
+양배추샐러드|🥗|캐비지,당근|채 썰어 찬물에 담그면 아삭!
+배추된장국|🍲|배추,두부|된장은 체에 풀어주면 깔끔해요
+무조림|🥘|무,대파|쌀뜨물에 먼저 삶으면 아린 맛이 빠져요
+무생채|🥕|무,마늘|고춧가루 먼저 버무려 색을 입혀요
+고구마전|🍠|고구마,계란|얇게 썰어 전분 없이도 바삭!
+고구마라떼|🥛|고구마,우유|삶은 고구마를 우유와 갈아요
+단호박수프|🎃|단호박,우유,양파|전자레인지로 익히면 빨라요
+단호박샐러드|🎃|단호박,계란|으깬 단호박에 삶은 계란을 섞어요
+브로콜리계란볶음|🥦|브로콜리,계란,마늘|데친 브로콜리를 마늘과 볶아요
+브로콜리수프|🥦|브로콜리,우유,감자|줄기까지 갈면 영양 두 배
+새우볶음밥|🍤|새우,밥,계란,대파|새우는 전분 살짝 묻혀 볶아요
+새우전|🍤|새우,계란|밀가루 → 계란물 순서로 입혀요
+오징어볶음|🦑|오징어,양파,대파,캐비지|센 불에 짧게 볶아야 질기지 않아요
+가지볶음|🍆|가지,양파,대파|가지는 소금에 살짝 절여요
+가지전|🍆|가지,계란|동그랗게 썰어 부치면 부드러워요
+깻잎전|🌿|깻잎,두부|으깬 두부 소를 깻잎에 끼워 부쳐요
+깻잎쌈밥|🌿|깻잎,밥,햄|밥과 햄을 올려 돌돌 말아요
+상추겉절이|🥬|상추,마늘|먹기 직전에 무쳐야 아삭해요
+요거트볼|🥣|요거트,바나나,사과|꿀 한 스푼이면 디저트!
+바나나팬케이크|🥞|바나나,계란,우유|잘 익은 바나나일수록 달아요
+사과요거트샐러드|🍎|사과,요거트|사과는 소금물에 살짝 담가 갈변 방지
+크림파스타|🍝|우유,면류,햄,양파|우유는 약불에서 졸여요
+햄버섯볶음|🍄|햄,버섯,마늘|버터 한 조각이 감칠맛을 줘요
+멸치볶음|🐟|멸치,고추|마른 팬에 먼저 볶아 비린내를 날려요
+미역국|🥣|미역,마늘|참기름에 볶다 끓이면 깊은 맛
+콘치즈|🌽|옥수수,치즈,양파|전자레인지 2분이면 완성
+계란푸딩|🍮|계란,우유|중탕으로 약불에 쪄요
+대파계란국|🥣|대파,계란|대파를 듬뿍 볶다 물을 부어요
+양파수프|🧅|양파,식빵,치즈|양파는 갈색이 될 때까지 천천히 볶아요
+애호박볶음|🥒|애호박,양파,당근|새우젓 약간이 감칠맛 포인트`;
+const R=RAW.split('\n').map(l=>{const p=l.split('|');return{n:p[0],e:p[1],k:p[2].split(','),t:p[3]}});
+$('#recCount').textContent=R.length;
+
+function matchRecipe(r,pool){const used=new Set(),uses=[],need=[];
+ for(const k of r.k){const it=pool.find(x=>!used.has(x.id)&&hit(x,k));
+  if(it){used.add(it.id);uses.push(it.id)}else if(!PANTRY.has(k))need.push(k)}
+ return{uses,need}}
+
+/* ---------- 상태 헬퍼 ---------- */
+const active=()=>S.items.filter(i=>!i.rescued).sort((a,b)=>a.exp<b.exp?-1:a.exp>b.exp?1:0);
+const itemById=id=>S.items.find(i=>i.id===id);
+function grp(d){return d<=0?0:d===1?1:d<=4?2:3}
+function badge(d){return d<0?'D+'+(-d)+' 지남':d===0?'D-day':'D-'+d}
+const GT=[['🔥 오늘 먹을 것','기한이 오늘이거나 지났어요. 상태를 확인하고 바로 드세요'],['🥬 내일 먹을 것','내일까지만 안전해요'],['❄️ 냉동할 것','2~4일 남았어요. 못 먹을 것 같으면 냉동!'],['🌿 여유 있어요','당분간 괜찮아요']];
+const urg=d=>Math.max(0,5-d);
+
+/* ---------- 렌더 ---------- */
+function renderStats(){
+ const r=S.items.filter(i=>i.rescued);const m=r.reduce((a,i)=>a+(Number(i.price)||0),0);
+ $('#stCount').textContent=r.length+'개';$('#stMoney').textContent=won(m);
+ $('#headline').textContent=r.length?`오늘까지 버릴 뻔한 재료 ${r.length}개 구출! 🎉`:'첫 재료를 구출하면 여기에 기록이 쌓여요 🌱';}
+function renderItems(){
+ const a=active();const box=$('#itemGroups');
+ if(!a.length){box.innerHTML='<div class="empty">냉장고가 비었어요! 위에서 재료를 넣거나 <button class="btn sm" type="button" data-act="sample">예시 재료 넣어보기</button></div>'}
+ else{let h='';for(let g=0;g<4;g++){const L=a.filter(i=>grp(dleft(i.exp))===g);if(!L.length)continue;
+  h+=`<div class="grp"><h3>${GT[g][0]}<small>${GT[g][1]}</small></h3><ul class="list">`;
+  for(const i of L){const d=dleft(i.exp);
+   h+=`<li class="item s${g}" data-id="${i.id}"><div class="ihead"><strong>${esc(i.name)}</strong><span class="badge">${badge(d)}</span>${i.frozen?'<span class="badge">❄️ 냉동 보관</span>':''}${i.price?`<span class="price">${won(i.price)}</span>`:''}</div>
+   <div class="irow"><label><span class="sr">${esc(i.name)} 유통기한</span><input type="date" data-act="date" value="${i.exp}"></label>
+   ${i.frozen?'':`<button class="btn sm ghost" type="button" data-act="freeze" aria-label="${esc(i.name)} 냉동했어요">❄️ 냉동했어요</button>`}
+   <button class="btn sm" type="button" data-act="eat" aria-label="${esc(i.name)} 먹었어요">✅ 먹었어요</button>
+   <button class="btn sm ghost" type="button" data-act="del" aria-label="${esc(i.name)} 삭제">🗑 삭제</button></div></li>`}
+  h+='</ul></div>'}
+  box.innerHTML=h}
+ const rs=S.items.filter(i=>i.rescued);const db=$('#doneBox');db.hidden=!rs.length;
+ $('#doneSum').textContent=`🎉 구출 완료 ${rs.length}개`;
+ $('#doneList').innerHTML=rs.map(i=>`<li data-id="${i.id}">${esc(i.name)} <button type="button" data-act="unrescue" aria-label="${esc(i.name)} 되돌리기">되돌리기</button></li>`).join('');}
+function planUsedIds(){const s=new Set();S.plan.forEach(e=>e.uses.forEach(u=>s.add(u)));return s}
+function renderRec(){
+ const a=active();const box=$('#recs');
+ if(!a.length){box.innerHTML='<div class="empty">재료를 넣으면 맞춤 메뉴를 추천해 드려요.</div>';return}
+ const sc=R.map((r,idx)=>{const m=matchRecipe(r,a);if(!m.uses.length)return null;
+  const u=m.uses.reduce((s,id)=>s+urg(dleft(itemById(id).exp)),0);
+  return{r,idx,m,s:m.uses.length*10+u-m.need.length*2}}).filter(Boolean).sort((x,y)=>y.s-x.s).slice(0,6);
+ if(!sc.length){box.innerHTML='<div class="empty">딱 맞는 메뉴가 없어요. 식단표 자동 만들기를 누르면 간단 볶음·구이로 짜드려요.</div>';return}
+ box.innerHTML=sc.map(x=>`<article class="rec"><h3>${x.r.e} ${esc(x.r.n)}</h3>
+  <p class="mine">✔ 있는 재료: ${x.m.uses.map(id=>esc(itemById(id).name)).join(', ')}</p>
+  ${x.m.need.length?`<p class="need">＋ 추가로 필요: ${x.m.need.map(lab).join(', ')}</p>`:'<p class="need">추가 재료 없이 가능!</p>'}
+  <p>💡 ${esc(x.r.t)}</p><button class="btn sm" type="button" data-act="addrec" data-r="${x.idx}" aria-label="${esc(x.r.n)} 식단표에 넣기">식단표에 넣기</button></article>`).join('')}
+function dayLabel(i){const base=S.planStart?parse(S.planStart):today0();const d=addDays(i,base);const w='일월화수목금토'[d.getDay()];
+ const diff=Math.round((d-today0())/864e5);return(diff===0?'오늘':diff===1?'내일':(d.getMonth()+1)+'/'+d.getDate())+' ('+w+')'}
+function renderPlan(){
+ const box=$('#plan');
+ if(!S.plan.length){box.innerHTML='<li class="empty">아직 식단표가 없어요. 재료를 넣고 “식단표 자동 만들기”를 눌러보세요!</li>';return}
+ box.innerHTML=S.plan.map((e,i)=>{
+  const names=e.uses.map(itemById).filter(Boolean).map(x=>esc(x.name));
+  return `<li class="meal ${e.done?'done':''}" draggable="true" data-id="${e.id}" data-i="${i}">
+  <span class="grip" aria-hidden="true" title="드래그해서 순서 바꾸기">⠿</span>
+  <div class="mb"><span class="day">${dayLabel(i)}</span><br><b>${esc(e.e)} ${esc(e.n)}</b>
+   <p class="mine">${names.length?'🥬 구출 재료: '+names.join(', '):'직접 추가한 메뉴'}</p>
+   ${e.need&&e.need.length?`<p class="need">＋ 추가로 필요: ${e.need.map(esc).join(', ')}</p>`:''}
+   <p>💡 ${esc(e.t)}</p>
+   <label class="chk"><input type="checkbox" data-act="done" aria-label="${esc(e.n)} 먹었어요" ${e.done?'checked':''}> 먹었어요</label></div>
+  <div class="mv"><button type="button" data-act="up" aria-label="${esc(e.n)} 위로 이동" ${i===0?'disabled':''}>▲</button>
+  <button type="button" data-act="down" aria-label="${esc(e.n)} 아래로 이동" ${i===S.plan.length-1?'disabled':''}>▼</button>
+  <button type="button" data-act="pdel" aria-label="${esc(e.n)} 식단에서 빼기">✕</button></div></li>`}).join('')}
+function renderAll(){renderStats();renderItems();renderRec();renderPlan()}
+function commit(){save();renderAll()}
+
+/* ---------- 재료 ---------- */
+const QUICK=[['대파','🌱',7,2500],['계란','🥚',14,6000],['두부','⬜',5,2000],['우유','🥛',7,2800],['양파','🧅',20,1500],['애호박','🥒',7,1800],['시금치','🥬',4,2500],['콩나물','🌱',4,1500],['버섯','🍄',6,2500],['김치','🌶️',30,5000],['햄','🥓',14,3500],['닭가슴살','🍗',3,4500],['삼겹살','🥩',3,9000],['식빵','🍞',5,3000],['토마토','🍅',6,3500],['당근','🥕',14,1500],['감자','🥔',20,2500],['오이','🥒',6,1500],['파프리카','🫑',7,2500],['어묵','🍢',7,3000],['치즈','🧀',14,3000],['요거트','🥣',10,2500],['떡','🍡',5,3500],['만두','🥟',7,5000],['브로콜리','🥦',6,2500],['고구마','🍠',20,3000],['바나나','🍌',4,3000]];
+$('#quick').innerHTML=QUICK.map((q,i)=>`<button class="chip" type="button" data-act="quick" data-q="${i}">${q[1]} ${q[0]}</button>`).join('');
+function addItem(name,exp,price){S.items.push({id:uid(),name:name.trim(),exp,price:Math.max(0,Number(price)||0),rescued:false});}
+$('#fDate').value=ymd(addDays(5));
+$('#addForm').addEventListener('submit',e=>{e.preventDefault();
+ const n=$('#fName').value.trim(),d=$('#fDate').value;if(!n||!d){toast('재료명과 유통기한을 입력해 주세요');return}
+ addItem(n,d,$('#fPrice').value);commit();toast(`${n} 추가! ${badge(dleft(d))}`);
+ $('#fName').value='';$('#fPrice').value='';$('#fName').focus()});
+
+/* ---------- 식단표 생성 ---------- */
+function generate(){
+ const left=active();if(!left.length){toast('먼저 재료를 넣어주세요');return}
+ const plan=[],usedN=new Set(),T=['볶음','구이','전','조림'];let ti=0;
+ while(plan.length<7&&left.length){
+  const seed=left[0];let best=null;
+  for(const r of R){if(!r.k.some(k=>hit(seed,k)))continue;
+   const m=matchRecipe(r,left);if(!m.uses.includes(seed.id))continue;
+   const u=m.uses.reduce((s,id)=>s+urg(dleft(left.find(x=>x.id===id).exp)),0);
+   const s=m.uses.length*10+u-m.need.length*2-(usedN.has(r.n)?40:0);
+   if(!best||s>best.s)best={r,m,s}}
+  if(best){usedN.add(best.r.n);plan.push({id:uid(),n:best.r.n,e:best.r.e,t:best.r.t,uses:best.m.uses,need:best.m.need.map(lab),done:false});
+   left.splice(0,left.length,...left.filter(x=>!best.m.uses.includes(x.id)))}
+  else{const t=T[ti++%4];plan.push({id:uid(),n:seed.name+' '+t,e:'🍳',t:'있는 재료로 간단하게! 소금·후추·간장으로 간만 맞춰요',uses:[seed.id],need:[],done:false});left.shift()}}
+ S.plan=plan;S.planStart=ymd(today0());commit();
+ toast(`${plan.length}일 식단표 완성! 🪄`);
+ const left2=left.length;if(left2)setTimeout(()=>toast(`남은 재료 ${left2}개는 다음 주에 쓰거나 냉동해요`),2600)}
+
+/* ---------- 이벤트 ---------- */
+function toggleDone(e,val){e.done=val;
+ if(val){let c=0;e.uses.forEach(id=>{const it=itemById(id);if(it&&!it.rescued){it.rescued=true;it.rescuedBy=e.id;c++}});
+  toast(c?`재료 ${c}개 구출 성공! 🎉`:'맛있게 드셨네요! 😋')}
+ else S.items.forEach(i=>{if(i.rescuedBy===e.id){i.rescued=false;delete i.rescuedBy}});}
+function move(i,j,act){if(i<0||j<0||j>=S.plan.length||i===j)return;const id=S.plan[i].id;const [x]=S.plan.splice(i,1);S.plan.splice(j,0,x);commit();
+ if(act){const b=document.querySelector(`[data-id="${id}"] [data-act="${act}"]`);if(b&&!b.disabled)b.focus();else{const o=document.querySelector(`[data-id="${id}"] .mv button:not(:disabled)`);o&&o.focus()}}}
+document.addEventListener('click',ev=>{
+ const b=ev.target.closest('[data-act]');if(!b||b.tagName==='INPUT')return;
+ const act=b.dataset.act,li=b.closest('[data-id]'),id=li&&li.dataset.id;
+ if(act==='quick'){const q=QUICK[b.dataset.q];addItem(q[0],ymd(addDays(q[2])),q[3]);commit();toast(`${q[1]} ${q[0]} 추가! (D-${q[2]})`)}
+ else if(act==='sample'){[['대파',0,2500],['두부',1,2000],['애호박',2,1800],['계란',3,6000],['햄',4,3500],['김치',6,5000]].forEach(s=>addItem(s[0],ymd(addDays(s[1])),s[2]));commit();toast('예시 재료를 넣었어요')}
+ else if(act==='freeze'){const it=itemById(id);if(it){it.exp=ymd(addDays(30));it.frozen=true;commit();toast(`${it.name} 냉동 완료 ❄️ 기한을 30일로 늘렸어요`)}}
+ else if(act==='eat'){const it=itemById(id);if(it){it.rescued=true;it.rescuedBy='direct';commit();toast(`${it.name} 구출 성공! 🎉`)}}
+ else if(act==='del'){S.items=S.items.filter(i=>i.id!==id);S.plan.forEach(p=>p.uses=p.uses.filter(u=>u!==id));commit();toast('삭제했어요')}
+ else if(act==='unrescue'){const it=itemById(id);if(it){const by=it.rescuedBy;it.rescued=false;delete it.rescuedBy;
+  S.plan.forEach(p=>{if(p.done&&(p.id===by||p.uses.includes(id))){p.done=false;S.items.forEach(x=>{if(x.rescuedBy===p.id){x.rescued=false;delete x.rescuedBy}})}});commit()}}
+ else if(act==='addrec'){if(S.plan.length>=7){toast('식단표가 이미 7일 가득 찼어요');return}
+  const r=R[b.dataset.r],m=matchRecipe(r,active().filter(x=>!planUsedIds().has(x.id)));
+  if(!S.planStart||!S.plan.length)S.planStart=ymd(today0());
+  S.plan.push({id:uid(),n:r.n,e:r.e,t:r.t,uses:m.uses,need:m.need.map(lab),done:false});commit();toast(`${r.n} 추가!`)}
+ else if(act==='gen'){if(S.plan.length&&!confirm('현재 식단표를 지우고 새로 만들까요?'))return;generate()}
+ else if(act==='card')openCard();
+ else if(act==='up'||act==='down'){const i=S.plan.findIndex(p=>p.id===id);if(i<0)return;move(i,act==='up'?i-1:i+1,act)}
+ else if(act==='pdel'){S.plan=S.plan.filter(p=>p.id!==id);commit();toast('식단에서 뺐어요')}
+ else if(act==='reset'){if(confirm('저장된 재료·식단·통계를 모두 지울까요?')){S={items:[],plan:[],planStart:null};commit();toast('모두 지웠어요')}}
+});
+document.addEventListener('change',ev=>{const t=ev.target,a=t.dataset&&t.dataset.act,li=t.closest&&t.closest('[data-id]');if(!a||!li)return;
+ if(a==='done'){const e=S.plan.find(p=>p.id===li.dataset.id);if(e){toggleDone(e,t.checked);commit()}}
+ else if(a==='date'){const it=itemById(li.dataset.id);
+  const y=+String(t.value).slice(0,4);
+  if(it&&t.value&&y>=2000&&y<=2100){it.exp=t.value;it.frozen=false;commit()}}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll()});
+/* 드래그 */
+let dragI=null;const planEl=$('#plan');
+planEl.addEventListener('dragstart',e=>{const li=e.target.closest('.meal');if(!li)return;dragI=+li.dataset.i;e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(dragI))}catch(x){}});
+planEl.addEventListener('dragover',e=>{const li=e.target.closest('.meal');if(li&&dragI!==null){e.preventDefault();planEl.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));li.classList.add('over')}});
+planEl.addEventListener('dragleave',e=>{const li=e.target.closest('.meal');li&&li.classList.remove('over')});
+planEl.addEventListener('drop',e=>{const li=e.target.closest('.meal');if(!li||dragI===null)return;e.preventDefault();const to=+li.dataset.i,from=dragI;dragI=null;move(from,to)});
+planEl.addEventListener('dragend',()=>{dragI=null;planEl.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+
+/* ---------- 구출 카드 ---------- */
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function fit(g,t,max){if(g.measureText(t).width<=max)return t;while(t.length>1&&g.measureText(t+'…').width>max)t=t.slice(0,-1);return t+'…'}
+let cardBlob=null;
+async function makeCard(){
+ try{
+  const txt='이번 주 구출 작전 버릴 뻔한 재료 개 구출 아낀 직접 추가한 메뉴 식단표 아직 없어요 버리지 않고 다 먹기 냉장고 탈출 플래너 오늘 내일 월화수목금토일 '
+   +S.plan.map(e=>e.n+e.uses.map(id=>{const it=itemById(id);return it?it.name:''}).join('')).join('');
+  await Promise.all([document.fonts.load('48px Jua',txt),document.fonts.load('700 32px Gaegu',txt)]);
+ }catch(e){}
+ const W=1080,rows=Math.max(S.plan.length,1),H=420+rows*128+170;
+ const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+ g.fillStyle='#FFFBF0';g.fillRect(0,0,W,H);
+ g.fillStyle='#e9f3e4';for(let x=20;x<W;x+=44)for(let y=20;y<H;y+=44){g.beginPath();g.arc(x,y,3,0,7);g.fill()}
+ g.fillStyle='#4CAF7A';rr(g,40,40,W-80,300,40);g.fill();
+ g.fillStyle='#fff';g.beginPath();g.arc(100,48,16,0,7);g.fill();g.fillStyle='#1d5a3a';g.beginPath();g.arc(100,48,10,0,7);g.fill();
+ g.fillStyle='#0b2f1c';g.textAlign='center';g.textBaseline='alphabetic';
+ g.font='80px Jua, sans-serif';g.fillText('🧲 이번 주 구출 작전',W/2,160);
+ const r=S.items.filter(i=>i.rescued),m=r.reduce((a,i)=>a+(Number(i.price)||0),0);
+ g.font='700 46px Gaegu, sans-serif';g.fillText(`버릴 뻔한 재료 ${r.length}개 구출 · ${won(m)} 아낌!`,W/2,235);
+ const st=S.planStart?parse(S.planStart):today0(),en=addDays(Math.max(S.plan.length,1)-1,st);
+ g.font='700 36px Gaegu, sans-serif';g.fillText(`${st.getMonth()+1}/${st.getDate()} ~ ${en.getMonth()+1}/${en.getDate()}`,W/2,295);
+ let y=380;
+ if(!S.plan.length){g.fillStyle='#5d6b62';g.font='44px Jua, sans-serif';g.fillText('아직 식단표가 없어요',W/2,y+60)}
+ S.plan.forEach((e,i)=>{
+  g.fillStyle=e.done?'#e4f5ea':'#fff';rr(g,50,y,W-100,110,28);g.fill();g.lineWidth=3;g.strokeStyle=e.done?'#a5d6b6':'#e6dcc0';g.stroke();
+  g.textAlign='left';g.fillStyle='#1d5a3a';g.font='32px Jua, sans-serif';g.fillText(fit(g,dayLabel(i),180),80,y+66);
+  g.font='56px sans-serif';g.fillStyle='#000';g.fillText(e.e,275,y+72);
+  g.fillStyle='#23392d';g.font='40px Jua, sans-serif';g.fillText(fit(g,e.n,500),350,y+48);
+  const nm=e.uses.map(itemById).filter(Boolean).map(x=>x.name).join(', ');
+  g.fillStyle='#5d6b62';g.font='700 30px Gaegu, sans-serif';g.fillText(fit(g,nm?'구출: '+nm:'직접 추가한 메뉴',520),350,y+88);
+  g.textAlign='right';g.font='44px sans-serif';g.fillStyle='#1d5a3a';g.fillText(e.done?'✅':'⬜',W-80,y+70);
+  y+=128});
+ g.textAlign='center';g.fillStyle='#1d5a3a';g.font='44px Jua, sans-serif';g.fillText('버리지 않고 다 먹기 🥬',W/2,H-90);
+ g.fillStyle='#5d6b62';g.font='700 32px Gaegu, sans-serif';g.fillText(`냉장고 탈출 플래너 · ${new Date().getFullYear()}`,W/2,H-45);
+ return c}
+async function openCard(){
+ if(!S.plan.length){toast('식단표를 먼저 만들어주세요');return}
+ cardBlob=null;
+ try{
+  const c=await makeCard();const url=c.toDataURL('image/png');
+  $('#cardImg').src=url;$('#dl').href=url;
+  c.toBlob(b=>{cardBlob=b});
+  const dlg=$('#cardDlg');if(!dlg.open)dlg.showModal();
+ }catch(e){toast('카드를 만들지 못했어요. 다시 시도해 주세요')}}
+$('#closeDlg').addEventListener('click',()=>$('#cardDlg').close());
+$('#shareBtn').addEventListener('click',async()=>{
+ if(!cardBlob){toast('잠시 후 다시 눌러주세요');return}
+ const f=new File([cardBlob],'fridge-escape-week.png',{type:'image/png'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'이번 주 구출 작전',text:'냉장고 탈출 플래너로 만든 이번 주 식단표!'})}
+  else toast('이 기기는 바로 공유가 어려워요. 이미지를 저장해 올려주세요')}catch(e){}});
+
+$('#yr').textContent=new Date().getFullYear();
+renderAll();
+})();
+</script>
+</body>
+</html>
