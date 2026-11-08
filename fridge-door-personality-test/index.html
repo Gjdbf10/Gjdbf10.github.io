@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 방 서랍 심리테스트 – 서랍 속 물건으로 알아보는 나의 성격</title>
+<meta name="description" content="서랍을 열 때 마주치는 일상 장면 10개에 답하면 8가지 서랍 유형 카드로 나의 숨은 성향을 알려드려요. 결과 카드 저장과 친구와의 궁합 비교까지!">
+<meta property="og:title" content="내 방 서랍 심리테스트">
+<meta property="og:description" content="서랍 속 물건 하나로 알아보는 나의 진짜 성격. 당신의 서랍엔 뭐가 들어 있나요?">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#E8A87C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kraft:#E8A87C; --kraft-d:#C98557; --paper:#FFF8EE; --bg:#F4E4D0;
+  --ink:#4A3426; --ink-soft:#6E5442; --mint:#BFE3D0; --pink:#F6C6D0; --lav:#D5CCF0; --butter:#FBE7A1;
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;display:flex;flex-direction:column;
+  font-family:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  color:var(--ink);line-height:1.6;
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(201,133,87,.18) 1.2px,transparent 1.3px),radial-gradient(rgba(255,255,255,.35) 1px,transparent 1.2px);
+  background-size:22px 22px,13px 13px;background-position:0 0,7px 9px;
+}
+h1,h2,h3,.jua{font-family:'Jua','Gowun Dodum',sans-serif;font-weight:400;letter-spacing:-.01em}
+.wrap{width:100%;max-width:560px;margin:0 auto;padding:20px 16px 28px;flex:1}
+header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.brand{font-family:'Jua',sans-serif;font-size:1.05rem;display:flex;gap:6px;align-items:center;background:none;border:0;color:var(--ink);cursor:pointer;padding:6px 4px;min-height:44px}
+.brand span{background:var(--kraft);border-radius:8px;padding:0 6px}
+.screen{display:none}.screen.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:var(--radius);box-shadow:0 5px 0 var(--kraft-d);padding:22px 18px}
+.btn{
+  font:inherit;font-family:'Jua',sans-serif;font-size:1.1rem;cursor:pointer;
+  border:2px solid var(--ink);border-radius:14px;padding:12px 18px;min-height:48px;
+  background:var(--kraft);color:#3a2214;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;
+}
+.btn:hover{filter:brightness(1.04)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.alt{background:var(--paper)}
+.btn.mint{background:var(--mint)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid #2f6fdb;outline-offset:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.btn{flex:1 1 140px}
+.stack>*+*{margin-top:12px}
+
+/* intro */
+.hero{text-align:center}
+.hero h1{font-size:2.1rem;margin:10px 0 6px;line-height:1.2}
+.hero p{margin:0 auto 16px;color:var(--ink-soft);max-width:30ch}
+.cabinet{width:210px;margin:6px auto 4px;position:relative}
+.cabinet svg{width:100%;height:auto;display:block}
+.drawer-anim{animation:peek 3.2s ease-in-out infinite}
+@keyframes peek{0%,15%,100%{transform:translateY(0)}45%,70%{transform:translateY(14px)}}
+.banner{background:var(--lav);border:2px dashed var(--ink);border-radius:14px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}
+.points{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px;text-align:left}
+.points li{background:#fff;border-radius:12px;padding:8px 12px;border:1.5px solid rgba(74,52,38,.25);font-size:.93rem}
+
+/* quiz */
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-family:'Jua',sans-serif}
+.bar{height:14px;background:#fff;border:2px solid var(--ink);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,var(--kraft),var(--kraft) 8px,#F0BC96 8px,#F0BC96 16px);transition:width .35s}
+.drawer{transform-origin:50% 0;animation:open .5s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes open{from{opacity:0;transform:translateY(-26px) scaleY(.8)}to{opacity:1;transform:none}}
+.drawer-front{display:flex;justify-content:center;margin:-34px 0 14px}
+.knob{width:120px;height:26px;background:var(--kraft);border:2px solid var(--ink);border-radius:99px;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:.9rem;box-shadow:0 3px 0 var(--kraft-d)}
+.q-emoji{font-size:2.2rem;text-align:center;line-height:1}
+.q-text{font-size:1.35rem;text-align:center;margin:8px 0 18px;line-height:1.4;word-break:keep-all}
+.q-text:focus{outline:none}
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opt{
+  width:100%;text-align:left;font:inherit;font-size:1rem;color:var(--ink);cursor:pointer;
+  background:#fff;border:2px solid var(--ink);border-radius:14px;padding:12px 14px;min-height:52px;
+  display:flex;gap:10px;align-items:flex-start;transition:background .12s,transform .08s;word-break:keep-all
+}
+.opt b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--butter);border:2px solid var(--ink);display:grid;place-items:center;font-family:'Jua',sans-serif;font-size:.85rem}
+.opt:hover{background:#FFF1DE}
+.opt.sel{background:var(--mint);transform:scale(.98)}
+.quiz-nav{margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.link{background:none;border:0;font:inherit;color:var(--ink-soft);text-decoration:underline;cursor:pointer;padding:10px 6px;min-height:44px}
+
+/* result */
+.canvas-wrap{border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 5px 0 var(--kraft-d);background:var(--kraft)}
+#cardCanvas{display:block;width:100%;height:auto}
+.code-pill{display:inline-block;background:var(--butter);border:2px solid var(--ink);border-radius:99px;padding:2px 12px;font-family:'Jua',sans-serif}
+.detail h2{margin:0 0 4px;font-size:1.5rem}
+.detail p{margin:6px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.mini{border-radius:14px;border:2px solid var(--ink);padding:10px 12px;font-size:.92rem}
+.mini h3{margin:0 0 4px;font-size:1rem}
+.mini ul{margin:0;padding-left:18px}
+.mini.good{background:var(--mint)}.mini.bad{background:var(--pink)}
+.compat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.compat button{font:inherit;text-align:left;cursor:pointer;color:var(--ink);border:2px solid var(--ink);border-radius:14px;padding:10px 12px;background:#fff}
+.compat button small{display:block;color:var(--ink-soft)}
+.compat button .t{font-family:'Jua',sans-serif;font-size:1.02rem}
+label.lb{display:block;font-family:'Jua',sans-serif;margin-bottom:6px}
+.inline{display:flex;gap:8px}
+input[type=text]{
+  flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:10px 12px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);text-transform:uppercase;min-height:48px
+}
+.hint{font-size:.85rem;color:var(--ink-soft);margin:6px 0 0}
+.cmp{margin-top:14px;background:#fff;border:2px solid var(--ink);border-radius:16px;padding:14px;text-align:center}
+.cmp .vs{display:flex;align-items:center;justify-content:center;gap:10px}
+.cmp .side{flex:1}
+.cmp .side svg{width:84px;height:84px}
+.cmp .side div{font-family:'Jua',sans-serif;font-size:.95rem;line-height:1.25}
+.cmp .pct{font-family:'Jua',sans-serif;font-size:2.4rem;line-height:1;margin:8px 0 2px}
+.meter{height:12px;border-radius:99px;background:#eee;border:2px solid var(--ink);overflow:hidden;margin:8px 0}
+.meter i{display:block;height:100%;background:var(--pink)}
+
+/* gallery */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.gcard{font:inherit;color:var(--ink);cursor:pointer;text-align:center;border:2px solid var(--ink);border-radius:16px;padding:12px 8px;box-shadow:0 4px 0 var(--kraft-d);transition:transform .1s}
+.gcard:hover{transform:translateY(-3px)}
+.gcard svg{width:80px;height:80px}
+.gcard .n{font-family:'Jua',sans-serif;font-size:1rem;line-height:1.25;margin-top:4px;word-break:keep-all}
+.gcard small{color:var(--ink-soft)}
+
+footer{text-align:center;font-size:.8rem;color:var(--ink-soft);padding:14px 10px 20px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;opacity:0;pointer-events:none;transition:.3s;z-index:9;font-size:.92rem;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:380px){.cols,.compat{grid-template-columns:1fr}.hero h1{font-size:1.8rem}}
+@media (hover:none){.kbd-hint{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="homeBtn" aria-label="내 방 서랍 – 처음 화면으로"><span aria-hidden="true">🗄️</span> 내 방 서랍</button>
+    <button class="link" id="galleryTop">유형 도감</button>
+  </header>
+
+  <main>
+    <!-- 인트로 -->
+    <section id="s-intro" class="screen active" aria-labelledby="introTitle">
+      <div class="card hero">
+        <div id="friendBanner" class="banner" hidden></div>
+        <div class="cabinet" aria-hidden="true">
+          <svg viewBox="0 0 220 190">
+            <rect x="12" y="10" width="196" height="170" rx="16" fill="#E8A87C" stroke="#4A3426" stroke-width="4"/>
+            <rect x="28" y="26" width="164" height="60" rx="10" fill="#F6C6D0" stroke="#4A3426" stroke-width="3"/>
+            <circle cx="110" cy="56" r="8" fill="#FBE7A1" stroke="#4A3426" stroke-width="3"/>
+            <g class="drawer-anim">
+              <rect x="28" y="100" width="164" height="64" rx="10" fill="#BFE3D0" stroke="#4A3426" stroke-width="3"/>
+              <circle cx="110" cy="132" r="8" fill="#FBE7A1" stroke="#4A3426" stroke-width="3"/>
+              <path d="M60 100 l6 -16 l8 16 M140 100 q10 -26 24 0" fill="none" stroke="#4A3426" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </div>
+        <h1 id="introTitle">내 방 서랍<br>심리테스트</h1>
+        <p>서랍 속 물건 하나로 알아보는 나의 진짜 성격, 당신의 서랍엔 뭐가 들어 있나요? 🗄️✨</p>
+        <div class="stack">
+          <button class="btn block" id="startBtn">서랍 열어보기 (10문항)</button>
+          <button class="btn alt block" id="galleryBtn">8가지 서랍 유형 도감</button>
+        </div>
+        <ul class="points">
+          <li>🔌 충전기를 찾는 급한 순간부터 오래된 편지까지, 공감 100% 일상 질문</li>
+          <li>🖼️ 정사각 결과 카드를 이미지로 저장해 스토리에 올려요</li>
+          <li>💞 친구의 유형 코드를 넣으면 서랍 궁합을 바로 확인!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 퀴즈 -->
+    <section id="s-quiz" class="screen" aria-label="질문">
+      <div class="progress-top"><span id="qCount">1 / 10</span><span id="qPct">0%</span></div>
+      <div class="bar" role="progressbar" aria-label="진행률" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="card drawer" id="drawer" style="margin-top:30px">
+        <div class="drawer-front"><div class="knob" id="knob">서랍 1</div></div>
+        <div class="q-emoji" id="qEmoji" aria-hidden="true"></div>
+        <h2 class="q-text" id="qText" tabindex="-1"></h2>
+        <ul class="opts" id="opts"></ul>
+      </div>
+      <div class="quiz-nav">
+        <button class="link" id="prevBtn">← 이전 질문</button>
+        <span class="hint kbd-hint">키보드 1~4로도 선택할 수 있어요</span>
+      </div>
+    </section>
+
+    <!-- 결과 -->
+    <section id="s-result" class="screen" aria-label="결과">
+      <div class="stack">
+        <div class="canvas-wrap"><canvas id="cardCanvas" width="1080" height="1080" role="img" aria-label="결과 카드"></canvas></div>
+        <div class="row">
+          <button class="btn" id="saveBtn">📥 카드 이미지 저장</button>
+          <button class="btn mint" id="shareBtn">🔗 링크 공유</button>
+        </div>
+        <div class="card detail" id="detail"></div>
+
+        <div class="card" id="compareBox">
+          <h2 style="margin:0 0 4px">💞 친구와 서랍 궁합 보기</h2>
+          <p class="hint" style="margin:0 0 10px">친구의 유형 코드(예: D3)를 입력하세요. 내 코드는 <span class="code-pill" id="myCode"></span></p>
+          <label class="lb" for="friendCode">친구 유형 코드</label>
+          <div class="inline">
+            <input type="text" id="friendCode" maxlength="3" placeholder="D1 ~ D8" autocomplete="off" inputmode="text">
+            <button class="btn" id="cmpBtn" style="padding:10px 16px">비교</button>
+          </div>
+          <div id="cmpOut" aria-live="polite"></div>
+        </div>
+
+        <div class="row">
+          <button class="btn alt" id="retryBtn">🔄 다시 하기</button>
+          <button class="btn alt" id="galleryBtn2">📚 전체 유형 도감</button>
+          <button class="btn alt" id="backGallery" hidden>← 도감으로</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도감 -->
+    <section id="s-gallery" class="screen" aria-labelledby="gTitle">
+      <div class="card">
+        <h2 id="gTitle" style="margin:0;font-size:1.6rem">📚 서랍 유형 도감</h2>
+        <p class="hint" style="margin:4px 0 0">카드를 누르면 자세한 설명과 궁합을 볼 수 있어요.</p>
+        <div class="grid" id="grid"></div>
+        <div class="row" style="margin-top:18px"><button class="btn block" id="gStart">나도 테스트 해보기</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>© 2026 내 방 서랍 심리테스트 · 재미로 보는 테스트예요</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+const INK='#4A3426';
+/* ---------- 유형 데이터 ---------- */
+const TYPES=[
+ {name:'비밀 보관함형',emoji:'🔐',color:'#F6C6D0',line:'겉은 조용, 속은 깊은 이야기 저장소',
+  desc:'쉽게 마음을 열지 않지만, 한 번 열면 끝까지 신뢰하는 사람. 서랍 가장 깊은 곳에 나만 아는 보물이 있어요.',
+  good:['비밀을 지키는 든든한 신뢰감','깊이 있는 관찰력'],bad:['속마음을 잘 표현하지 않아요','혼자 끙끙 앓는 편'],tags:['#신중','#의리','#속깊음'],
+  svg:`<path d="M32 46V34a18 18 0 0 1 36 0v12" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><rect x="24" y="44" width="52" height="40" rx="8" fill="#F6C6D0" stroke="${INK}" stroke-width="4"/><circle cx="50" cy="60" r="6" fill="${INK}"/><rect x="48" y="62" width="4" height="13" rx="2" fill="${INK}"/>`},
+ {name:'정리 강박 칸막이형',emoji:'📐',color:'#BFE3D0',line:'모든 건 제자리에, 마음도 칸칸이',
+  desc:'칸막이 하나에도 이유가 있는 계획형 인간. 질서 속에서 편안함을 느끼고, 주변 사람의 길잡이가 되어줘요.',
+  good:['계획적이고 믿음직한 실행력','뭐든 빠르게 찾아내는 효율'],bad:['계획이 틀어지면 스트레스','남의 어질러진 책상이 신경 쓰여요'],tags:['#계획','#꼼꼼','#효율'],
+  svg:`<rect x="14" y="22" width="72" height="56" rx="8" fill="#BFE3D0" stroke="${INK}" stroke-width="4"/><path d="M38 22v56M62 22v56M14 50h72" stroke="${INK}" stroke-width="3"/><rect x="19" y="27" width="14" height="18" rx="3" fill="#FBE7A1"/><circle cx="50" cy="36" r="6" fill="#F6C6D0"/><rect x="67" y="56" width="14" height="17" rx="3" fill="#D5CCF0"/>`},
+ {name:'만물상 도깨비형',emoji:'🧸',color:'#FBE7A1',line:'뭐든 나오는 요술 서랍, 걸어다니는 만능 키트',
+  desc:'어질러져 있어도 나만의 질서가 있다! 임기응변과 유쾌함이 무기이고, 필요한 순간 의외의 물건을 꺼내 주는 해결사예요.',
+  good:['위기 상황의 임기응변','유쾌하고 푸근한 에너지'],bad:['정작 필요한 건 못 찾아요','정리는 늘 내일로…'],tags:['#즉흥','#유쾌','#해결사'],
+  svg:`<polygon points="30,14 35,28 50,28 38,37 43,51 30,42 17,51 22,37 10,28 25,28" transform="translate(4 4)" fill="#FBE7A1" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="70" cy="34" r="15" fill="#F6C6D0" stroke="${INK}" stroke-width="3.5"/><circle cx="65" cy="31" r="2.2" fill="${INK}"/><circle cx="75" cy="31" r="2.2" fill="${INK}"/><circle cx="65" cy="38" r="2.2" fill="${INK}"/><circle cx="75" cy="38" r="2.2" fill="${INK}"/><g transform="rotate(-20 36 74)"><rect x="14" y="64" width="44" height="20" rx="5" fill="#BFE3D0" stroke="${INK}" stroke-width="3.5"/><rect x="58" y="70" width="5" height="8" rx="1" fill="${INK}"/></g><path d="M66 62q8-6 10 2t8 4" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/><path d="M64 84q6 6 18 0" fill="none" stroke="#D5CCF0" stroke-width="5" stroke-linecap="round"/>`},
+ {name:'미니멀 빈 서랍형',emoji:'🍃',color:'#D5CCF0',line:'가볍게 사는 게 제일 편해',
+  desc:'꼭 필요한 것만 곁에 두는 담백한 사람. 결정이 빠르고 미련이 적어서 어디서든 가볍게 새 출발을 해요.',
+  good:['빠른 결단력','집착 없는 가벼운 마음'],bad:['가끔 무심해 보여요','추억을 남겨두는 건 서툴러요'],tags:['#담백','#결단','#여유'],
+  svg:`<ellipse cx="50" cy="84" rx="30" ry="5" fill="none" stroke="${INK}" stroke-width="3" stroke-dasharray="5 5"/><path d="M50 18C82 28 82 68 50 80 18 68 18 28 50 18Z" fill="#BFE3D0" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M50 30v52M50 46l-12-8M50 58l13-9" stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none"/>`},
+ {name:'추억 수집가 편지함형',emoji:'💌',color:'#FBE7A1',line:'작은 티켓 한 장에도 이야기가 있어',
+  desc:'영화표, 쪽지, 사진 한 장까지 마음에 담아두는 감성파. 다정한 공감력으로 사람들 곁에 오래 남는 사람이에요.',
+  good:['다정하고 깊은 공감력','기념일과 디테일을 잘 챙겨요'],bad:['과거에 오래 머물러요','물건을 도무지 못 버려요'],tags:['#감성','#다정','#기록'],
+  svg:`<rect x="14" y="26" width="72" height="50" rx="7" fill="#FBE7A1" stroke="${INK}" stroke-width="4"/><path d="M15 30L50 55 85 30" fill="none" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M50 78c-12-8-17-14-12-20a7 7 0 0 1 12 3 7 7 0 0 1 12-3c5 6 0 12-12 20z" transform="translate(0 -4)" fill="#F08A9B" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`},
+ {name:'든든한 비상약 서랍형',emoji:'🩹',color:'#BFE3D0',line:'아프기 전에 먼저 챙겨주는 사람',
+  desc:'반창고, 소화제, 핫팩까지 준비된 안전요원. 주변의 작은 불편도 놓치지 않는 따뜻한 돌봄 담당이에요.',
+  good:['세심한 배려와 눈치','위기에 침착한 대응력'],bad:['정작 나 자신은 후순위','오지랖이라는 말을 가끔 들어요'],tags:['#배려','#든든','#케어'],
+  svg:`<g transform="rotate(-35 50 50)"><rect x="10" y="36" width="80" height="28" rx="14" fill="#F7D4B5" stroke="${INK}" stroke-width="4"/><rect x="36" y="36" width="28" height="28" fill="#FFF1DE" stroke="${INK}" stroke-width="3"/><circle cx="22" cy="46" r="1.8" fill="${INK}"/><circle cx="22" cy="54" r="1.8" fill="${INK}"/><circle cx="78" cy="46" r="1.8" fill="${INK}"/><circle cx="78" cy="54" r="1.8" fill="${INK}"/><circle cx="50" cy="50" r="1.8" fill="${INK}"/></g><path d="M74 14v14M67 21h14" stroke="#F08A9B" stroke-width="5" stroke-linecap="round"/>`},
+ {name:'아이디어 문구점형',emoji:'✏️',color:'#F6C6D0',line:'펜 한 자루로 세상을 바꿀 듯한 상상가',
+  desc:'스티커, 메모지, 색연필이 가득한 서랍처럼 머릿속도 아이디어 천국. 호기심이 많아 늘 새로운 걸 시작해요.',
+  good:['톡톡 튀는 창의력','호기심과 추진력'],bad:['시작은 많고 마무리는 아쉬워요','집중이 잘 흩어져요'],tags:['#창의','#호기심','#아이디어'],
+  svg:`<g transform="rotate(45 50 50)"><rect x="39" y="8" width="22" height="64" rx="3" fill="#FBE7A1" stroke="${INK}" stroke-width="4"/><rect x="39" y="8" width="22" height="12" rx="3" fill="#F6C6D0" stroke="${INK}" stroke-width="4"/><path d="M50 22v48" stroke="${INK}" stroke-width="2.5"/><polygon points="39,72 61,72 50,92" fill="#F7D4B5" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><polygon points="46,84 54,84 50,92" fill="${INK}"/></g><path d="M16 22l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#D5CCF0" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`},
+ {name:'반짝 수집 보석함형',emoji:'💎',color:'#D5CCF0',line:'내 취향이 곧 나의 세계',
+  desc:'예쁜 것을 알아보는 눈이 확실한 취향 부자. 작은 것 하나도 내 분위기에 맞게 골라 곁에 두는 센스쟁이예요.',
+  good:['뚜렷한 취향과 감각','분위기를 살리는 센스'],bad:['기분 따라 지름신이 와요','눈높이가 은근히 까다로워요'],tags:['#취향','#감각','#반짝'],
+  svg:`<polygon points="50,86 12,40 28,18 72,18 88,40" fill="#D5CCF0" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M12 40h76M28 18l12 22 10 46M72 18L60 40 50 86" fill="none" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><path d="M84 8v12M78 14h12" stroke="#E8A87C" stroke-width="4" stroke-linecap="round"/>`}
+];
+TYPES.forEach((t,i)=>{t.code='D'+(i+1);t.i=i});
+const BEST={0:4,4:0,1:3,3:1,2:5,5:2,6:7,7:6};
+const WORST={0:2,2:0,1:6,6:1,3:4,4:3,5:7,7:5};
+const svgInner=(i,size)=>`<svg viewBox="0 0 100 100" width="${size||80}" height="${size||80}" aria-hidden="true">${TYPES[i].svg}</svg>`;
+
+/* ---------- 질문 ---------- */
+const Q=[
+ {e:'🔌',t:'잡동사니 서랍에서 급하게 충전기를 찾아야 한다!',o:[
+  ['어디에 있는지 알고 있어서 바로 꺼낸다',1,3],['다 뒤집어 놓고 찾다가 잃어버린 물건 3개를 발견한다',2,4],['그냥 편의점에서 새로 사는 게 빠르다',3,7],['"혹시 충전기 있는 사람?" 주변에 먼저 물어본다',5,6]]},
+ {e:'💌',t:'서랍 구석에서 오래된 편지가 나왔다',o:[
+  ['자리에 앉아 처음부터 끝까지 다시 읽는다',4,0],['슬쩍 읽고 아무도 못 찾게 도로 숨긴다',0,4],['사진만 찍어두고 종이는 정리한다',3,1],['편지지가 예뻐서 다른 데 쓸 궁리를 한다',6,7]]},
+ {e:'😳',t:'친구가 갑자기 "네 서랍 좀 열어봐도 돼?" 라고 한다',o:[
+  ['잠깐! 거긴 안 돼!! 몸으로 막는다',0,2],['어차피 별거 없어서 편하게 열어보라고 한다',3,5],['부끄럽지만 웃으면서 열어준다',2,6],['정돈돼 있으니 오히려 당당하게 보여준다',1,5]]},
+ {e:'🗂️',t:'새 서랍 정리함을 샀다. 가장 먼저 하는 일은?',o:[
+  ['칸마다 라벨을 붙이고 용도를 정한다',1,5],['일단 다 쑤셔 넣고 나중에 생각한다',2,7],['꼭 필요한 것만 남기고 나머지는 비운다',3,1],['예쁜 물건만 골라 전시하듯 놓는다',7,6]]},
+ {e:'💵',t:'서랍 깊숙한 곳에서 접힌 만 원짜리가 나왔다',o:[
+  ['횡재다! 바로 간식 사 먹으러 간다',7,2],['언젠가 필요할 때를 위해 다시 넣어둔다',0,5],['이 돈이 왜 여기 있는지 추리해본다',4,6],['비상금 봉투에 모아 정리한다',1,5]]},
+ {e:'📦',t:'내 서랍에 꼭 들어 있는 물건 하나를 고른다면?',o:[
+  ['일기장이나 비밀 메모',0,4],['반창고와 상비약',5,1],['펜, 스티커, 메모지',6,2],['반짝이는 액세서리나 소품',7,3]]},
+ {e:'🚚',t:'이사 전날, 서랍을 정리해야 한다',o:[
+  ['버릴 것 / 챙길 것으로 빠르게 분류한다',1,3],['추억 물건에 빠져서 하나도 못 버린다',4,2],['남이 볼까 봐 작은 상자에 밀봉해둔다',0,5],['서랍째 통째로 박스에 옮긴다',2,6]]},
+ {e:'🖊️',t:'서랍 속 볼펜이 대부분 말라 있다',o:[
+  ['한 번에 다 버리고 가볍게 비운다',3,1],['하나씩 낙서해보며 테스트한다',1,6],['이것도 언젠가 쓸 거야… 다시 넣는다',2,4],['핑계 삼아 새 펜 사러 문구점에 간다',7,6]]},
+ {e:'🤝',t:'친구가 "서랍에 있는 거 잠깐 빌려줘" 라고 한다',o:[
+  ['바로 찾아서 건네주고 챙겨주기까지 한다',5,1],['어디 있더라… 같이 찾아보자고 한다',2,6],['빌려주긴 하지만 어디 쓰는지 은근히 궁금하다',0,3],['나도 가진 게 별로 없어서 미안해한다',3,7]]},
+ {e:'🗄️',t:'서랍을 닫기 직전, 나는?',o:[
+  ['딱 맞게 정렬됐는지 한 번 더 확인한다',1,5],['삐져나온 건 힘으로 밀어 넣고 닫는다',2,7],['닫기 전에 안을 한 번 더 구경하며 추억에 잠긴다',4,6],['잠금이나 가림 상태를 꼭 확인한다',0,1]]}
+];
+
+/* ---------- 상태/DOM ---------- */
+const $=id=>document.getElementById(id);
+let answers=[],qi=0,myType=null,viewing=null,fromGallery=false,friendFromHash=null;
+let locked=false,pickT=null;
+const screens=['intro','quiz','result','gallery'];
+function show(name){
+  if(name!=='quiz'){clearTimeout(pickT);locked=false}
+  screens.forEach(s=>$('s-'+s).classList.toggle('active',s===name));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+let toastT;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ---------- 해시 ---------- */
+function parseCode(s){const m=/^D([1-8])$/.exec((s||'').trim().toUpperCase());return m?+m[1]-1:null}
+function readHash(){
+  const c=parseCode(location.hash.replace('#',''));
+  friendFromHash=c;
+  const b=$('friendBanner');
+  if(c!==null){b.hidden=false;b.innerHTML=`🎁 친구가 공유한 유형: <b>${TYPES[c].emoji} ${TYPES[c].name}</b> (${TYPES[c].code})<br>테스트를 마치면 서랍 궁합을 바로 보여드려요!`}
+  else b.hidden=true;
+}
+window.addEventListener('hashchange',readHash);
+
+/* ---------- 퀴즈 ---------- */
+function startQuiz(){clearTimeout(pickT);locked=false;answers=[];qi=0;show('quiz');renderQ()}
+function renderQ(){
+  const q=Q[qi];
+  $('qCount').textContent=`${qi+1} / ${Q.length}`;
+  const pct=Math.round(qi/Q.length*100);
+  $('qPct').textContent=pct+'%';
+  $('barFill').style.width=pct+'%';
+  $('bar').setAttribute('aria-valuenow',qi);
+  $('knob').textContent='서랍 '+(qi+1);
+  $('qEmoji').textContent=q.e;
+  $('qText').textContent=q.t;
+  const ul=$('opts');ul.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const li=document.createElement('li');
+    const b=document.createElement('button');
+    b.type='button';b.className='opt'+(answers[qi]===i?' sel':'');
+    b.innerHTML=`<b>${i+1}</b><span></span>`;b.lastChild.textContent=o[0];
+    b.addEventListener('click',()=>pick(i));
+    li.appendChild(b);ul.appendChild(li);
+  });
+  const d=$('drawer');d.style.animation='none';void d.offsetWidth;d.style.animation='';
+  $('prevBtn').style.visibility=qi===0?'hidden':'visible';
+}
+function pick(i){
+  if(locked)return;locked=true;
+  answers[qi]=i;
+  [...$('opts').children].forEach((li,k)=>li.firstChild.classList.toggle('sel',k===i));
+  pickT=setTimeout(()=>{
+    locked=false;
+    if(qi<Q.length-1){qi++;renderQ();$('qText').focus({preventScroll:true})}
+    else finish();
+  },260);
+}
+function finish(){
+  const sc=Array(8).fill(0),last=Array(8).fill(-1);
+  answers.forEach((a,k)=>{const o=Q[k].o[a];sc[o[1]]+=2;sc[o[2]]+=1;last[o[1]]=k;});
+  let best=0;
+  for(let i=1;i<8;i++){
+    if(sc[i]>sc[best]||(sc[i]===sc[best]&&last[i]>last[best]))best=i;
+  }
+  myType=best;
+  openResult(best,true);
+}
+document.addEventListener('keydown',e=>{
+  if(!$('s-quiz').classList.contains('active'))return;
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  if(/INPUT|TEXTAREA/.test((e.target||{}).tagName))return;
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=Q[qi].o.length)pick(n-1);
+});
+
+/* ---------- 결과 ---------- */
+function openResult(idx,mine){
+  viewing=idx;
+  $('compareBox').hidden=!mine;
+  $('retryBtn').hidden=!mine;
+  $('galleryBtn2').hidden=!mine;
+  $('backGallery').hidden=mine;
+  const t=TYPES[idx];
+  $('myCode').textContent=t.code;
+  $('cmpOut').innerHTML='';
+  if(mine){
+    const fc=friendFromHash;
+    $('friendCode').value=fc!==null?TYPES[fc].code:'';
+  }
+  const bt=TYPES[BEST[idx]],wt=TYPES[WORST[idx]];
+  $('detail').innerHTML=`
+    <span class="code-pill">${t.code}</span>
+    <h2 style="margin-top:8px">${t.emoji} ${t.name}</h2>
+    <p><b>${t.line}</b></p>
+    <p>${t.desc}</p>
+    <div class="cols">
+      <div class="mini good"><h3>👍 장점</h3><ul>${t.good.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="mini bad"><h3>🙈 약점</h3><ul>${t.bad.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </div>
+    <div class="compat">
+      <button type="button" data-go="${bt.i}"><span class="t">💖 잘 맞는 유형</span><small>${bt.emoji} ${bt.name}</small></button>
+      <button type="button" data-go="${wt.i}"><span class="t">⚡ 티격태격 유형</span><small>${wt.emoji} ${wt.name}</small></button>
+    </div>`;
+  $('detail').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{fromGallery=true;openResult(+b.dataset.go,false)}));
+  show('result');
+  drawCard(idx);
+  if(mine&&friendFromHash!==null)doCompare();
+}
+
+/* ---------- 캔버스 카드 ---------- */
+const cvs=$('cardCanvas'),ctx=cvs.getContext('2d');
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function wrap(text,x,y,maxW,lh,maxLines){
+  const lines=[];let cur='';
+  for(const ch of text){
+    if(ctx.measureText(cur+ch).width>maxW&&cur){lines.push(cur.trim());cur=ch}else cur+=ch;
+  }
+  if(cur)lines.push(cur.trim());
+  lines.slice(0,maxLines).forEach((l,i)=>ctx.fillText(l,x,y+i*lh));
+  return Math.min(lines.length,maxLines);
+}
+let drawToken=0;
+async function drawCard(idx){
+  const token=++drawToken;
+  try{await Promise.all([document.fonts.load('60px Jua'),document.fonts.load('30px "Gowun Dodum"')])}catch(e){}
+  const t=TYPES[idx];
+  const img=new Image();
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="600" height="600">${t.svg}</svg>`;
+  const loaded=new Promise(res=>{img.onload=res;img.onerror=res});
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+  await loaded;
+  if(token!==drawToken)return;
+  const W=1080;
+  // 크래프트 배경
+  ctx.clearRect(0,0,W,W);
+  ctx.fillStyle='#E8A87C';ctx.fillRect(0,0,W,W);
+  ctx.fillStyle='rgba(255,255,255,.18)';
+  for(let y=20;y<W;y+=36)for(let x=(y/36%2)*18+10;x<W;x+=36){ctx.beginPath();ctx.arc(x,y,2.4,0,7);ctx.fill()}
+  // 종이 카드
+  ctx.save();ctx.shadowColor='rgba(74,52,38,.35)';ctx.shadowBlur=0;ctx.shadowOffsetY=12;
+  ctx.fillStyle='#FFF8EE';rr(60,56,960,960,48);ctx.fill();ctx.restore();
+  ctx.lineWidth=6;ctx.strokeStyle=INK;rr(60,56,960,960,48);ctx.stroke();
+  ctx.setLineDash([14,12]);ctx.lineWidth=3;ctx.strokeStyle='rgba(74,52,38,.35)';rr(86,82,908,908,34);ctx.stroke();ctx.setLineDash([]);
+  ctx.textAlign='center';ctx.textBaseline='alphabetic';
+  // 라벨
+  ctx.fillStyle='#FBE7A1';rr(390,112,300,56,28);ctx.fill();ctx.lineWidth=4;ctx.strokeStyle=INK;ctx.stroke();
+  ctx.fillStyle=INK;ctx.font='32px Jua, "Gowun Dodum", sans-serif';ctx.fillText('나의 서랍 유형',540,152);
+  // 원형 일러스트
+  ctx.fillStyle=t.color;ctx.beginPath();ctx.arc(540,350,165,0,7);ctx.fill();
+  ctx.lineWidth=6;ctx.strokeStyle=INK;ctx.stroke();
+  ctx.drawImage(img,540-125,350-125,250,250);
+  // 이름
+  ctx.fillStyle=INK;ctx.font='78px Jua, "Gowun Dodum", sans-serif';
+  let fs=78;while(ctx.measureText(t.name).width>840&&fs>50){fs-=2;ctx.font=fs+'px Jua, "Gowun Dodum", sans-serif'}
+  ctx.fillText(t.name,540,602);
+  // 한 줄 요약
+  ctx.fillStyle='#6E5442';ctx.font='38px "Gowun Dodum", sans-serif';
+  const n=wrap(t.line,540,665,820,50,2);
+  // 태그
+  ctx.font='32px Jua, "Gowun Dodum", sans-serif';
+  const gap=18,pad=26;const ws=t.tags.map(x=>ctx.measureText(x).width+pad*2);
+  let total=ws.reduce((a,b)=>a+b,0)+gap*(ws.length-1);let x=540-total/2;const ty=n===2?768:716;
+  t.tags.forEach((tg,i)=>{ctx.fillStyle=[ '#BFE3D0','#F6C6D0','#D5CCF0'][i%3];rr(x,ty,ws[i],58,29);ctx.fill();ctx.lineWidth=3.5;ctx.strokeStyle=INK;ctx.stroke();ctx.fillStyle=INK;ctx.textAlign='center';ctx.fillText(tg,x+ws[i]/2,ty+40);x+=ws[i]+gap});
+  // 궁합
+  const bt=TYPES[BEST[idx]],wt=TYPES[WORST[idx]];
+  const cy=n===2?880:850;
+  ctx.fillStyle='#fff';rr(130,cy-48,820,118,26);ctx.fill();ctx.lineWidth=3.5;ctx.strokeStyle=INK;ctx.stroke();
+  ctx.fillStyle=INK;ctx.textAlign='left';ctx.font='33px "Gowun Dodum", sans-serif';
+  ctx.fillText('💖 잘 맞는 유형  '+bt.name,166,cy,770);
+  ctx.fillText('⚡ 티격태격 유형  '+wt.name,166,cy+52,770);
+  // 푸터 (점선 테두리와 겹치지 않도록 위로)
+  ctx.textAlign='center';ctx.fillStyle='#6E5442';ctx.font='28px "Gowun Dodum", sans-serif';
+  ctx.fillText('내 방 서랍 심리테스트 · 2026  |  코드 '+t.code,540,976);
+  cvs.setAttribute('aria-label',`결과 카드: ${t.name}. ${t.line}`);
+}
+$('saveBtn').addEventListener('click',()=>{
+  cvs.toBlob(b=>{
+    if(!b){toast('이미지 저장에 실패했어요');return}
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download=`서랍유형_${TYPES[viewing].code}.png`;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    toast('카드 이미지를 저장했어요 📥');
+  },'image/png');
+});
+$('shareBtn').addEventListener('click',async()=>{
+  const t=TYPES[viewing];
+  const url=location.href.split('#')[0]+'#'+t.code;
+  const isMine=(viewing===myType);
+  const text=`${isMine?'나의 서랍 유형은':'이 서랍 유형은'} "${t.name}" ${t.emoji}\n${t.line}\n너의 서랍 유형도 알아볼래?`;
+  if(navigator.share){try{await navigator.share({title:'내 방 서랍 심리테스트',text,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('링크를 복사했어요 🔗')}
+  catch(e){window.prompt('아래 링크를 복사하세요',url)}
+});
+
+/* ---------- 궁합 ---------- */
+function compat(a,b){
+  if(a===b)return{p:82,tag:'같은 서랍을 쓰는 사이',msg:'말 안 해도 통하는 거울 같은 관계! 장점도 단점도 똑같이 닮아서 서로를 가장 잘 이해해요.'};
+  if(BEST[a]===b)return{p:96,tag:'서랍이 딱 맞물리는 환상의 짝',msg:'서로의 빈칸을 자연스럽게 채워주는 사이예요. 같이 있으면 하루가 더 편하고 든든해져요.'};
+  if(WORST[a]===b)return{p:48,tag:'서랍 정리법이 정반대인 티격태격 사이',msg:'정리하는 방식이 달라 자주 부딪히지만, 그만큼 서로에게 배울 점이 많아요. 서랍 한 칸씩 양보해볼까요?'};
+  const p=62+(((a+1)*(b+1)+a+b)%20);
+  return{p,tag:'서로의 서랍이 궁금한 사이',msg:'크게 부딪히지도, 딱 맞지도 않는 무난한 관계예요. 서로의 서랍을 구경할수록 매력이 보여요.'};
+}
+function doCompare(){
+  const f=parseCode($('friendCode').value);
+  const out=$('cmpOut');
+  if(f===null){out.innerHTML='<p class="hint" role="alert" style="color:#a3321f">코드는 D1부터 D8까지만 가능해요. 도감에서 확인해보세요.</p>';return}
+  const a=myType!==null?myType:viewing;
+  const r=compat(a,f);
+  out.innerHTML=`<div class="cmp">
+    <div class="vs">
+      <div class="side">${svgInner(a,84)}<div>나<br>${TYPES[a].name}</div></div>
+      <div aria-hidden="true" style="font-size:1.6rem">💞</div>
+      <div class="side">${svgInner(f,84)}<div>친구<br>${TYPES[f].name}</div></div>
+    </div>
+    <div class="pct">${r.p}%</div>
+    <div class="meter" aria-hidden="true"><i style="width:${r.p}%"></i></div>
+    <h3 style="margin:4px 0">${r.tag}</h3>
+    <p style="margin:4px 0 0;font-size:.95rem">${r.msg}</p>
+  </div>`;
+}
+$('cmpBtn').addEventListener('click',doCompare);
+$('friendCode').addEventListener('keydown',e=>{if(e.key==='Enter')doCompare()});
+
+/* ---------- 도감 ---------- */
+function buildGallery(){
+  $('grid').innerHTML=TYPES.map(t=>`<button type="button" class="gcard" style="background:${t.color}" data-i="${t.i}" aria-label="${t.name} 자세히 보기">${svgInner(t.i,80)}<div class="n">${t.name}</div><small>${t.code}</small></button>`).join('');
+  $('grid').querySelectorAll('.gcard').forEach(b=>b.addEventListener('click',()=>{fromGallery=true;openResult(+b.dataset.i,false)}));
+}
+
+/* ---------- 네비게이션 ---------- */
+$('startBtn').addEventListener('click',startQuiz);
+$('gStart').addEventListener('click',startQuiz);
+$('retryBtn').addEventListener('click',startQuiz);
+['galleryBtn','galleryTop','galleryBtn2','backGallery'].forEach(id=>$(id).addEventListener('click',()=>show('gallery')));
+$('homeBtn').addEventListener('click',()=>show('intro'));
+$('prevBtn').addEventListener('click',()=>{if(locked)return;if(qi>0){qi--;renderQ();$('qText').focus({preventScroll:true})}});
+
+buildGallery();
+readHash();
+})();
+</script>
+</body>
+</html>
